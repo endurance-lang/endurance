@@ -21,87 +21,87 @@ upper [A-Z]
 word ["']*[a-zA-Z][a-zA-Z0-9_"']*
 
 %%
-\/ahoy.*belay\/           { printf("COMMENTS\n"); }
+\/ahoy.*belay\/           { printf("COMMENTS; LEXEMA: %s\n", yytext); }
 
-windward                   { printf("UNSIGNED\n"); }
-leeward                    { printf("SIGNED\n"); }
-cutlass                    { printf("SHORT\n"); }
-musket                     { printf("LONG\n"); }
-inport                     { printf("INCLUDE\n"); }
-oggin                      { printf("MAIN\n"); }
-anchor                     { printf("BREAK\n"); }
-trade                      { printf("CASE\n"); }
-rigging                    { printf("CONST\n"); }
-mast                       { printf("CONTINUE\n"); }
-pirate                     { printf("DEFAULT\n"); }
-spyglass                   { printf("IF\n"); }
-parley                     { printf("ELSE\n"); }
-crew                       { printf("ENUM\n"); }
-land_ho                    { printf("RETURN\n"); }
-chest                      { printf("STRUCT\n"); }
+windward                   { printf("UNSIGNED; LEXEMA: %s\n", yytext); }
+leeward                    { printf("SIGNED; LEXEMA: %s\n", yytext); }
+cutlass                    { printf("SHORT; LEXEMA: %s\n", yytext); }
+musket                     { printf("LONG; LEXEMA: %s\n", yytext); }
+inport                     { printf("INCLUDE; LEXEMA: %s\n", yytext); }
+oggin                      { printf("MAIN; LEXEMA: %s\n", yytext); }
+anchor                     { printf("BREAK; LEXEMA: %s\n", yytext); }
+trade                      { printf("CASE; LEXEMA: %s\n", yytext); }
+rigging                    { printf("CONST; LEXEMA: %s\n", yytext); }
+mast                       { printf("CONTINUE; LEXEMA: %s\n", yytext); }
+pirate                     { printf("DEFAULT; LEXEMA: %s\n", yytext); }
+spyglass                   { printf("IF; LEXEMA: %s\n", yytext); }
+parley                     { printf("ELSE; LEXEMA: %s\n", yytext); }
+crew                       { printf("ENUM; LEXEMA: %s\n", yytext); }
+land_ho                    { printf("RETURN; LEXEMA: %s\n", yytext); }
+chest                      { printf("STRUCT; LEXEMA: %s\n", yytext); }
 
-jib                        { printf("INT\n"); }
-boat                       { printf("FLOAT\n"); }
-ship                       { printf("DOUBLE\n"); }
-addled                     { printf("BOOL\n"); }
-aye                        { printf("TRUE\n"); }
-arr                        { printf("FALSE\n"); }
-sailor                     { printf("CHAR\n"); }
+jib                        { printf("INT; LEXEMA: %s\n", yytext); }
+boat                       { printf("FLOAT; LEXEMA: %s\n", yytext); }
+ship                       { printf("DOUBLE; LEXEMA: %s\n", yytext); }
+addled                     { printf("BOOL; LEXEMA: %s\n", yytext); }
+aye                        { printf("TRUE; LEXEMA: %s\n", yytext); }
+arr                        { printf("FALSE; LEXEMA: %s\n", yytext); }
+sailor                     { printf("CHAR; LEXEMA: %s\n", yytext); }
 
-weigh_anchor               { printf("DO\n"); }
-parrot                     { printf("PRINTF\n"); }
-plunder                    { printf("SCANF\n"); }
-voyage                     { printf("FOR\n"); }
-compass                    { printf("GOTO\n"); }
-rummage                    { printf("SIZEOF\n"); }
-sweet                      { printf("SWITCH\n"); }
-charter                    { printf("TYPEDEF\n"); }
-treasure                   { printf("UNION\n"); }
-squall                     { printf("WHILE\n"); }
-swab                       { printf("FREE\n"); }
-harpoon                    { printf("POINTER\n"); }
+weigh_anchor               { printf("DO; LEXEMA: %s\n", yytext); }
+parrot                     { printf("PRINTF; LEXEMA: %s\n", yytext); }
+plunder                    { printf("SCANF; LEXEMA: %s\n", yytext); }
+voyage                     { printf("FOR; LEXEMA: %s\n", yytext); }
+compass                    { printf("GOTO; LEXEMA: %s\n", yytext); }
+rummage                    { printf("SIZEOF; LEXEMA: %s\n", yytext); }
+sweet                      { printf("SWITCH; LEXEMA: %s\n", yytext); }
+charter                    { printf("TYPEDEF; LEXEMA: %s\n", yytext); }
+treasure                   { printf("UNION; LEXEMA: %s\n", yytext); }
+squall                     { printf("WHILE; LEXEMA: %s\n", yytext); }
+swab                       { printf("FREE; LEXEMA: %s\n", yytext); }
+harpoon                    { printf("POINTER; LEXEMA: %s\n", yytext); }
 
-gully                      { printf("SLICE\n"); }
-hoard                      { printf("SOME\n"); }
-booty                      { printf("REDUCE\n"); }
-net                        { printf("FILTER\n"); }
-chart                      { printf("MAP\n"); }
-plunderhaul                { printf("SORT\n"); }
+gully                      { printf("SLICE; LEXEMA: %s\n", yytext); }
+hoard                      { printf("SOME; LEXEMA: %s\n", yytext); }
+booty                      { printf("REDUCE; LEXEMA: %s\n", yytext); }
+net                        { printf("FILTER; LEXEMA: %s\n", yytext); }
+chart                      { printf("MAP; LEXEMA: %s\n", yytext); }
+plunderhaul                { printf("SORT; LEXEMA: %s\n", yytext); }
 
-"="                        { printf("ASSIGN\n"); }
-":"                        { printf("COLON\n"); }
+"="                        { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+":"                        { printf("COLON; LEXEMA: %s\n", yytext); }
 
-"=="                       { printf("EQ\n"); }
-"!="                       { printf("NE\n"); }
-"<"                        { printf("LT\n"); }
-">"                        { printf("GT\n"); }
-"<="                       { printf("LE\n"); }
-">="                       { printf("GE\n"); }
+"=="                       { printf("EQ; LEXEMA: %s\n", yytext); }
+"!="                       { printf("NE; LEXEMA: %s\n", yytext); }
+"<"                        { printf("LT; LEXEMA: %s\n", yytext); }
+">"                        { printf("GT; LEXEMA: %s\n", yytext); }
+"<="                       { printf("LE; LEXEMA: %s\n", yytext); }
+">="                       { printf("GE; LEXEMA: %s\n", yytext); }
 
-"rum"                      { printf("LOGICAL_AND\n"); }
-"grog"                     { printf("LOGICAL_OR\n"); }
-"sober"                    { printf("LOGICAL_NOT\n"); }
+"rum"                      { printf("LOGICAL_AND; LEXEMA: %s\n", yytext); }
+"grog"                     { printf("LOGICAL_OR; LEXEMA: %s\n", yytext); }
+"sober"                    { printf("LOGICAL_NOT; LEXEMA: %s\n", yytext); }
 
-"++"                       { printf("INCREMENT\n"); }
-"--"                       { printf("DECREMENT\n"); }
+"++"                       { printf("INCREMENT; LEXEMA: %s\n", yytext); }
+"--"                       { printf("DECREMENT; LEXEMA: %s\n", yytext); }
 
-"&"                        { printf("BITWISE_AND\n"); }
-"|"                        { printf("BITWISE_OR\n"); }
-"^"                        { printf("BITWISE_XOR\n"); }
-"~"                        { printf("BITWISE_NOT\n"); }
-"<<"                       { printf("LEFT_SHIFT\n"); }
-">>"                       { printf("RIGHT_SHIFT\n"); }
-"&^"                       { printf("BITWISE_AND_NOT\n"); }
+"&"                        { printf("BITWISE_AND; LEXEMA: %s\n", yytext); }
+"|"                        { printf("BITWISE_OR; LEXEMA: %s\n", yytext); }
+"^"                        { printf("BITWISE_XOR; LEXEMA: %s\n", yytext); }
+"~"                        { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
+"<<"                       { printf("LEFT_SHIFT; LEXEMA: %s\n", yytext); }
+">>"                       { printf("RIGHT_SHIFT; LEXEMA: %s\n", yytext); }
+"&^"                       { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
 
-"⚓️"                        { printf("BLOCK_OPEN\n"); }
-"\⚓️;"                      { printf("BLOCK_CLOSE\n"); }
-";"                        { printf("SEMICOLON\n"); }
-"("                        { printf("OPEN_PAREN\n"); }
-")"                        { printf("CLOSE_PAREN\n"); }
-"["                        { printf("OPEN_BRACKET\n"); }
-"]"                        { printf("CLOSE_BRACKET\n"); }
-"{"                        { printf("OPEN_BRACE\n"); }
-"}"                        { printf("CLOSE_BRACE\n"); }
+"⚓️"                        { printf("BLOCK_OPEN; LEXEMA: %s\n", yytext); }
+"\⚓️;"                      { printf("BLOCK_CLOSE; LEXEMA: %s\n", yytext); }
+";"                        { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
+"("                        { printf("OPEN_PAREN; LEXEMA: %s\n", yytext); }
+")"                        { printf("CLOSE_PAREN; LEXEMA: %s\n", yytext); }
+"["                        { printf("OPEN_BRACKET; LEXEMA: %s\n", yytext); }
+"]"                        { printf("CLOSE_BRACKET; LEXEMA: %s\n", yytext); }
+"{"                        { printf("OPEN_BRACE; LEXEMA: %s\n", yytext); }
+"}"                        { printf("CLOSE_BRACE; LEXEMA: %s\n", yytext); }
 
 {ws}+ { /*Espaços em branco, tabulação e quebra de linha devem ser ignorados.*/ }
 {positive}                 { printf("Foi encontrado um número inteiro positivo. LEXEMA: %s\n", yytext); }

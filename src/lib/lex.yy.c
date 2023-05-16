@@ -895,357 +895,357 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 24 "lex.l"
-{ printf("COMMENTS\n"); }
+{ printf("COMMENTS; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 26 "lex.l"
-{ printf("UNSIGNED\n"); }
+{ printf("UNSIGNED; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
 #line 27 "lex.l"
-{ printf("SIGNED\n"); }
+{ printf("SIGNED; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
 #line 28 "lex.l"
-{ printf("SHORT\n"); }
+{ printf("SHORT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 29 "lex.l"
-{ printf("LONG\n"); }
+{ printf("LONG; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 30 "lex.l"
-{ printf("INCLUDE\n"); }
+{ printf("INCLUDE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 31 "lex.l"
-{ printf("MAIN\n"); }
+{ printf("MAIN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 32 "lex.l"
-{ printf("BREAK\n"); }
+{ printf("BREAK; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 33 "lex.l"
-{ printf("CASE\n"); }
+{ printf("CASE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 34 "lex.l"
-{ printf("CONST\n"); }
+{ printf("CONST; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 35 "lex.l"
-{ printf("CONTINUE\n"); }
+{ printf("CONTINUE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 36 "lex.l"
-{ printf("DEFAULT\n"); }
+{ printf("DEFAULT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 37 "lex.l"
-{ printf("IF\n"); }
+{ printf("IF; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
 #line 38 "lex.l"
-{ printf("ELSE\n"); }
+{ printf("ELSE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
 #line 39 "lex.l"
-{ printf("ENUM\n"); }
+{ printf("ENUM; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
 #line 40 "lex.l"
-{ printf("RETURN\n"); }
+{ printf("RETURN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
 #line 41 "lex.l"
-{ printf("STRUCT\n"); }
+{ printf("STRUCT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 43 "lex.l"
-{ printf("INT\n"); }
+{ printf("INT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
 #line 44 "lex.l"
-{ printf("FLOAT\n"); }
+{ printf("FLOAT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 45 "lex.l"
-{ printf("DOUBLE\n"); }
+{ printf("DOUBLE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 46 "lex.l"
-{ printf("BOOL\n"); }
+{ printf("BOOL; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 47 "lex.l"
-{ printf("TRUE\n"); }
+{ printf("TRUE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 48 "lex.l"
-{ printf("FALSE\n"); }
+{ printf("FALSE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 49 "lex.l"
-{ printf("CHAR\n"); }
+{ printf("CHAR; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
 #line 51 "lex.l"
-{ printf("DO\n"); }
+{ printf("DO; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 52 "lex.l"
-{ printf("PRINTF\n"); }
+{ printf("PRINTF; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 53 "lex.l"
-{ printf("SCANF\n"); }
+{ printf("SCANF; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
 #line 54 "lex.l"
-{ printf("FOR\n"); }
+{ printf("FOR; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 55 "lex.l"
-{ printf("GOTO\n"); }
+{ printf("GOTO; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
 #line 56 "lex.l"
-{ printf("SIZEOF\n"); }
+{ printf("SIZEOF; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 57 "lex.l"
-{ printf("SWITCH\n"); }
+{ printf("SWITCH; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 58 "lex.l"
-{ printf("TYPEDEF\n"); }
+{ printf("TYPEDEF; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 59 "lex.l"
-{ printf("UNION\n"); }
+{ printf("UNION; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 60 "lex.l"
-{ printf("WHILE\n"); }
+{ printf("WHILE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 61 "lex.l"
-{ printf("FREE\n"); }
+{ printf("FREE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 62 "lex.l"
-{ printf("POINTER\n"); }
+{ printf("POINTER; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 64 "lex.l"
-{ printf("SLICE\n"); }
+{ printf("SLICE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 65 "lex.l"
-{ printf("SOME\n"); }
+{ printf("SOME; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 66 "lex.l"
-{ printf("REDUCE\n"); }
+{ printf("REDUCE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 67 "lex.l"
-{ printf("FILTER\n"); }
+{ printf("FILTER; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 68 "lex.l"
-{ printf("MAP\n"); }
+{ printf("MAP; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 69 "lex.l"
-{ printf("SORT\n"); }
+{ printf("SORT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
 #line 71 "lex.l"
-{ printf("ASSIGN\n"); }
+{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 72 "lex.l"
-{ printf("COLON\n"); }
+{ printf("COLON; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
 #line 74 "lex.l"
-{ printf("EQ\n"); }
+{ printf("EQ; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
 #line 75 "lex.l"
-{ printf("NE\n"); }
+{ printf("NE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
 #line 76 "lex.l"
-{ printf("LT\n"); }
+{ printf("LT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
 #line 77 "lex.l"
-{ printf("GT\n"); }
+{ printf("GT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
 #line 78 "lex.l"
-{ printf("LE\n"); }
+{ printf("LE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
 #line 79 "lex.l"
-{ printf("GE\n"); }
+{ printf("GE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
 #line 81 "lex.l"
-{ printf("LOGICAL_AND\n"); }
+{ printf("LOGICAL_AND; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
 #line 82 "lex.l"
-{ printf("LOGICAL_OR\n"); }
+{ printf("LOGICAL_OR; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 83 "lex.l"
-{ printf("LOGICAL_NOT\n"); }
+{ printf("LOGICAL_NOT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 85 "lex.l"
-{ printf("INCREMENT\n"); }
+{ printf("INCREMENT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 86 "lex.l"
-{ printf("DECREMENT\n"); }
+{ printf("DECREMENT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
 #line 88 "lex.l"
-{ printf("BITWISE_AND\n"); }
+{ printf("BITWISE_AND; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
 #line 89 "lex.l"
-{ printf("BITWISE_OR\n"); }
+{ printf("BITWISE_OR; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
 #line 90 "lex.l"
-{ printf("BITWISE_XOR\n"); }
+{ printf("BITWISE_XOR; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
 #line 91 "lex.l"
-{ printf("BITWISE_NOT\n"); }
+{ printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
 #line 92 "lex.l"
-{ printf("LEFT_SHIFT\n"); }
+{ printf("LEFT_SHIFT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
 #line 93 "lex.l"
-{ printf("RIGHT_SHIFT\n"); }
+{ printf("RIGHT_SHIFT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
 #line 94 "lex.l"
-{ printf("BITWISE_AND_NOT\n"); }
+{ printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
 #line 96 "lex.l"
-{ printf("BLOCK_OPEN\n"); }
+{ printf("BLOCK_OPEN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
 #line 97 "lex.l"
-{ printf("BLOCK_CLOSE\n"); }
+{ printf("BLOCK_CLOSE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
 #line 98 "lex.l"
-{ printf("SEMICOLON\n"); }
+{ printf("SEMICOLON; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
 #line 99 "lex.l"
-{ printf("OPEN_PAREN\n"); }
+{ printf("OPEN_PAREN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
 #line 100 "lex.l"
-{ printf("CLOSE_PAREN\n"); }
+{ printf("CLOSE_PAREN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
 #line 101 "lex.l"
-{ printf("OPEN_BRACKET\n"); }
+{ printf("OPEN_BRACKET; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
 #line 102 "lex.l"
-{ printf("CLOSE_BRACKET\n"); }
+{ printf("CLOSE_BRACKET; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
 #line 103 "lex.l"
-{ printf("OPEN_BRACE\n"); }
+{ printf("OPEN_BRACE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
 #line 104 "lex.l"
-{ printf("CLOSE_BRACE\n"); }
+{ printf("CLOSE_BRACE; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 72:
 /* rule 72 can match eol */
