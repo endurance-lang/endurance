@@ -9,5 +9,8 @@ $(TARGET): $(OBJFILES)
 	flex -o lex.yy.c lex.l && \
 	gcc lex.yy.c -o ../../build/a.out
 
-test:
-	./build/a.out < resources/1.txt
+test-first:
+	./build/a.out < resources/first.end
+
+test-second:
+	./build/a.out < resources/second.end

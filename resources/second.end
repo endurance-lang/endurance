@@ -1,0 +1,13 @@
+jib oggin() ⚓️
+    /ahoy  belay/
+
+    boat davy_jones = 3.3333;
+
+    squall (davy_jones > 0) ⚓️
+        parrot("bora");
+
+        davy_jones--;
+    ⚓️
+
+    land_ho 0;
+⚓️;
