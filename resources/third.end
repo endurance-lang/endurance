@@ -1,13 +1,13 @@
 jib oggin() ⚓️
-    /ahoy parrot("teste") belay/
+    /ahoy parrot("Caravel") belay/
 
-    boat davy_jones = 3.3333;
+    'Galleon'
 
-    squall (davy_jones > 0) ⚓️
-        parrot("halo");
+    sailor endurance = "a";
 
-        davy_jones++;
+    spyglass(davy_jones != "b") ⚓️
+        parrot("Blackbeard");
+    ⚓️; parley ⚓️
+        parrot("Davy Jones");
     ⚓️;
-
-    land_ho 0;
 ⚓️;
