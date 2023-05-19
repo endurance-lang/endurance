@@ -14,3 +14,6 @@ test-first:
 
 test-second:
 	./build/a.out < resources/second.end
+
+test-third:
+	./build/a.out < resources/third.end

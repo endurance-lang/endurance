@@ -7,4 +7,7 @@ make test-first
 printf "\n\nsecond test \n\n"
 make test-second
 
+printf "\n\nthird test \n\n"
+make test-third
+
 printf "\n"
