@@ -5,9 +5,6 @@
 /* This tells flex to read only one input file */
 %option noyywrap
 
-
-
-
 /* definicoes regulares */
 ws                          [ \t\n]
 
@@ -73,42 +70,52 @@ net                         { printf("FILTER; LEXEMA: %s\n", yytext); }
 chart                       { printf("MAP; LEXEMA: %s\n", yytext); }
 plunderhaul                 { printf("SORT; LEXEMA: %s\n", yytext); }
 
-"="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-":"                         { printf("COLON; LEXEMA: %s\n", yytext); }
-
-"=="                        { printf("EQ; LEXEMA: %s\n", yytext); }
-"!="                        { printf("NE; LEXEMA: %s\n", yytext); }
+"]"                         { printf("CLOSE_BRACKET; LEXEMA: %s\n", yytext); }
+"["                         { printf("OPEN_BRACKET; LEXEMA: %s\n", yytext); }
+")"                         { printf("CLOSE_PAREN; LEXEMA: %s\n", yytext); }
+"("                         { printf("OPEN_PAREN; LEXEMA: %s\n", yytext); }
+"⚓️;"                       { printf("BLOCK_CLOSE; LEXEMA: %s\n", yytext); }
+"⚓️"                        { printf("BLOCK_OPEN; LEXEMA: %s\n", yytext); }
+"."                         { printf("DOT; LEXEMA: %s\n", yytext); }
+"++"                        { printf("INCREMENT; LEXEMA: %s\n", yytext); }
+"--"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"+"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"-"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"*"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"/"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"&"                         { printf("BITWISE_AND; LEXEMA: %s\n", yytext); }
+"|"                         { printf("BITWISE_OR; LEXEMA: %s\n", yytext); }
+"~"                         { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
+"%"                         { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
+"<<"                        { printf("LEFT_SHIFT; LEXEMA: %s\n", yytext); }
+">>"                        { printf("RIGHT_SHIFT; LEXEMA: %s\n", yytext); }
 "<"                         { printf("LT; LEXEMA: %s\n", yytext); }
 ">"                         { printf("GT; LEXEMA: %s\n", yytext); }
 "<="                        { printf("LE; LEXEMA: %s\n", yytext); }
 ">="                        { printf("GE; LEXEMA: %s\n", yytext); }
-
+"=="                        { printf("EQ; LEXEMA: %s\n", yytext); }
+"!="                        { printf("NE; LEXEMA: %s\n", yytext); }
+"^"                         { printf("BITWISE_XOR; LEXEMA: %s\n", yytext); }
 "rum"                       { printf("LOGICAL_AND; LEXEMA: %s\n", yytext); }
 "grog"                      { printf("LOGICAL_OR; LEXEMA: %s\n", yytext); }
 "sober"                     { printf("LOGICAL_NOT; LEXEMA: %s\n", yytext); }
+"?"                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+":"                         { printf("COLON; LEXEMA: %s\n", yytext); }
+";"                         { printf("COLON; LEXEMA: %s\n", yytext); }
+"="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"+="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"-="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"*="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"/="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"%="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"<<="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+">>="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"&="                        { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
+"|="                        { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
+"^="                         { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
+","                         { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
 
-"++"                        { printf("INCREMENT; LEXEMA: %s\n", yytext); }
-"--"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
-
-"&"                         { printf("BITWISE_AND; LEXEMA: %s\n", yytext); }
-"|"                         { printf("BITWISE_OR; LEXEMA: %s\n", yytext); }
-"^"                         { printf("BITWISE_XOR; LEXEMA: %s\n", yytext); }
-"~"                         { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
-"<<"                        { printf("LEFT_SHIFT; LEXEMA: %s\n", yytext); }
-">>"                        { printf("RIGHT_SHIFT; LEXEMA: %s\n", yytext); }
-"&^"                        { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
-
-"⚓️"                        { printf("BLOCK_OPEN; LEXEMA: %s\n", yytext); }
-"⚓️;"                       { printf("BLOCK_CLOSE; LEXEMA: %s\n", yytext); }
-";"                         { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
-"("                         { printf("OPEN_PAREN; LEXEMA: %s\n", yytext); }
-")"                         { printf("CLOSE_PAREN; LEXEMA: %s\n", yytext); }
-"["                         { printf("OPEN_BRACKET; LEXEMA: %s\n", yytext); }
-"]"                         { printf("CLOSE_BRACKET; LEXEMA: %s\n", yytext); }
-"{"                         { printf("OPEN_BRACE; LEXEMA: %s\n", yytext); }
-"}"                         { printf("CLOSE_BRACE; LEXEMA: %s\n", yytext); }
-
-{ws}+                       { /*Espaços em branco, tabulação e quebra de linha devem ser ignorados.*/ }
+{ws}                        { /*Espaços em branco, tabulação e quebra de linha devem ser ignorados.*/ }
 {positive}                  { printf("Foi encontrado um número inteiro positivo. LEXEMA: %s\n", yytext); }
 {negative}                  { printf("Foi encontrado um número inteiro negativo. LEXEMA: %s\n", yytext); }
 {decimal_pos}               { printf("Foi encontrado um número número com parte decimal positivo. LEXEMA: %s\n", yytext); }
