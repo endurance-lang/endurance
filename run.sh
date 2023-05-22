@@ -10,4 +10,7 @@ make test-second
 printf "\n\nthird test \n\n"
 make test-third
 
+printf "\n\nfourth test \n\n"
+make test-fourth
+
 printf "\n"
