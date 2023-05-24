@@ -912,7 +912,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 26 "lex.l"
-{  printf("COMMENTS; LEXEMA: %s\n", yytext); }
+{ printf("COMMENTS; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
@@ -1167,22 +1167,22 @@ YY_RULE_SETUP
 case 52:
 YY_RULE_SETUP
 #line 82 "lex.l"
-{ printf("DECREMENT; LEXEMA: %s\n", yytext); }
+{ printf("ADD; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
 #line 83 "lex.l"
-{ printf("DECREMENT; LEXEMA: %s\n", yytext); }
+{ printf("SUB; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
 #line 84 "lex.l"
-{ printf("DECREMENT; LEXEMA: %s\n", yytext); }
+{ printf("MUL; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
 #line 85 "lex.l"
-{ printf("DECREMENT; LEXEMA: %s\n", yytext); }
+{ printf("DIV; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
@@ -1202,7 +1202,7 @@ YY_RULE_SETUP
 case 59:
 YY_RULE_SETUP
 #line 89 "lex.l"
-{ printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
+{ printf("MOD; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
@@ -1267,7 +1267,7 @@ YY_RULE_SETUP
 case 72:
 YY_RULE_SETUP
 #line 102 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("QUEST; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
@@ -1277,7 +1277,7 @@ YY_RULE_SETUP
 case 74:
 YY_RULE_SETUP
 #line 104 "lex.l"
-{ printf("COLON; LEXEMA: %s\n", yytext); }
+{ printf("SEMI_COLON; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
@@ -1287,57 +1287,57 @@ YY_RULE_SETUP
 case 76:
 YY_RULE_SETUP
 #line 106 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("ADD_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
 #line 107 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("SUB_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 108 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("MUL_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 109 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("DIV_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
 #line 110 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("MOD_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 111 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("LEFT_SHIFT_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 112 "lex.l"
-{ printf("ASSIGN; LEXEMA: %s\n", yytext); }
+{ printf("RIGHT_SHIFT_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 113 "lex.l"
-{ printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
+{ printf("BITWISE_AND_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 114 "lex.l"
-{ printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
+{ printf("BITWISE_OR_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 115 "lex.l"
-{ printf("SEMICOLON; LEXEMA: %s\n", yytext); }
+{ printf("BITWISE_XOR_ASSIGN; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 116 "lex.l"
-{ printf("SEMICOLON; LEXEMA: %s\n", yytext); }
+{ printf("COMMA; LEXEMA: %s\n", yytext); }
 	YY_BREAK
 case 87:
 /* rule 87 can match eol */
