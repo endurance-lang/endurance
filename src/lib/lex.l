@@ -16,7 +16,7 @@ decimal_neg                 [-]{digit}+[.]{digit}+
 
 low                         [a-z]
 upper                       [A-Z]
-word1q                      [']([^"'\n]|"\\\""|"\\\'")*[']
+word1q                      [']([^'\n]|"\\\'")*[']
 word2q                      ["]([^"\n]|"\\\"")*["]
 word                        {word1q}|{word2q}
 
