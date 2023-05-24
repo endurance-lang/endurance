@@ -23,7 +23,7 @@ word                        {word1q}|{word2q}
 identifier                  [A-Za-z_][A-Za-z0-9_]*
 
 %%
-\/ahoy.*belay\/             {  printf("COMMENTS; LEXEMA: %s\n", yytext); }
+\/ahoy.*belay\/             { printf("COMMENTS; LEXEMA: %s\n", yytext); }
 
 windward                    { printf("UNSIGNED; LEXEMA: %s\n", yytext); }
 leeward                     { printf("SIGNED; LEXEMA: %s\n", yytext); }
@@ -79,14 +79,14 @@ plunderhaul                 { printf("SORT; LEXEMA: %s\n", yytext); }
 "."                         { printf("DOT; LEXEMA: %s\n", yytext); }
 "++"                        { printf("INCREMENT; LEXEMA: %s\n", yytext); }
 "--"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
-"+"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
-"-"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
-"*"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
-"/"                        { printf("DECREMENT; LEXEMA: %s\n", yytext); }
+"+"                         { printf("ADD; LEXEMA: %s\n", yytext); }
+"-"                         { printf("SUB; LEXEMA: %s\n", yytext); }
+"*"                         { printf("MUL; LEXEMA: %s\n", yytext); }
+"/"                         { printf("DIV; LEXEMA: %s\n", yytext); }
 "&"                         { printf("BITWISE_AND; LEXEMA: %s\n", yytext); }
 "|"                         { printf("BITWISE_OR; LEXEMA: %s\n", yytext); }
 "~"                         { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
-"%"                         { printf("BITWISE_NOT; LEXEMA: %s\n", yytext); }
+"%"                         { printf("MOD; LEXEMA: %s\n", yytext); }
 "<<"                        { printf("LEFT_SHIFT; LEXEMA: %s\n", yytext); }
 ">>"                        { printf("RIGHT_SHIFT; LEXEMA: %s\n", yytext); }
 "<"                         { printf("LT; LEXEMA: %s\n", yytext); }
@@ -99,21 +99,21 @@ plunderhaul                 { printf("SORT; LEXEMA: %s\n", yytext); }
 "rum"                       { printf("LOGICAL_AND; LEXEMA: %s\n", yytext); }
 "grog"                      { printf("LOGICAL_OR; LEXEMA: %s\n", yytext); }
 "sober"                     { printf("LOGICAL_NOT; LEXEMA: %s\n", yytext); }
-"?"                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
+"?"                         { printf("QUEST; LEXEMA: %s\n", yytext); }
 ":"                         { printf("COLON; LEXEMA: %s\n", yytext); }
-";"                         { printf("COLON; LEXEMA: %s\n", yytext); }
+";"                         { printf("SEMI_COLON; LEXEMA: %s\n", yytext); }
 "="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"+="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"-="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"*="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"/="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"%="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"<<="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-">>="                         { printf("ASSIGN; LEXEMA: %s\n", yytext); }
-"&="                        { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
-"|="                        { printf("BITWISE_AND_NOT; LEXEMA: %s\n", yytext); }
-"^="                         { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
-","                         { printf("SEMICOLON; LEXEMA: %s\n", yytext); }
+"+="                        { printf("ADD_ASSIGN; LEXEMA: %s\n", yytext); }
+"-="                        { printf("SUB_ASSIGN; LEXEMA: %s\n", yytext); }
+"*="                        { printf("MUL_ASSIGN; LEXEMA: %s\n", yytext); }
+"/="                        { printf("DIV_ASSIGN; LEXEMA: %s\n", yytext); }
+"%="                        { printf("MOD_ASSIGN; LEXEMA: %s\n", yytext); }
+"<<="                       { printf("LEFT_SHIFT_ASSIGN; LEXEMA: %s\n", yytext); }
+">>="                       { printf("RIGHT_SHIFT_ASSIGN; LEXEMA: %s\n", yytext); }
+"&="                        { printf("BITWISE_AND_ASSIGN; LEXEMA: %s\n", yytext); }
+"|="                        { printf("BITWISE_OR_ASSIGN; LEXEMA: %s\n", yytext); }
+"^="                        { printf("BITWISE_XOR_ASSIGN; LEXEMA: %s\n", yytext); }
+","                         { printf("COMMA; LEXEMA: %s\n", yytext); }
 
 {ws}                        { /*Espaços em branco, tabulação e quebra de linha devem ser ignorados.*/ }
 {positive}                  { printf("Foi encontrado um número inteiro positivo. LEXEMA: %s\n", yytext); }
