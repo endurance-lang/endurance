@@ -7,7 +7,8 @@ build: $(TARGET)
 $(TARGET): $(OBJFILES)
 	cd ./src/lib && \
 	flex -o lex.yy.c lex.l && \
-	gcc lex.yy.c -o ../../build/a.out
+	bison -d -o translate.tab.c translate.y && \
+	gcc translate.tab.c lex.yy.c -o ../../build/a.out
 
 test-first:
 	./build/a.out < resources/first.end
