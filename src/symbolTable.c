@@ -52,6 +52,7 @@ void deleteSymbolList(SymbolNode *head){
     while(head != NULL){
         SymbolNode* aux = head;
         head = head->prox;
+        symbolDelete(aux->sym);
         free(aux);
     }
 }
@@ -115,6 +116,8 @@ void symbolTableDelete(SymbolTable *st){
         deleteSymbolList(aux->headNode);
         free(aux);
     }
+    free(st->priv);
+    free(st);
 }
 
 void symbolTableShow(SymbolTable *st){

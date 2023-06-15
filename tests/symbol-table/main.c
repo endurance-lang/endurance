@@ -21,7 +21,7 @@ int main() {
     search = symbolTableFind(st, "var");
     printf("%lld - expected 0\n", search);
 
-    a = 10;
+    symbolTableDelete(st);
 
     return 0;
 }
