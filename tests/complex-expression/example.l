@@ -20,7 +20,11 @@ identifier                  [a-zA-Z_]
 %%
 [\n]                        { cnt_lines++; }
 [-+()*/=;]                  { return *yytext; }
-"{"                         { depth++; return *yytext; }
+"{"                         { 
+                                depth++; 
+                                for(int i=0; i<256; ++i) sym[depth][i] = sym[depth-1][i];
+                                return *yytext; 
+                            }
 "}"                         { depth--; return *yytext; }
 
 

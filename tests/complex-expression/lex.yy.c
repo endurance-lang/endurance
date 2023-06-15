@@ -745,21 +745,25 @@ YY_RULE_SETUP
 case 3:
 YY_RULE_SETUP
 #line 23 "example.l"
-{ depth++; return *yytext; }
+{ 
+                                depth++; 
+                                for(int i=0; i<256; ++i) sym[depth][i] = sym[depth-1][i];
+                                return *yytext; 
+                            }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 24 "example.l"
+#line 28 "example.l"
 { depth--; return *yytext; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 27 "example.l"
+#line 31 "example.l"
 { /* ignore */ }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 28 "example.l"
+#line 32 "example.l"
 { 
                                 yylval = atoi(yytext);
                                 return NUMBER; 
@@ -767,20 +771,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "example.l"
+#line 36 "example.l"
 { yylval = *yytext; return IDENTIFIER; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "example.l"
+#line 37 "example.l"
 { return INVALID; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "example.l"
+#line 38 "example.l"
 ECHO;
 	YY_BREAK
-#line 784 "lex.yy.c"
+#line 788 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1785,7 +1789,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 34 "example.l"
+#line 38 "example.l"
 
 
 
