@@ -1,5 +1,7 @@
-# Example: Simple Expression
-Este exemplo faz um analisador de uma expressão simples
+# Example: Complex Expression
+
+Este exemplo faz uma calculadora com multi-nível.
+
 
 ## Lex
 Encontra identificadores na input e os adiciona na tabela de símbolos. A tabela deve conter outras informações como DataType e localização da variável na memória.
