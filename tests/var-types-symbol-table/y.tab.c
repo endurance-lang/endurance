@@ -1342,7 +1342,7 @@ yyreduce:
 
   case 4:
 #line 41 "example.y"
-                                    { symbolTableInsert(st, symbolNew(yylval.strValue, (yyvsp[-1].typeValue), 1)); }
+                                    { symbolTableInsert(st, symbolNew((yyvsp[0].strValue), (yyvsp[-1].typeValue), 1)); }
 #line 1347 "y.tab.c"
     break;
 
