@@ -1,31 +1,6 @@
 #ifndef TRANSLATE_TAB_H
 #define TRANSLATE_TAB_H
 
-/* Tokens */
-
-typedef enum Token{
-    UNKNOWN_TOKEN = -1,
-    
-}Token;
-
-typedef enum IdType{
-    UNKNOWN_ID_TYPE = -1,
-    SHORT_ID_TYPE, 
-    LONG_ID_TYPE, 
-    INT_ID_TYPE, 
-    FLOAT_ID_TYPE, 
-    DOUBLE_ID_TYPE, 
-    BOOL_ID_TYPE, 
-    CHAR_ID_TYPE, 
-    INTEGER_ID_TYPE, 
-    DECIMAL_ID_TYPE, 
-    STRING_ID_TYPE, 
-}IdType;
-
-typedef enum OperatorType{
-
-}OperatorType;
-
 #define UNSIGNED 258
 #define SIGNED 259
 // #define SHORT 260

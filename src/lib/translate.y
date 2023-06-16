@@ -54,25 +54,36 @@ void print_symbol_table() {
 %token SEMI_COLON
 %token ASSIGN
 
-%start program_block
+%token NUMBER
+%token IDENTIFIER
+%token INVALID
+
+%left '+' '-'
+%left '*' '/'
 
 %%
 
-program_block: statements
+program:
+    program stmt                    {  }
+    |
     ;
 
-statements: statement SEMI_COLON
-    | statements statement SEMI_COLON
+stmt:
+    expr ';'                        {  }
+    | IDENTIFIER '=' expr ';'       {  }
+    | '{' program '}'               {  }
     ;
 
-statement: expression
+expr:
+    | expr '+' expr         {  }
+    | expr '-' expr         {  }
+    | expr '*' expr         {  }
+    | expr '/' expr         {  }
+    | '(' expr ')'          {  }
+    | NUMBER                {  }
+    | IDENTIFIER            {  }
     ;
 
-expression: assignment_expression
-    ;
-
-assignment_expression: IDENTIFIER ASSIGN expression
-    ;
 
 %%
 

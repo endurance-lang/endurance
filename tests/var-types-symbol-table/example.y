@@ -38,7 +38,7 @@ program:
 
 stmt:
     type IDENTIFIER                 
-                                    { symbolTableInsert(st, symbolNew(yylval.strValue, $1, 1)); }
+                                    { symbolTableInsert(st, symbolNew($2, $1, 1)); }
     ';'
 
     | IDENTIFIER '=' expr ';'       {  }
