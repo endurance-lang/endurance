@@ -128,11 +128,11 @@ stmt: conditional
     | func
     | var
     | commands
-    | expr
+    | expr SEMI_COLON
     | block
     ;
 
-block: BLOCK_OPEN stmts BLOCK_CLOSE SEMI_COLON {
+block: BLOCK_OPEN stmts BLOCK_CLOSE {
     printf("Block statement\n");
 }
 
@@ -142,13 +142,13 @@ conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt {
     | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {
     printf("If-else statement\n");
 }
-    | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE SEMI_COLON {
+    | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {
     printf("Switch statement\n");
 }
     ;
 
-caselist: caselist CASE term COLON stmt
-    | caselist DEFAULT COLON stmt
+caselist: caselist CASE term COLON stmts
+    | caselist DEFAULT COLON stmts
     |
     ;
 
@@ -166,7 +166,7 @@ repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
 var: type IDENTIFIER vector SEMI_COLON {
     printf("Variable declaration\n");
 }
-    | type MUL pointer {
+    | type MUL pointer SEMI_COLON {
     printf("Pointer declaration\n");
 }
     ;
@@ -175,10 +175,23 @@ pointer: IDENTIFIER vector
 	| MUL pointer
     ;
 
-func: type IDENTIFIER OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE SEMI_COLON {
+funcid: IDENTIFIER
+    | MAIN
+    | PRINTF
+    | SCANF
+    | SLICE
+    | SOME
+    | REDUCE
+    | FILTER
+    | MAP
+    | SORT
+    | FREE
+    ;
+
+func: type funcid OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {
     printf("Function definition\n");
 }
-    | IDENTIFIER OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
+    | type funcid OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
     printf("Function declaration\n");
 }
     ;
@@ -208,31 +221,37 @@ commands: RETURN optexpr SEMI_COLON {
     | CONTINUE SEMI_COLON {
     printf("Continue statement\n");
 }
-    | CONST type IDENTIFIER vector SEMI_COLON {
-    printf("Constant declaration\n");
+    | TYPEDEF type IDENTIFIER vector SEMI_COLON {
+    printf("Typedef declaration\n");
 }
     | INCLUDE STRING {
     printf("Include directive\n");
 }
-    | STRUCT IDENTIFIER varlist SEMI_COLON {
+    | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE SEMI_COLON {
     printf("Struct definition\n");
 }
-    | ENUM IDENTIFIER idlist SEMI_COLON {
+    | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE SEMI_COLON {
     printf("Enum definition\n");
 }
-    | UNION IDENTIFIER varlist SEMI_COLON {
+    | UNION IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE SEMI_COLON {
     printf("Union definition\n");
 }
-    | TYPEDEF type IDENTIFIER vector SEMI_COLON {
-    printf("Typedef declaration\n");
+    | GOTO IDENTIFIER COLON {
+    printf("Goto definition\n");
 }
-    | FREE IDENTIFIER SEMI_COLON {
-    printf("Free statement\n");
+    | IDENTIFIER COLON {
+    printf("Label definition\n");
+}
+    | SIZEOF OPEN_PAREN type CLOSE_PAREN SEMI_COLON {
+    printf("Sizeof definition\n");
+}
+    | SIZEOF OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMI_COLON {
+    printf("Sizeof definition\n");
 }
     ;
 
 varlist: varlist var
-    |
+    |                   {printf("empty varlist\n");}
     ;
 
 idlist: IDENTIFIER COMMA idlist
@@ -247,7 +266,7 @@ stmts: stmts stmt
     |
     ;
 
-expr: attr assign expr SEMI_COLON {
+expr: attr assign expr {
     printf("Assignment expression\n");
 }
     | expr op term {
@@ -262,7 +281,7 @@ expr: attr assign expr SEMI_COLON {
     | LOGICAL_NOT expr {
     printf("Logical NOT expression\n");
 }
-    | expr QUEST stmt COLON stmt SEMI_COLON {
+    | expr QUEST stmt COLON stmt {
     printf("Ternary conditional expression\n");
 }
     | term {
@@ -281,7 +300,6 @@ assign: ASSIGN
     | BITWISE_AND_ASSIGN
     | BITWISE_OR_ASSIGN
     | BITWISE_XOR_ASSIGN
-    | COMMA
     ;
 
 op: ADD
@@ -294,12 +312,6 @@ op: ADD
     | BITWISE_NOT
     | LEFT_SHIFT
     | RIGHT_SHIFT
-    | LT
-    | GT
-    | LE
-    | GE
-    | EQ
-    | NE
     | BITWISE_XOR
     ;
 
@@ -327,19 +339,22 @@ term: INTEGER {
     | boolean {
     printf("boolean term\n");
 }
-    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN {
-    printf("Function call term\n");
+    | funcid OPEN_PAREN opttermlist CLOSE_PAREN {
+    printf("Function call term 2\n");
+}
+    | attr {
+    printf("term -> attr\n");
 }
     ;
 
 attr: IDENTIFIER vector {
-    printf("Identifier term\n");
+    printf("Identifier attr 1\n");
 }
     | IDENTIFIER vector DOT attr {
-    printf("Nested identifier term\n");
+    printf("Nested identifier attr\n");
 }
     | IDENTIFIER vector POINTER attr {
-    printf("Dereferenced identifier term\n");
+    printf("Dereferenced identifier attr\n");
 }
     ;
 
@@ -362,6 +377,7 @@ type: modifier INT
     | modifier BOOL
     | STRUCT IDENTIFIER
     | ENUM IDENTIFIER
+    | IDENTIFIER
     ;
 
 modifier: UNSIGNED
@@ -376,10 +392,6 @@ modifier: UNSIGNED
 
 void executeProgram() {
     printf("Program execution started\n");
-}
-
-void yyerror(const char* message) {
-    printf("Syntax error: %s\n", message);
 }
 
 int main(void) {

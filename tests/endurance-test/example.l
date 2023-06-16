@@ -1,7 +1,12 @@
 %{
 #include <stdio.h>
-#include "translate.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
+#include "y.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
+
+int line = 1;
 %}
+
+/* This tells flex to read only one input file */
+%option noyywrap
 
 /* definicoes regulares */
 ws                          [ \t\n]
@@ -21,7 +26,7 @@ word                        {word1q}|{word2q}
 identifier                  [A-Za-z_][A-Za-z0-9_]*
 
 %%
-\/ahoy.*belay\/             { return COMMENTS; }
+\/ahoy.*belay\/             {  }
 
 windward                    { return UNSIGNED; }
 leeward                     { return SIGNED; }
@@ -113,7 +118,7 @@ plunderhaul                 { return SORT; }
 "^="                        { return BITWISE_XOR_ASSIGN; }
 ","                         { return COMMA; }
 
-{ws}                        ; /*Espaços em branco, tabulação e quebra de linha devem ser ignorados. */
+{ws}                        { line += (*yytext == '\n'); }
 {positive}                  { yylval.number = atoi(yytext); return INTEGER; }
 {negative}                  { yylval.number = atoi(yytext); return INTEGER; }
 {decimal_pos}               { yylval.decimal = atof(yytext); return DECIMAL; }
@@ -123,10 +128,6 @@ plunderhaul                 { return SORT; }
 .                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); }
 %%
 
-/*codigo em C. Foi criado o main, mas podem ser criadas outras funcoes aqui.*/
-int main(void)
-{
-    /* Call the lexer, then quit. */
-    yylex();
-    return 0;
+void yyerror(const char *s) {
+    printf("Erro na linha %d\n", line);
 }
