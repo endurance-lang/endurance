@@ -6,8 +6,7 @@
 Symbol *symbolNew(char *id, Enumtypes type, int size) {
     Symbol *new = (Symbol *) malloc(sizeof(Symbol));
     new->type = type;
-    new->id = (char *) malloc((strlen(id)+1) * sizeof(char));
-    strcpy(new->id, id);
+    new->id = strdup(id);
     switch (type) {
     case type_bool:
         new->address = (char *) malloc(size * sizeof(char));
