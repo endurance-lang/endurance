@@ -1,11 +1,3 @@
-charter chest list List;
-
-chest list ⚓️
-    jib value;
-    chest list *next;
-⚓️;;
-
-
 jib square(jib x) ⚓️
     land_ho x * x;
 ⚓️;
@@ -44,19 +36,10 @@ jib oggin() ⚓️
         s -= 0.01;
     ⚓️;
 
-    List *head;
-    squall(head) ⚓️
-        /ahoy belay/
-        parrot("item da lista");
-        head = head harpoon next;
-    ⚓️;
-
     parrot("valor de s = adivinha\n");
 
     weigh_anchor ⚓️
         parrot("do while\n");
     ⚓️; squall(a); 
-
-
     
 ⚓️;
