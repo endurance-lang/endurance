@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../../src/symbolTable.h"
+#include "print-source-code.h"
 
 extern int yylex();
 extern void yyerror(const char*);
+extern FILE* yyin; // Declarar a variável global de entrada do analisador léxico
 
 void onExit();
 void executeProgram();
@@ -470,6 +472,14 @@ void executeProgram() {
 }
 
 int main(void) {
+    char sourceCode[1000000];
+    size_t bytesRead = fread(sourceCode, sizeof(char), sizeof(sourceCode) - 1, stdin);
+    sourceCode[bytesRead] = '\0';
+
+    printSourceCodeWithLineNumbers(sourceCode);
+
+    yyin = fmemopen(sourceCode, bytesRead, "r");
+    
     prod = fopen("producoes.output", "w");
     st = symbolTableNew();
     symbolTableCreateBlock(st);

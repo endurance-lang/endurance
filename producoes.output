@@ -1,0 +1,238 @@
+stmts -> EPS
+modifier -> EPS
+type -> FLOAT
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+modifier -> EPS
+type -> INT
+funcid -> ID
+modifier -> EPS
+type -> INT
+vector -> EPS
+typelist -> type ID vector
+opttypelist -> typelist
+stmts -> EPS
+vector -> EPS
+attr -> ID vector
+term -> attr
+op -> *
+vector -> EPS
+attr -> ID vector
+term -> attr
+expr -> term
+expr -> expr op term
+optexpr -> expr
+commands -> RETURN optexpr ;
+stmt -> commands
+stmts -> stmts stmt
+block -> { stmts }
+func -> type funcid ( opttypelist ) { stmts }
+stmt -> func
+stmts -> stmts stmt
+modifier -> EPS
+type -> INT
+funcid -> MAIN
+opttypelist -> EPS
+stmts -> EPS
+modifier -> EPS
+type -> BOOL
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+vector -> EPS
+attr -> ID vector
+assign -> =
+boolean -> TRUE
+term -> boolean
+expr -> term
+expr -> attr assign expr
+stmt -> expr ;
+stmts -> stmts stmt
+vector -> EPS
+attr -> ID vector
+term -> attr
+expr -> term
+caselist -> EPS
+boolean -> TRUE
+term -> boolean
+stmts -> EPS
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+commands -> BREAK ;
+stmt -> commands
+stmts -> stmts stmt
+caselist -> caselist CASE term : stmts
+boolean -> FALSE
+term -> boolean
+stmts -> EPS
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+commands -> BREAK ;
+stmt -> commands
+stmts -> stmts stmt
+caselist -> caselist CASE term : stmts
+stmts -> EPS
+caselist -> caselist DEFAULT term : stmts
+conditional: SWITCH ( expr ) { caselist }
+stmt -> conditional
+stmts -> stmts stmt
+funcid -> ID
+term -> INTEGER
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+rel -> <
+term -> INTEGER
+expr -> term
+expr -> expr rel term
+stmts -> EPS
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+block -> { stmts }
+stmt -> block
+stmts -> EPS
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+block -> { stmts }
+stmt -> block
+conditional: IF ( expr ) stmt ELSE stmt
+stmt -> conditional
+stmts -> stmts stmt
+modifier -> EPS
+type -> DOUBLE
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+vector -> EPS
+attr -> ID vector
+assign -> =
+term -> DECIMAL
+op -> /
+term -> INTEGER
+op -> +
+term -> INTEGER
+op -> *
+term -> INTEGER
+op -> -
+term -> INTEGER
+expr -> term
+expr -> expr op term
+expr -> expr op term
+expr -> expr op term
+expr -> expr op term
+expr -> attr assign expr
+stmt -> expr ;
+stmts -> stmts stmt
+modifier -> EPS
+type -> INT
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+vector -> EPS
+attr -> ID vector
+assign -> =
+term -> INTEGER
+expr -> term
+expr -> attr assign expr
+optexpr -> expr
+vector -> EPS
+attr -> ID vector
+term -> attr
+rel -> <
+funcid -> ID
+vector -> EPS
+attr -> ID vector
+term -> attr
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+expr -> expr rel term
+optexpr -> expr
+vector -> EPS
+attr -> ID vector
+assign -> +=
+term -> INTEGER
+expr -> term
+expr -> attr assign expr
+optexpr -> expr
+stmts -> EPS
+vector -> EPS
+attr -> ID vector
+assign -> -=
+term -> DECIMAL
+expr -> term
+expr -> attr assign expr
+stmt -> expr ;
+stmts -> stmts stmt
+block -> { stmts }
+stmt -> block
+repetition -> FOR ( optexpr ; optexpr ; optexpr ) stmt
+stmt -> repetition
+stmts -> stmts stmt
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+stmts -> EPS
+funcid -> PRINTF
+term -> STRING
+termlist -> term
+opttermlist -> termlist
+term -> funcid ( opttermlist )
+expr -> term
+stmt -> expr ;
+stmts -> stmts stmt
+modifier -> EPS
+type -> FLOAT
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+block -> { stmts }
+stmt -> block
+vector -> EPS
+attr -> ID vector
+term -> attr
+expr -> term
+repetition -> DO stmt WHILE ( expr ) ;
+stmt -> repetition
+stmts -> stmts stmt
+block -> { stmts }
+func -> type funcid ( opttypelist ) { stmts }
+stmt -> func
+stmts -> stmts stmt
+program -> stmts

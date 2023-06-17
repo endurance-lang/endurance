@@ -138,7 +138,9 @@ extern int yydebug;
     DECIMAL = 344,
     STRING = 345,
     IDENTIFIER = 346,
-    COMMENTS = 347
+    COMMENTS = 347,
+    IFX = 348,
+    UNARY = 349
   };
 #endif
 
@@ -146,13 +148,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 114 "translate.y"
+#line 24 "translate.y"
 
     int number;
     double decimal;
     char* string;
+    Enumtypes typeValue;
 
-#line 156 "translate.tab.h"
+#line 159 "translate.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
