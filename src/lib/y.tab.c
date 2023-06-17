@@ -86,7 +86,7 @@ typedef struct {
 void executeProgram();
 
 
-#line 90 "translate.tab.c"
+#line 90 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -119,8 +119,8 @@ void executeProgram();
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_YY_TRANSLATE_TAB_H_INCLUDED
-# define YY_YY_TRANSLATE_TAB_H_INCLUDED
+#ifndef YY_YY_Y_TAB_H_INCLUDED
+# define YY_YY_Y_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -226,6 +226,97 @@ extern int yydebug;
     COMMENTS = 347
   };
 #endif
+/* Tokens.  */
+#define UNSIGNED 258
+#define SIGNED 259
+#define SHORT 260
+#define LONG 261
+#define INCLUDE 262
+#define MAIN 263
+#define BREAK 264
+#define CASE 265
+#define CONST 266
+#define CONTINUE 267
+#define DEFAULT 268
+#define IF 269
+#define ELSE 270
+#define ENUM 271
+#define RETURN 272
+#define STRUCT 273
+#define INT 274
+#define FLOAT 275
+#define DOUBLE 276
+#define BOOL 277
+#define TRUE 278
+#define FALSE 279
+#define CHAR 280
+#define DO 281
+#define PRINTF 282
+#define SCANF 283
+#define FOR 284
+#define GOTO 285
+#define SIZEOF 286
+#define SWITCH 287
+#define TYPEDEF 288
+#define UNION 289
+#define WHILE 290
+#define FREE 291
+#define POINTER 292
+#define SLICE 293
+#define SOME 294
+#define REDUCE 295
+#define FILTER 296
+#define MAP 297
+#define SORT 298
+#define CLOSE_BRACKET 299
+#define OPEN_BRACKET 300
+#define CLOSE_PAREN 301
+#define OPEN_PAREN 302
+#define BLOCK_CLOSE 303
+#define BLOCK_OPEN 304
+#define DOT 305
+#define INCREMENT 306
+#define DECREMENT 307
+#define ADD 308
+#define SUB 309
+#define MUL 310
+#define DIV 311
+#define BITWISE_AND 312
+#define BITWISE_OR 313
+#define BITWISE_NOT 314
+#define MOD 315
+#define LEFT_SHIFT 316
+#define RIGHT_SHIFT 317
+#define LT 318
+#define GT 319
+#define LE 320
+#define GE 321
+#define EQ 322
+#define NE 323
+#define BITWISE_XOR 324
+#define LOGICAL_AND 325
+#define LOGICAL_OR 326
+#define LOGICAL_NOT 327
+#define QUEST 328
+#define COLON 329
+#define SEMI_COLON 330
+#define ASSIGN 331
+#define ADD_ASSIGN 332
+#define SUB_ASSIGN 333
+#define MUL_ASSIGN 334
+#define DIV_ASSIGN 335
+#define MOD_ASSIGN 336
+#define LEFT_SHIFT_ASSIGN 337
+#define RIGHT_SHIFT_ASSIGN 338
+#define BITWISE_AND_ASSIGN 339
+#define BITWISE_OR_ASSIGN 340
+#define BITWISE_XOR_ASSIGN 341
+#define COMMA 342
+#define INTEGER 343
+#define DECIMAL 344
+#define STRING 345
+#define IDENTIFIER 346
+#define COMMENTS 347
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -237,7 +328,7 @@ union YYSTYPE
     double decimal;
     char* string;
 
-#line 241 "translate.tab.c"
+#line 332 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -250,7 +341,7 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_TRANSLATE_TAB_H_INCLUDED  */
+#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
 
 
 
@@ -1724,7 +1815,7 @@ yyreduce:
                {
     executeProgram();
 }
-#line 1728 "translate.tab.c"
+#line 1819 "y.tab.c"
     break;
 
   case 10:
@@ -1732,7 +1823,7 @@ yyreduce:
                                     {
     printf("Block statement\n");
 }
-#line 1736 "translate.tab.c"
+#line 1827 "y.tab.c"
     break;
 
   case 11:
@@ -1740,7 +1831,7 @@ yyreduce:
                                                  {
     printf("If statement\n");
 }
-#line 1744 "translate.tab.c"
+#line 1835 "y.tab.c"
     break;
 
   case 12:
@@ -1748,7 +1839,7 @@ yyreduce:
                                                     {
     printf("If-else statement\n");
 }
-#line 1752 "translate.tab.c"
+#line 1843 "y.tab.c"
     break;
 
   case 13:
@@ -1756,7 +1847,7 @@ yyreduce:
                                                                          {
     printf("Switch statement\n");
 }
-#line 1760 "translate.tab.c"
+#line 1851 "y.tab.c"
     break;
 
   case 17:
@@ -1764,7 +1855,7 @@ yyreduce:
                                                    {
     printf("While loop\n");
 }
-#line 1768 "translate.tab.c"
+#line 1859 "y.tab.c"
     break;
 
   case 18:
@@ -1772,7 +1863,7 @@ yyreduce:
                                                                                     {
     printf("For loop\n");
 }
-#line 1776 "translate.tab.c"
+#line 1867 "y.tab.c"
     break;
 
   case 19:
@@ -1780,7 +1871,7 @@ yyreduce:
                                                            {
     printf("Do-while loop\n");
 }
-#line 1784 "translate.tab.c"
+#line 1875 "y.tab.c"
     break;
 
   case 20:
@@ -1788,7 +1879,7 @@ yyreduce:
                                        {
     printf("Variable declaration\n");
 }
-#line 1792 "translate.tab.c"
+#line 1883 "y.tab.c"
     break;
 
   case 21:
@@ -1796,7 +1887,7 @@ yyreduce:
                                   {
     printf("Pointer declaration\n");
 }
-#line 1800 "translate.tab.c"
+#line 1891 "y.tab.c"
     break;
 
   case 35:
@@ -1804,7 +1895,7 @@ yyreduce:
                                                                                   {
     printf("Function definition\n");
 }
-#line 1808 "translate.tab.c"
+#line 1899 "y.tab.c"
     break;
 
   case 36:
@@ -1812,7 +1903,7 @@ yyreduce:
                                                                 {
     printf("Function declaration\n");
 }
-#line 1816 "translate.tab.c"
+#line 1907 "y.tab.c"
     break;
 
   case 45:
@@ -1820,7 +1911,7 @@ yyreduce:
                                     {
     printf("Return statement\n");
 }
-#line 1824 "translate.tab.c"
+#line 1915 "y.tab.c"
     break;
 
   case 46:
@@ -1828,7 +1919,7 @@ yyreduce:
                        {
     printf("Break statement\n");
 }
-#line 1832 "translate.tab.c"
+#line 1923 "y.tab.c"
     break;
 
   case 47:
@@ -1836,7 +1927,7 @@ yyreduce:
                           {
     printf("Continue statement\n");
 }
-#line 1840 "translate.tab.c"
+#line 1931 "y.tab.c"
     break;
 
   case 48:
@@ -1844,7 +1935,7 @@ yyreduce:
                                                 {
     printf("Typedef declaration\n");
 }
-#line 1848 "translate.tab.c"
+#line 1939 "y.tab.c"
     break;
 
   case 49:
@@ -1852,7 +1943,7 @@ yyreduce:
                      {
     printf("Include directive\n");
 }
-#line 1856 "translate.tab.c"
+#line 1947 "y.tab.c"
     break;
 
   case 50:
@@ -1860,7 +1951,7 @@ yyreduce:
                                                                   {
     printf("Struct definition\n");
 }
-#line 1864 "translate.tab.c"
+#line 1955 "y.tab.c"
     break;
 
   case 51:
@@ -1868,7 +1959,7 @@ yyreduce:
                                                                {
     printf("Enum definition\n");
 }
-#line 1872 "translate.tab.c"
+#line 1963 "y.tab.c"
     break;
 
   case 52:
@@ -1876,7 +1967,7 @@ yyreduce:
                                                                  {
     printf("Union definition\n");
 }
-#line 1880 "translate.tab.c"
+#line 1971 "y.tab.c"
     break;
 
   case 53:
@@ -1884,7 +1975,7 @@ yyreduce:
                             {
     printf("Goto definition\n");
 }
-#line 1888 "translate.tab.c"
+#line 1979 "y.tab.c"
     break;
 
   case 54:
@@ -1892,7 +1983,7 @@ yyreduce:
                        {
     printf("Label definition\n");
 }
-#line 1896 "translate.tab.c"
+#line 1987 "y.tab.c"
     break;
 
   case 55:
@@ -1900,7 +1991,7 @@ yyreduce:
                                                     {
     printf("Sizeof definition\n");
 }
-#line 1904 "translate.tab.c"
+#line 1995 "y.tab.c"
     break;
 
   case 56:
@@ -1908,13 +1999,13 @@ yyreduce:
                                                           {
     printf("Sizeof definition\n");
 }
-#line 1912 "translate.tab.c"
+#line 2003 "y.tab.c"
     break;
 
   case 58:
 #line 254 "translate.y"
                         {printf("empty varlist\n");}
-#line 1918 "translate.tab.c"
+#line 2009 "y.tab.c"
     break;
 
   case 65:
@@ -1922,7 +2013,7 @@ yyreduce:
                        {
     printf("Assignment expression\n");
 }
-#line 1926 "translate.tab.c"
+#line 2017 "y.tab.c"
     break;
 
   case 66:
@@ -1930,7 +2021,7 @@ yyreduce:
                    {
     printf("Binary operation expression\n");
 }
-#line 1934 "translate.tab.c"
+#line 2025 "y.tab.c"
     break;
 
   case 67:
@@ -1938,7 +2029,7 @@ yyreduce:
                     {
     printf("Relational operation expression\n");
 }
-#line 1942 "translate.tab.c"
+#line 2033 "y.tab.c"
     break;
 
   case 68:
@@ -1946,7 +2037,7 @@ yyreduce:
                      {
     printf("Conditional operation expression\n");
 }
-#line 1950 "translate.tab.c"
+#line 2041 "y.tab.c"
     break;
 
   case 69:
@@ -1954,7 +2045,7 @@ yyreduce:
                        {
     printf("Logical NOT expression\n");
 }
-#line 1958 "translate.tab.c"
+#line 2049 "y.tab.c"
     break;
 
   case 70:
@@ -1962,7 +2053,7 @@ yyreduce:
                                  {
     printf("Ternary conditional expression\n");
 }
-#line 1966 "translate.tab.c"
+#line 2057 "y.tab.c"
     break;
 
   case 71:
@@ -1970,7 +2061,7 @@ yyreduce:
            {
     printf("Term expression\n");
 }
-#line 1974 "translate.tab.c"
+#line 2065 "y.tab.c"
     break;
 
   case 102:
@@ -1978,7 +2069,7 @@ yyreduce:
               {
     printf("Integer term\n");
 }
-#line 1982 "translate.tab.c"
+#line 2073 "y.tab.c"
     break;
 
   case 103:
@@ -1986,7 +2077,7 @@ yyreduce:
               {
     printf("Decimal term\n");
 }
-#line 1990 "translate.tab.c"
+#line 2081 "y.tab.c"
     break;
 
   case 104:
@@ -1994,7 +2085,7 @@ yyreduce:
              {
     printf("String term\n");
 }
-#line 1998 "translate.tab.c"
+#line 2089 "y.tab.c"
     break;
 
   case 105:
@@ -2002,7 +2093,7 @@ yyreduce:
               {
     printf("boolean term\n");
 }
-#line 2006 "translate.tab.c"
+#line 2097 "y.tab.c"
     break;
 
   case 106:
@@ -2010,7 +2101,7 @@ yyreduce:
                                                 {
     printf("Function call term 2\n");
 }
-#line 2014 "translate.tab.c"
+#line 2105 "y.tab.c"
     break;
 
   case 107:
@@ -2018,7 +2109,7 @@ yyreduce:
            {
     printf("term -> attr\n");
 }
-#line 2022 "translate.tab.c"
+#line 2113 "y.tab.c"
     break;
 
   case 108:
@@ -2026,7 +2117,7 @@ yyreduce:
                         {
     printf("Identifier attr 1\n");
 }
-#line 2030 "translate.tab.c"
+#line 2121 "y.tab.c"
     break;
 
   case 109:
@@ -2034,7 +2125,7 @@ yyreduce:
                                  {
     printf("Nested identifier attr\n");
 }
-#line 2038 "translate.tab.c"
+#line 2129 "y.tab.c"
     break;
 
   case 110:
@@ -2042,7 +2133,7 @@ yyreduce:
                                      {
     printf("Dereferenced identifier attr\n");
 }
-#line 2046 "translate.tab.c"
+#line 2137 "y.tab.c"
     break;
 
   case 111:
@@ -2050,7 +2141,7 @@ yyreduce:
               {
     printf("True boolean term\n");
 }
-#line 2054 "translate.tab.c"
+#line 2145 "y.tab.c"
     break;
 
   case 112:
@@ -2058,11 +2149,11 @@ yyreduce:
             {
     printf("False boolean term\n");
 }
-#line 2062 "translate.tab.c"
+#line 2153 "y.tab.c"
     break;
 
 
-#line 2066 "translate.tab.c"
+#line 2157 "y.tab.c"
 
       default: break;
     }

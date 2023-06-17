@@ -1,5 +1,5 @@
 OBJFILES = $(patsubst %.c, %.o, src/lib/lex.l)
-TARGET   = lex-xd
+TARGET   = ../../build/lex-endurance
 
 all: build
 build: $(TARGET)
