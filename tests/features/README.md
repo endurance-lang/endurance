@@ -1,0 +1,9 @@
+- slice de array ⇒ gully
+- some ⇒ hoard (tesouro acumulado, para realizar operações em uma coleção)
+- reduce ⇒ booty (saqueando as coisas de um array)
+    - Permite reduzir uma coleção de valores a um único valor, aplicando uma operação acumulativa. Isso é útil para calcular somas, produtos, médias, entre outros.
+- filter ⇒ net (rede, para filtrar elementos de uma coleção)
+    - Permite filtrar os elementos de uma coleção com base em uma condição especificada, retornando uma nova coleção contendo apenas os elementos que atendem à condição. Isso é útil para filtrar dados indesejados ou selecionar elementos específicos de uma coleção.
+- map ⇒ chart
+    - Permite aplicar uma função a cada elemento de uma coleção, retornando uma nova coleção com os resultados transformados. Isso facilita a manipulação e a transformação
+- sort ⇒ plunderhaul (Essa sugestão combina os termos "plunder" (saquear) e "haul" (arrastar). Os piratas eram conhecidos por saquear tesouros e arrastar sua pilhagem para seus navios. O termo "plunderhaul" reflete a ação de coletar, arrastar e organizar os elementos de forma ordenada, assim como os piratas organizavam e avaliavam seu saque.)
