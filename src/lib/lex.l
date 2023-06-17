@@ -128,7 +128,3 @@ plunderhaul                 { return SORT; }
 {identifier}                { yylval.string = strdup(yytext); return IDENTIFIER; }
 .                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); }
 %%
-
-void yyerror(const char *s) {
-    printf("Erro na linha %d\n", line);
-}

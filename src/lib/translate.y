@@ -8,6 +8,7 @@
 extern int yylex();
 extern void yyerror(const char*);
 extern FILE* yyin; // Declarar a variável global de entrada do analisador léxico
+extern int line;
 
 void onExit();
 void executeProgram();
@@ -18,6 +19,7 @@ FILE *prod;
 void blockOpen();
 void blockClose();
 void addId(char *id, Enumtypes type);
+
 
 %}
 
@@ -469,6 +471,10 @@ void onExit() {
 
 void executeProgram() {
     printf("Programa sintaticamente correto\n");
+}
+
+void yyerror(const char *s) {
+    printf("Erro próximo a linha %d: %s\n", line, s);
 }
 
 int main(void) {

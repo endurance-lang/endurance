@@ -77,6 +77,7 @@
 extern int yylex();
 extern void yyerror(const char*);
 extern FILE* yyin; // Declarar a variável global de entrada do analisador léxico
+extern int line;
 
 void onExit();
 void executeProgram();
@@ -89,7 +90,8 @@ void blockClose();
 void addId(char *id, Enumtypes type);
 
 
-#line 93 "translate.tab.c"
+
+#line 95 "translate.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -236,14 +238,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "translate.y"
+#line 26 "translate.y"
 
     int number;
     double decimal;
     char* string;
     Enumtypes typeValue;
 
-#line 247 "translate.tab.c"
+#line 249 "translate.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -627,19 +629,19 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   149,   149,   155,   158,   161,   164,   167,   170,   173,
-     178,   178,   178,   182,   185,   188,   193,   194,   195,   198,
-     201,   204,   209,   209,   212,   217,   220,   225,   226,   227,
-     228,   229,   230,   231,   232,   233,   234,   235,   238,   242,
-     247,   250,   255,   258,   263,   264,   267,   268,   272,   275,
-     278,   281,   284,   287,   290,   293,   296,   299,   302,   307,
-     308,   311,   312,   315,   316,   319,   320,   323,   326,   329,
-     332,   335,   338,   341,   346,   347,   348,   349,   350,   351,
-     352,   353,   354,   355,   356,   359,   360,   361,   362,   363,
-     364,   365,   366,   367,   368,   369,   372,   373,   374,   375,
-     376,   377,   380,   381,   385,   388,   391,   394,   397,   400,
-     405,   408,   411,   417,   420,   425,   428,   433,   434,   435,
-     436,   437,   438,   439,   442,   443,   444,   445,   446,   447
+       0,   151,   151,   157,   160,   163,   166,   169,   172,   175,
+     180,   180,   180,   184,   187,   190,   195,   196,   197,   200,
+     203,   206,   211,   211,   214,   219,   222,   227,   228,   229,
+     230,   231,   232,   233,   234,   235,   236,   237,   240,   244,
+     249,   252,   257,   260,   265,   266,   269,   270,   274,   277,
+     280,   283,   286,   289,   292,   295,   298,   301,   304,   309,
+     310,   313,   314,   317,   318,   321,   322,   325,   328,   331,
+     334,   337,   340,   343,   348,   349,   350,   351,   352,   353,
+     354,   355,   356,   357,   358,   361,   362,   363,   364,   365,
+     366,   367,   368,   369,   370,   371,   374,   375,   376,   377,
+     378,   379,   382,   383,   387,   390,   393,   396,   399,   402,
+     407,   410,   413,   419,   422,   427,   430,   435,   436,   437,
+     438,   439,   440,   441,   444,   445,   446,   447,   448,   449
 };
 #endif
 
@@ -1679,889 +1681,889 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 149 "translate.y"
+#line 151 "translate.y"
                {
     fprintf(prod, "program -> stmts\n");
     executeProgram();
 }
-#line 1688 "translate.tab.c"
+#line 1690 "translate.tab.c"
     break;
 
   case 3:
-#line 155 "translate.y"
+#line 157 "translate.y"
                   {
         fprintf(prod, "stmt -> conditional\n");
 }
-#line 1696 "translate.tab.c"
+#line 1698 "translate.tab.c"
     break;
 
   case 4:
-#line 158 "translate.y"
+#line 160 "translate.y"
                  {
         fprintf(prod, "stmt -> repetition\n");
 }
-#line 1704 "translate.tab.c"
+#line 1706 "translate.tab.c"
     break;
 
   case 5:
-#line 161 "translate.y"
+#line 163 "translate.y"
            {
         fprintf(prod, "stmt -> func\n");
 }
-#line 1712 "translate.tab.c"
+#line 1714 "translate.tab.c"
     break;
 
   case 6:
-#line 164 "translate.y"
+#line 166 "translate.y"
           {
         fprintf(prod, "stmt -> var\n");
 }
-#line 1720 "translate.tab.c"
+#line 1722 "translate.tab.c"
     break;
 
   case 7:
-#line 167 "translate.y"
+#line 169 "translate.y"
                {
         fprintf(prod, "stmt -> commands\n");
 }
-#line 1728 "translate.tab.c"
+#line 1730 "translate.tab.c"
     break;
 
   case 8:
-#line 170 "translate.y"
+#line 172 "translate.y"
                       {
         fprintf(prod, "stmt -> expr ;\n");
 }
-#line 1736 "translate.tab.c"
+#line 1738 "translate.tab.c"
     break;
 
   case 9:
-#line 173 "translate.y"
+#line 175 "translate.y"
             {
         fprintf(prod, "stmt -> block\n");
     }
-#line 1744 "translate.tab.c"
+#line 1746 "translate.tab.c"
     break;
 
   case 10:
-#line 178 "translate.y"
+#line 180 "translate.y"
        {blockOpen();}
-#line 1750 "translate.tab.c"
+#line 1752 "translate.tab.c"
     break;
 
   case 11:
-#line 178 "translate.y"
+#line 180 "translate.y"
                                                    {blockClose();}
-#line 1756 "translate.tab.c"
+#line 1758 "translate.tab.c"
     break;
 
   case 12:
-#line 178 "translate.y"
+#line 180 "translate.y"
                                                                    {
         fprintf(prod, "block -> { stmts }\n");
 }
-#line 1764 "translate.tab.c"
+#line 1766 "translate.tab.c"
     break;
 
   case 13:
-#line 182 "translate.y"
+#line 184 "translate.y"
                                                            {
     fprintf(prod, "conditional: IF ( expr ) stmt\n");
 }
-#line 1772 "translate.tab.c"
+#line 1774 "translate.tab.c"
     break;
 
   case 14:
-#line 185 "translate.y"
+#line 187 "translate.y"
                                                     {
     fprintf(prod, "conditional: IF ( expr ) stmt ELSE stmt\n");
 }
-#line 1780 "translate.tab.c"
+#line 1782 "translate.tab.c"
     break;
 
   case 15:
-#line 188 "translate.y"
+#line 190 "translate.y"
                                                                          {
     fprintf(prod, "conditional: SWITCH ( expr ) { caselist }\n");
 }
-#line 1788 "translate.tab.c"
+#line 1790 "translate.tab.c"
     break;
 
   case 16:
-#line 193 "translate.y"
+#line 195 "translate.y"
                                             { fprintf(prod, "caselist -> caselist CASE term : stmts\n"); }
-#line 1794 "translate.tab.c"
+#line 1796 "translate.tab.c"
     break;
 
   case 17:
-#line 194 "translate.y"
+#line 196 "translate.y"
                                             { fprintf(prod, "caselist -> caselist DEFAULT term : stmts\n"); }
-#line 1800 "translate.tab.c"
+#line 1802 "translate.tab.c"
     break;
 
   case 18:
-#line 195 "translate.y"
+#line 197 "translate.y"
                                             { fprintf(prod, "caselist -> EPS\n"); }
-#line 1806 "translate.tab.c"
+#line 1808 "translate.tab.c"
     break;
 
   case 19:
-#line 198 "translate.y"
+#line 200 "translate.y"
                                                    {
     fprintf(prod, "repetition -> WHILE ( expr ) stmt\n");
 }
-#line 1814 "translate.tab.c"
+#line 1816 "translate.tab.c"
     break;
 
   case 20:
-#line 201 "translate.y"
+#line 203 "translate.y"
                                                                                     {
     fprintf(prod, "repetition -> FOR ( optexpr ; optexpr ; optexpr ) stmt\n");
 }
-#line 1822 "translate.tab.c"
+#line 1824 "translate.tab.c"
     break;
 
   case 21:
-#line 204 "translate.y"
+#line 206 "translate.y"
                                                            {
     fprintf(prod, "repetition -> DO stmt WHILE ( expr ) ;\n");
 }
-#line 1830 "translate.tab.c"
+#line 1832 "translate.tab.c"
     break;
 
   case 22:
-#line 209 "translate.y"
+#line 211 "translate.y"
                      {addId((yyvsp[0].string), (yyvsp[-1].typeValue));}
-#line 1836 "translate.tab.c"
+#line 1838 "translate.tab.c"
     break;
 
   case 23:
-#line 209 "translate.y"
+#line 211 "translate.y"
                                                          {
     fprintf(prod, "var -> type ID vector ;\n");
 }
-#line 1844 "translate.tab.c"
+#line 1846 "translate.tab.c"
     break;
 
   case 24:
-#line 212 "translate.y"
+#line 214 "translate.y"
                                   {
     fprintf(prod, "var -> type * pointer ;\n");
 }
-#line 1852 "translate.tab.c"
+#line 1854 "translate.tab.c"
     break;
 
   case 25:
-#line 217 "translate.y"
+#line 219 "translate.y"
                            {
         fprintf(prod, "pointer -> ID vector\n");
     }
-#line 1860 "translate.tab.c"
+#line 1862 "translate.tab.c"
     break;
 
   case 26:
-#line 220 "translate.y"
+#line 222 "translate.y"
                       {
         fprintf(prod, "pointer -> * pointer\n");
     }
-#line 1868 "translate.tab.c"
+#line 1870 "translate.tab.c"
     break;
 
   case 27:
-#line 225 "translate.y"
+#line 227 "translate.y"
                     { fprintf(prod, "funcid -> ID\n"); }
-#line 1874 "translate.tab.c"
+#line 1876 "translate.tab.c"
     break;
 
   case 28:
-#line 226 "translate.y"
+#line 228 "translate.y"
                     { fprintf(prod, "funcid -> MAIN\n"); }
-#line 1880 "translate.tab.c"
+#line 1882 "translate.tab.c"
     break;
 
   case 29:
-#line 227 "translate.y"
+#line 229 "translate.y"
                     { fprintf(prod, "funcid -> PRINTF\n"); }
-#line 1886 "translate.tab.c"
+#line 1888 "translate.tab.c"
     break;
 
   case 30:
-#line 228 "translate.y"
+#line 230 "translate.y"
                     { fprintf(prod, "funcid -> SCANF\n"); }
-#line 1892 "translate.tab.c"
+#line 1894 "translate.tab.c"
     break;
 
   case 31:
-#line 229 "translate.y"
+#line 231 "translate.y"
                     { fprintf(prod, "funcid -> SLICE\n"); }
-#line 1898 "translate.tab.c"
+#line 1900 "translate.tab.c"
     break;
 
   case 32:
-#line 230 "translate.y"
+#line 232 "translate.y"
                     { fprintf(prod, "funcid -> SOME\n"); }
-#line 1904 "translate.tab.c"
+#line 1906 "translate.tab.c"
     break;
 
   case 33:
-#line 231 "translate.y"
+#line 233 "translate.y"
                     { fprintf(prod, "funcid -> REDUCE\n"); }
-#line 1910 "translate.tab.c"
+#line 1912 "translate.tab.c"
     break;
 
   case 34:
-#line 232 "translate.y"
+#line 234 "translate.y"
                     { fprintf(prod, "funcid -> FILTER\n"); }
-#line 1916 "translate.tab.c"
+#line 1918 "translate.tab.c"
     break;
 
   case 35:
-#line 233 "translate.y"
+#line 235 "translate.y"
                     { fprintf(prod, "funcid -> MAP\n"); }
-#line 1922 "translate.tab.c"
+#line 1924 "translate.tab.c"
     break;
 
   case 36:
-#line 234 "translate.y"
+#line 236 "translate.y"
                     { fprintf(prod, "funcid -> SORT\n"); }
-#line 1928 "translate.tab.c"
+#line 1930 "translate.tab.c"
     break;
 
   case 37:
-#line 235 "translate.y"
+#line 237 "translate.y"
                     { fprintf(prod, "funcid -> FREE\n"); }
-#line 1934 "translate.tab.c"
+#line 1936 "translate.tab.c"
     break;
 
   case 38:
-#line 238 "translate.y"
+#line 240 "translate.y"
                                                            {
     fprintf(prod, "func -> type funcid ( opttypelist ) { stmts }\n");
     
 }
-#line 1943 "translate.tab.c"
+#line 1945 "translate.tab.c"
     break;
 
   case 39:
-#line 242 "translate.y"
+#line 244 "translate.y"
                                                                 {
     fprintf(prod, "func -> type funcid ( opttypelist ) ;\n");
 }
-#line 1951 "translate.tab.c"
+#line 1953 "translate.tab.c"
     break;
 
   case 40:
-#line 247 "translate.y"
+#line 249 "translate.y"
                                                 {
     fprintf(prod, "typelist -> typelist , type ID\n");
 }
-#line 1959 "translate.tab.c"
+#line 1961 "translate.tab.c"
     break;
 
   case 41:
-#line 250 "translate.y"
+#line 252 "translate.y"
                              {
         fprintf(prod, "typelist -> type ID vector\n");
     }
-#line 1967 "translate.tab.c"
+#line 1969 "translate.tab.c"
     break;
 
   case 42:
-#line 255 "translate.y"
+#line 257 "translate.y"
                               {
     fprintf(prod, "termlist -> termlist , term\n");
 }
-#line 1975 "translate.tab.c"
+#line 1977 "translate.tab.c"
     break;
 
   case 43:
-#line 258 "translate.y"
+#line 260 "translate.y"
            {
         fprintf(prod, "termlist -> term\n");
     }
-#line 1983 "translate.tab.c"
+#line 1985 "translate.tab.c"
     break;
 
   case 44:
-#line 263 "translate.y"
+#line 265 "translate.y"
                         { fprintf(prod, "opttypelist -> typelist\n"); }
-#line 1989 "translate.tab.c"
+#line 1991 "translate.tab.c"
     break;
 
   case 45:
-#line 264 "translate.y"
+#line 266 "translate.y"
                         { fprintf(prod, "opttypelist -> EPS\n"); }
-#line 1995 "translate.tab.c"
+#line 1997 "translate.tab.c"
     break;
 
   case 46:
-#line 267 "translate.y"
+#line 269 "translate.y"
                         { fprintf(prod, "opttermlist -> termlist\n"); }
-#line 2001 "translate.tab.c"
+#line 2003 "translate.tab.c"
     break;
 
   case 47:
-#line 268 "translate.y"
+#line 270 "translate.y"
                         { fprintf(prod, "opttermlist -> EPS"); }
-#line 2007 "translate.tab.c"
+#line 2009 "translate.tab.c"
     break;
 
   case 48:
-#line 272 "translate.y"
+#line 274 "translate.y"
                               {
     fprintf(prod, "commands -> RETURN optexpr ;\n");
 }
-#line 2015 "translate.tab.c"
+#line 2017 "translate.tab.c"
     break;
 
   case 49:
-#line 275 "translate.y"
+#line 277 "translate.y"
                        {
     fprintf(prod, "commands -> BREAK ;\n");
 }
-#line 2023 "translate.tab.c"
+#line 2025 "translate.tab.c"
     break;
 
   case 50:
-#line 278 "translate.y"
+#line 280 "translate.y"
                           {
     fprintf(prod, "commands -> continue ;\n");
 }
-#line 2031 "translate.tab.c"
+#line 2033 "translate.tab.c"
     break;
 
   case 51:
-#line 281 "translate.y"
+#line 283 "translate.y"
                                                 {
     fprintf(prod, "commands -> TYPEDEF type ID vector ;\n");
 }
-#line 2039 "translate.tab.c"
+#line 2041 "translate.tab.c"
     break;
 
   case 52:
-#line 284 "translate.y"
+#line 286 "translate.y"
                      {
     fprintf(prod, "commands -> INCLUDE STRING\n");
 }
-#line 2047 "translate.tab.c"
+#line 2049 "translate.tab.c"
     break;
 
   case 53:
-#line 287 "translate.y"
+#line 289 "translate.y"
                                                        {
     fprintf(prod, "commands -> STRUCT ID ( varlist )\n");
 }
-#line 2055 "translate.tab.c"
+#line 2057 "translate.tab.c"
     break;
 
   case 54:
-#line 290 "translate.y"
+#line 292 "translate.y"
                                                     {
     fprintf(prod, "commands -> ENUM ID ( idlist )\n");
 }
-#line 2063 "translate.tab.c"
+#line 2065 "translate.tab.c"
     break;
 
   case 55:
-#line 293 "translate.y"
+#line 295 "translate.y"
                                                       {
     fprintf(prod, "commands -> UNION ID ( varlist )\n");
 }
-#line 2071 "translate.tab.c"
+#line 2073 "translate.tab.c"
     break;
 
   case 56:
-#line 296 "translate.y"
+#line 298 "translate.y"
                             {
     fprintf(prod, "commands -> GOTO ID :\n");
 }
-#line 2079 "translate.tab.c"
+#line 2081 "translate.tab.c"
     break;
 
   case 57:
-#line 299 "translate.y"
+#line 301 "translate.y"
                        {
     fprintf(prod, "commands -> IDENTIFIER :\n");
 }
-#line 2087 "translate.tab.c"
+#line 2089 "translate.tab.c"
     break;
 
   case 58:
-#line 302 "translate.y"
+#line 304 "translate.y"
                                                     {
     fprintf(prod, "commands -> SIZEOF ( type ) ;\n");
 }
-#line 2095 "translate.tab.c"
+#line 2097 "translate.tab.c"
     break;
 
   case 59:
-#line 307 "translate.y"
+#line 309 "translate.y"
                                 { fprintf(prod, "varlist -> varlist var\n"); }
-#line 2101 "translate.tab.c"
+#line 2103 "translate.tab.c"
     break;
 
   case 60:
-#line 308 "translate.y"
+#line 310 "translate.y"
                                 { fprintf(prod, "varlist -> EPS\n"); }
-#line 2107 "translate.tab.c"
+#line 2109 "translate.tab.c"
     break;
 
   case 61:
-#line 311 "translate.y"
+#line 313 "translate.y"
                                 { fprintf(prod, "idlist -> ID , idlist\n"); }
-#line 2113 "translate.tab.c"
+#line 2115 "translate.tab.c"
     break;
 
   case 62:
-#line 312 "translate.y"
+#line 314 "translate.y"
                                 { fprintf(prod, "idlist -> ID\n"); }
-#line 2119 "translate.tab.c"
+#line 2121 "translate.tab.c"
     break;
 
   case 63:
-#line 315 "translate.y"
+#line 317 "translate.y"
                                     { fprintf(prod, "optexpr -> expr\n"); }
-#line 2125 "translate.tab.c"
+#line 2127 "translate.tab.c"
     break;
 
   case 64:
-#line 316 "translate.y"
+#line 318 "translate.y"
                                     { fprintf(prod, "optexpr -> EPS\n"); }
-#line 2131 "translate.tab.c"
+#line 2133 "translate.tab.c"
     break;
 
   case 65:
-#line 319 "translate.y"
+#line 321 "translate.y"
                                     { fprintf(prod, "stmts -> stmts stmt\n"); }
-#line 2137 "translate.tab.c"
+#line 2139 "translate.tab.c"
     break;
 
   case 66:
-#line 320 "translate.y"
+#line 322 "translate.y"
                                     { fprintf(prod, "stmts -> EPS\n"); }
-#line 2143 "translate.tab.c"
+#line 2145 "translate.tab.c"
     break;
 
   case 67:
-#line 323 "translate.y"
+#line 325 "translate.y"
                    { 
     fprintf(prod, "expr -> expr op term\n"); 
 }
-#line 2151 "translate.tab.c"
+#line 2153 "translate.tab.c"
     break;
 
   case 68:
-#line 326 "translate.y"
+#line 328 "translate.y"
                     { 
     fprintf(prod, "expr -> expr rel term\n"); 
 }
-#line 2159 "translate.tab.c"
+#line 2161 "translate.tab.c"
     break;
 
   case 69:
-#line 329 "translate.y"
+#line 331 "translate.y"
                      { 
     fprintf(prod, "expr -> expr cond term\n"); 
 }
-#line 2167 "translate.tab.c"
+#line 2169 "translate.tab.c"
     break;
 
   case 70:
-#line 332 "translate.y"
+#line 334 "translate.y"
                                    { 
     fprintf(prod, "expr -> ! expr\n"); 
 }
-#line 2175 "translate.tab.c"
+#line 2177 "translate.tab.c"
     break;
 
   case 71:
-#line 335 "translate.y"
+#line 337 "translate.y"
            { 
     fprintf(prod, "expr -> term\n"); 
 }
-#line 2183 "translate.tab.c"
+#line 2185 "translate.tab.c"
     break;
 
   case 72:
-#line 338 "translate.y"
+#line 340 "translate.y"
                                   { 
     fprintf(prod, "expr -> ( expr )\n"); 
 }
-#line 2191 "translate.tab.c"
+#line 2193 "translate.tab.c"
     break;
 
   case 73:
-#line 341 "translate.y"
+#line 343 "translate.y"
                        { 
     fprintf(prod, "expr -> attr assign expr\n"); 
 }
-#line 2199 "translate.tab.c"
+#line 2201 "translate.tab.c"
     break;
 
   case 74:
-#line 346 "translate.y"
+#line 348 "translate.y"
                                 { fprintf(prod, "assign -> =\n"); }
-#line 2205 "translate.tab.c"
+#line 2207 "translate.tab.c"
     break;
 
   case 75:
-#line 347 "translate.y"
+#line 349 "translate.y"
                                 { fprintf(prod, "assign -> +=\n"); }
-#line 2211 "translate.tab.c"
+#line 2213 "translate.tab.c"
     break;
 
   case 76:
-#line 348 "translate.y"
+#line 350 "translate.y"
                                 { fprintf(prod, "assign -> -=\n"); }
-#line 2217 "translate.tab.c"
+#line 2219 "translate.tab.c"
     break;
 
   case 77:
-#line 349 "translate.y"
+#line 351 "translate.y"
                                 { fprintf(prod, "assign -> *=\n"); }
-#line 2223 "translate.tab.c"
+#line 2225 "translate.tab.c"
     break;
 
   case 78:
-#line 350 "translate.y"
+#line 352 "translate.y"
                                 { fprintf(prod, "assign -> /=\n"); }
-#line 2229 "translate.tab.c"
+#line 2231 "translate.tab.c"
     break;
 
   case 79:
-#line 351 "translate.y"
+#line 353 "translate.y"
                                 { fprintf(prod, "assign -> %%=\n"); }
-#line 2235 "translate.tab.c"
+#line 2237 "translate.tab.c"
     break;
 
   case 80:
-#line 352 "translate.y"
+#line 354 "translate.y"
                                 { fprintf(prod, "assign -> <<=\n"); }
-#line 2241 "translate.tab.c"
+#line 2243 "translate.tab.c"
     break;
 
   case 81:
-#line 353 "translate.y"
+#line 355 "translate.y"
                                 { fprintf(prod, "assign -> >>=\n"); }
-#line 2247 "translate.tab.c"
+#line 2249 "translate.tab.c"
     break;
 
   case 82:
-#line 354 "translate.y"
+#line 356 "translate.y"
                                 { fprintf(prod, "assign -> &=\n"); }
-#line 2253 "translate.tab.c"
+#line 2255 "translate.tab.c"
     break;
 
   case 83:
-#line 355 "translate.y"
+#line 357 "translate.y"
                                 { fprintf(prod, "assign -> |=\n"); }
-#line 2259 "translate.tab.c"
+#line 2261 "translate.tab.c"
     break;
 
   case 84:
-#line 356 "translate.y"
+#line 358 "translate.y"
                                 { fprintf(prod, "assign -> ^=\n"); }
-#line 2265 "translate.tab.c"
+#line 2267 "translate.tab.c"
     break;
 
   case 85:
-#line 359 "translate.y"
+#line 361 "translate.y"
                                 { fprintf(prod, "op -> +\n"); }
-#line 2271 "translate.tab.c"
+#line 2273 "translate.tab.c"
     break;
 
   case 86:
-#line 360 "translate.y"
+#line 362 "translate.y"
                                 { fprintf(prod, "op -> -\n"); }
-#line 2277 "translate.tab.c"
+#line 2279 "translate.tab.c"
     break;
 
   case 87:
-#line 361 "translate.y"
+#line 363 "translate.y"
                                 { fprintf(prod, "op -> *\n"); }
-#line 2283 "translate.tab.c"
+#line 2285 "translate.tab.c"
     break;
 
   case 88:
-#line 362 "translate.y"
+#line 364 "translate.y"
                                 { fprintf(prod, "op -> /\n"); }
-#line 2289 "translate.tab.c"
+#line 2291 "translate.tab.c"
     break;
 
   case 89:
-#line 363 "translate.y"
+#line 365 "translate.y"
                                 { fprintf(prod, "op -> %%\n"); }
-#line 2295 "translate.tab.c"
+#line 2297 "translate.tab.c"
     break;
 
   case 90:
-#line 364 "translate.y"
+#line 366 "translate.y"
                                 { fprintf(prod, "op -> &\n"); }
-#line 2301 "translate.tab.c"
+#line 2303 "translate.tab.c"
     break;
 
   case 91:
-#line 365 "translate.y"
+#line 367 "translate.y"
                                 { fprintf(prod, "op -> |\n"); }
-#line 2307 "translate.tab.c"
+#line 2309 "translate.tab.c"
     break;
 
   case 92:
-#line 366 "translate.y"
+#line 368 "translate.y"
                                 { fprintf(prod, "op -> ~\n"); }
-#line 2313 "translate.tab.c"
+#line 2315 "translate.tab.c"
     break;
 
   case 93:
-#line 367 "translate.y"
+#line 369 "translate.y"
                                 { fprintf(prod, "op -> <<\n"); }
-#line 2319 "translate.tab.c"
+#line 2321 "translate.tab.c"
     break;
 
   case 94:
-#line 368 "translate.y"
+#line 370 "translate.y"
                                 { fprintf(prod, "op -> >>\n"); }
-#line 2325 "translate.tab.c"
+#line 2327 "translate.tab.c"
     break;
 
   case 95:
-#line 369 "translate.y"
+#line 371 "translate.y"
                                 { fprintf(prod, "op -> ^\n"); }
-#line 2331 "translate.tab.c"
+#line 2333 "translate.tab.c"
     break;
 
   case 96:
-#line 372 "translate.y"
+#line 374 "translate.y"
                                 { fprintf(prod, "rel -> ==\n"); }
-#line 2337 "translate.tab.c"
+#line 2339 "translate.tab.c"
     break;
 
   case 97:
-#line 373 "translate.y"
+#line 375 "translate.y"
                                 { fprintf(prod, "rel -> !=\n"); }
-#line 2343 "translate.tab.c"
+#line 2345 "translate.tab.c"
     break;
 
   case 98:
-#line 374 "translate.y"
+#line 376 "translate.y"
                                 { fprintf(prod, "rel -> <\n"); }
-#line 2349 "translate.tab.c"
+#line 2351 "translate.tab.c"
     break;
 
   case 99:
-#line 375 "translate.y"
+#line 377 "translate.y"
                                 { fprintf(prod, "rel -> <=\n"); }
-#line 2355 "translate.tab.c"
+#line 2357 "translate.tab.c"
     break;
 
   case 100:
-#line 376 "translate.y"
+#line 378 "translate.y"
                                 { fprintf(prod, "rel -> >\n"); }
-#line 2361 "translate.tab.c"
+#line 2363 "translate.tab.c"
     break;
 
   case 101:
-#line 377 "translate.y"
+#line 379 "translate.y"
                                 { fprintf(prod, "rel -> >=\n"); }
-#line 2367 "translate.tab.c"
+#line 2369 "translate.tab.c"
     break;
 
   case 102:
-#line 380 "translate.y"
+#line 382 "translate.y"
                                 { fprintf(prod, "cond -> &&\n"); }
-#line 2373 "translate.tab.c"
+#line 2375 "translate.tab.c"
     break;
 
   case 103:
-#line 381 "translate.y"
+#line 383 "translate.y"
                                 { fprintf(prod, "cond -> ||\n"); }
-#line 2379 "translate.tab.c"
+#line 2381 "translate.tab.c"
     break;
 
   case 104:
-#line 385 "translate.y"
+#line 387 "translate.y"
             {
     fprintf(prod, "term -> INTEGER\n");
 }
-#line 2387 "translate.tab.c"
+#line 2389 "translate.tab.c"
     break;
 
   case 105:
-#line 388 "translate.y"
+#line 390 "translate.y"
               {
     fprintf(prod, "term -> DECIMAL\n");
 }
-#line 2395 "translate.tab.c"
+#line 2397 "translate.tab.c"
     break;
 
   case 106:
-#line 391 "translate.y"
+#line 393 "translate.y"
              {
     fprintf(prod, "term -> STRING\n");
 }
-#line 2403 "translate.tab.c"
+#line 2405 "translate.tab.c"
     break;
 
   case 107:
-#line 394 "translate.y"
+#line 396 "translate.y"
               {
     fprintf(prod, "term -> boolean\n");
 }
-#line 2411 "translate.tab.c"
+#line 2413 "translate.tab.c"
     break;
 
   case 108:
-#line 397 "translate.y"
+#line 399 "translate.y"
                                                 {
     fprintf(prod, "term -> funcid ( opttermlist )\n");
 }
-#line 2419 "translate.tab.c"
+#line 2421 "translate.tab.c"
     break;
 
   case 109:
-#line 400 "translate.y"
+#line 402 "translate.y"
            {
     fprintf(prod, "term -> attr\n");
 }
-#line 2427 "translate.tab.c"
+#line 2429 "translate.tab.c"
     break;
 
   case 110:
-#line 405 "translate.y"
+#line 407 "translate.y"
                         {
     fprintf(prod, "attr -> ID vector\n");
 }
-#line 2435 "translate.tab.c"
+#line 2437 "translate.tab.c"
     break;
 
   case 111:
-#line 408 "translate.y"
+#line 410 "translate.y"
                                  {
     fprintf(prod, "attr -> ID vector . attr\n");
 }
-#line 2443 "translate.tab.c"
+#line 2445 "translate.tab.c"
     break;
 
   case 112:
-#line 411 "translate.y"
+#line 413 "translate.y"
                                      {
     fprintf(prod, "attr -> ID vector POINTER attr\n");
 }
-#line 2451 "translate.tab.c"
+#line 2453 "translate.tab.c"
     break;
 
   case 113:
-#line 417 "translate.y"
+#line 419 "translate.y"
          {
     fprintf(prod, "boolean -> TRUE\n");
 }
-#line 2459 "translate.tab.c"
+#line 2461 "translate.tab.c"
     break;
 
   case 114:
-#line 420 "translate.y"
+#line 422 "translate.y"
             {
     fprintf(prod, "boolean -> FALSE\n");
 }
-#line 2467 "translate.tab.c"
+#line 2469 "translate.tab.c"
     break;
 
   case 115:
-#line 425 "translate.y"
+#line 427 "translate.y"
                                                {
     fprintf(prod, "vector -> vector [ expr ]");
 }
-#line 2475 "translate.tab.c"
+#line 2477 "translate.tab.c"
     break;
 
   case 116:
-#line 428 "translate.y"
+#line 430 "translate.y"
                 {
         fprintf(prod, "vector -> EPS\n");
     }
-#line 2483 "translate.tab.c"
+#line 2485 "translate.tab.c"
     break;
 
   case 117:
-#line 433 "translate.y"
+#line 435 "translate.y"
                                 { fprintf(prod, "type -> INT\n"); (yyval.typeValue) = type_int; }
-#line 2489 "translate.tab.c"
+#line 2491 "translate.tab.c"
     break;
 
   case 118:
-#line 434 "translate.y"
+#line 436 "translate.y"
                                 { fprintf(prod, "type -> CHAR\n"); (yyval.typeValue) = type_char; }
-#line 2495 "translate.tab.c"
+#line 2497 "translate.tab.c"
     break;
 
   case 119:
-#line 435 "translate.y"
+#line 437 "translate.y"
                                 { fprintf(prod, "type -> FLOAT\n"); (yyval.typeValue) = type_float; }
-#line 2501 "translate.tab.c"
+#line 2503 "translate.tab.c"
     break;
 
   case 120:
-#line 436 "translate.y"
+#line 438 "translate.y"
                                 { fprintf(prod, "type -> DOUBLE\n"); (yyval.typeValue) = type_double; }
-#line 2507 "translate.tab.c"
+#line 2509 "translate.tab.c"
     break;
 
   case 121:
-#line 437 "translate.y"
+#line 439 "translate.y"
                                 { fprintf(prod, "type -> BOOL\n"); (yyval.typeValue) = type_bool; }
-#line 2513 "translate.tab.c"
+#line 2515 "translate.tab.c"
     break;
 
   case 122:
-#line 438 "translate.y"
+#line 440 "translate.y"
                                 { fprintf(prod, "type -> STRUCT ID\n"); (yyval.typeValue) = type_struct; }
-#line 2519 "translate.tab.c"
+#line 2521 "translate.tab.c"
     break;
 
   case 123:
-#line 439 "translate.y"
+#line 441 "translate.y"
                                 { fprintf(prod, "type -> ENUM ID\n"); (yyval.typeValue) = type_enum; }
-#line 2525 "translate.tab.c"
+#line 2527 "translate.tab.c"
     break;
 
   case 124:
-#line 442 "translate.y"
+#line 444 "translate.y"
                                 { fprintf(prod, "modifier -> UNSIGNED\n"); }
-#line 2531 "translate.tab.c"
+#line 2533 "translate.tab.c"
     break;
 
   case 125:
-#line 443 "translate.y"
+#line 445 "translate.y"
                                 { fprintf(prod, "modifier -> SIGNED\n"); }
-#line 2537 "translate.tab.c"
+#line 2539 "translate.tab.c"
     break;
 
   case 126:
-#line 444 "translate.y"
+#line 446 "translate.y"
                                 { fprintf(prod, "modifier -> SHORT\n"); }
-#line 2543 "translate.tab.c"
+#line 2545 "translate.tab.c"
     break;
 
   case 127:
-#line 445 "translate.y"
+#line 447 "translate.y"
                                 { fprintf(prod, "modifier -> LONG\n"); }
-#line 2549 "translate.tab.c"
+#line 2551 "translate.tab.c"
     break;
 
   case 128:
-#line 446 "translate.y"
+#line 448 "translate.y"
                                 { fprintf(prod, "modifier -> CONST\n"); }
-#line 2555 "translate.tab.c"
+#line 2557 "translate.tab.c"
     break;
 
   case 129:
-#line 447 "translate.y"
+#line 449 "translate.y"
                                 { fprintf(prod, "modifier -> EPS\n"); }
-#line 2561 "translate.tab.c"
+#line 2563 "translate.tab.c"
     break;
 
 
-#line 2565 "translate.tab.c"
+#line 2567 "translate.tab.c"
 
       default: break;
     }
@@ -2793,7 +2795,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 450 "translate.y"
+#line 452 "translate.y"
 
 
 void blockOpen() {
@@ -2816,6 +2818,10 @@ void onExit() {
 
 void executeProgram() {
     printf("Programa sintaticamente correto\n");
+}
+
+void yyerror(const char *s) {
+    printf("Erro próximo a linha %d: %s\n", line, s);
 }
 
 int main(void) {

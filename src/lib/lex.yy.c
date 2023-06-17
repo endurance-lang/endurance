@@ -2392,7 +2392,3 @@ void yyfree (void * ptr )
 
 #line 130 "lex.l"
 
-
-void yyerror(const char *s) {
-    printf("Erro na linha %d\n", line);
-}
