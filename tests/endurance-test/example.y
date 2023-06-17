@@ -146,7 +146,7 @@ stmt:
     |       { symbolTableCreateBlock(st); } 
       block
             { 
-                symbolTableShow(st);
+                symbolTableShow(st,stdout);
                 symbolTableDeleteBlock(st);
             }
     ;
@@ -218,7 +218,7 @@ func:
     type funcid 
     OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE 
                                 { 
-                                  symbolTableShow(st);
+                                  symbolTableShow(st,stdout);
                                   symbolTableDeleteBlock(st); 
                                 }
     | type funcid OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
@@ -460,7 +460,7 @@ int main(void) {
     st = symbolTableNew();
     symbolTableCreateBlock(st);
     yyparse();
-    symbolTableShow(st);
+    symbolTableShow(st,stdout);
     symbolTableDeleteBlock(st);
     onExit();
     return 0;
