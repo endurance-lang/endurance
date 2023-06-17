@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "../../src/symbolTable.h"
 #include "y.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
 
 int line = 1;

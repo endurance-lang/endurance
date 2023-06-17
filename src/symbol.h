@@ -9,7 +9,10 @@ enum types {
     type_char,
     type_double,
     type_bool,
-    type_float
+    type_float,
+    type_struct,
+    type_enum,
+    type_types
 };
 
 struct symbol {

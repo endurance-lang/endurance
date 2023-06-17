@@ -237,13 +237,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 114 "example.y"
+#line 18 "example.y"
 
     int number;
     double decimal;
     char* string;
+    Enumtypes typeValue;
 
-#line 247 "y.tab.h"
+#line 248 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

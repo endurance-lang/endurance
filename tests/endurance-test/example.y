@@ -7,17 +7,20 @@
 extern int yylex();
 extern void yyerror(const char*);
 
-#define YYSTYPE YYSTYPE
+void onExit();
 
-typedef struct {
-    int number;
-    double decimal;
-    char* string;
-} YYSTYPE;
+SymbolTable *st;
 
 void executeProgram();
 
 %}
+
+%union {
+    int number;
+    double decimal;
+    char* string;
+    Enumtypes typeValue;
+};
 
 %token UNSIGNED 
 %token SIGNED
@@ -107,20 +110,14 @@ void executeProgram();
 %token INTEGER
 %token DECIMAL
 %token STRING
-%token IDENTIFIER
+%token <string> IDENTIFIER
 %token COMMENTS
 
-%union {
-    int number;
-    double decimal;
-    char* string;
-    Enumtypes typeValue;
-}
 
 %left '+' '-'
 %left '*' '/'
 
-%type <typeValue> type
+%type <typeValue> type 
 
 %start program
 
@@ -139,32 +136,28 @@ stmt:
     | var
     | commands
     | expr SEMI_COLON
-    | block
+    |       { symbolTableCreateBlock(st); } 
+      block
+            { 
+                symbolTableShow(st);
+                symbolTableDeleteBlock(st);
+            }
     ;
 
 block: 
     BLOCK_OPEN stmts BLOCK_CLOSE {
-    $$ = $2;
     printf("Block statement\n");
 }
 
 conditional: 
     IF OPEN_PAREN expr CLOSE_PAREN stmt {
-    if ($3){
-        $5;
-    }
+    printf("If statement\n");
 }
     | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {
-    if ($3){
-        $5;
-    } else {
-        $7;
-    }
+    printf("If-else statement\n");
 }
     | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {
-    switch($3){
-        $6;
-    }
+    printf("switch statement\n");
 }
     ;
 
@@ -187,9 +180,9 @@ repetition:
     ;
 
 var: 
-    type IDENTIFIER vector SEMI_COLON {
-    printf("Variable declaration\n");
-}
+    type IDENTIFIER 
+                                        { symbolTableInsert(st, symbolNew($2, $1, 1)); }
+    vector SEMI_COLON 
     | type MUL pointer SEMI_COLON {
     printf("Pointer declaration\n");
 }
@@ -215,17 +208,25 @@ funcid:
     ;
 
 func: 
-    type funcid OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {
-    printf("Function definition\n");
-}
+                                { symbolTableCreateBlock(st); }
+    type funcid 
+    OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE 
+                                { 
+                                  symbolTableShow(st);
+                                  symbolTableDeleteBlock(st); 
+                                }
     | type funcid OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
     printf("Function declaration\n");
 }
     ;
 
 typelist: 
-    typelist COMMA type IDENTIFIER vector
-    | type IDENTIFIER vector
+    typelist COMMA type IDENTIFIER 
+                                    {symbolTableInsert(st, symbolNew($4, $3, 1));}
+    vector
+    | type IDENTIFIER 
+                                    {symbolTableInsert(st, symbolNew($2, $1, 1));}
+    vector
     ;
 
 termlist: 
@@ -253,7 +254,9 @@ commands:
     | CONTINUE SEMI_COLON {
     printf("Continue statement\n");
 }
-    | TYPEDEF type IDENTIFIER vector SEMI_COLON {
+    | TYPEDEF type IDENTIFIER 
+                                    {symbolTableInsert(st, symbolNew($3, type_types, 1));}
+    vector SEMI_COLON {
     printf("Typedef declaration\n");
 }
     | INCLUDE STRING {
@@ -323,7 +326,10 @@ expr:
 }                               
     | term {                    
     printf("Term expression\n");
-}                               
+}           
+    | OPEN_PAREN expr CLOSE_PAREN{
+        printf("Expression\n");
+    }                    
     ;
 
 assign: 
@@ -421,9 +427,8 @@ type:
     | modifier FLOAT            { $$ = type_float; }
     | modifier DOUBLE           { $$ = type_double; }
     | modifier BOOL             { $$ = type_bool; }
-    | STRUCT IDENTIFIER         {  }
-    | ENUM IDENTIFIER           {  }
-    | IDENTIFIER                {  }
+    | STRUCT IDENTIFIER         { $$ = type_struct; }
+    | ENUM IDENTIFIER           { $$ = type_enum; }
     ;
 
 modifier: 
@@ -437,11 +442,20 @@ modifier:
 
 %%
 
+void onExit() {
+    symbolTableDelete(st);
+}
+
 void executeProgram() {
     printf("Program execution started\n");
 }
 
 int main(void) {
+    st = symbolTableNew();
+    symbolTableCreateBlock(st);
     yyparse();
+    symbolTableShow(st);
+    symbolTableDeleteBlock(st);
+    onExit();
     return 0;
 }

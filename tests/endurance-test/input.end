@@ -2,7 +2,7 @@ charter chest list List;
 
 chest list ⚓️
     jib value;
-    List *next;
+    chest list *next;
 ⚓️;;
 
 

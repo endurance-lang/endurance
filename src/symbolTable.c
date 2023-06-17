@@ -100,7 +100,7 @@ void symbolTableInsert(SymbolTable *st, Symbol *sym) {
 }
 
 Symbol *symbolTableFind(SymbolTable *st, char *id){
-    if(!st->priv->head) return;
+    if(!st->priv->head) return NULL;
     List *aux = st->priv->head;
     while(aux != NULL) {
         Symbol *search = findSymbol(id, aux->headNode);
@@ -111,7 +111,7 @@ Symbol *symbolTableFind(SymbolTable *st, char *id){
 }
 
 Symbol *symbolTableFindInBlock(SymbolTable *st, char *id){
-    if(!st->priv->head) return;
+    if(!st->priv->head) return NULL;
     List *aux = st->priv->head;
     Symbol *search = findSymbol(id, aux->headNode);
     if(search) return search;
