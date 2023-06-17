@@ -1,12 +1,13 @@
 jib oggin() ⚓️
     /ahoy  belay/
 
-    boat davy_jones = 3.3333;
+    boat davy_jones;
+    davy_jones = 3.33;
 
     squall (davy_jones > 0) ⚓️
         parrot("bora");
 
-        davy_jones--;
+        davy_jones-=1;
     ⚓️;
 
     land_ho 0;

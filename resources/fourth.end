@@ -1,6 +1,7 @@
 /ahoy belay/
 addled trade_or_die(jib* gold, jib* GOLD) ⚓️
-    jib money = *gold;
+    jib money;
+    money = *gold;
     *gold = *GOLD;
     *GOLD = money;
     land_ho aye;

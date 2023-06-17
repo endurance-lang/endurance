@@ -1,6 +1,7 @@
 jib oggin() ⚓️
-    addled black_beard = aye;
-    sweet  (addled) ⚓️
+    addled black_beard;
+    black_beard = aye;
+    sweet  (black_beard) ⚓️
         trade aye:
             /ahoy  belay/
             anchor;

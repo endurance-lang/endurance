@@ -1,9 +1,8 @@
 jib oggin() ⚓️
-    /ahoy parrot("Caravel") belay/
+    /ahoy parrot("Caravel") belay/ 
 
-    'Galleon' 
-
-    sailor endurance = "a";
+    sailor endurance;
+    endurance = "a";
 
     spyglass(davy_jones != "b") ⚓️
         parrot("Blackbeard");

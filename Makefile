@@ -21,3 +21,9 @@ test-third:
 
 test-fourth:
 	./build/a.out < resources/fourth.end
+
+test-input:
+	./build/a.out < resources/input.end
+
+test-error:
+	./build/a.out < resources/error.end
