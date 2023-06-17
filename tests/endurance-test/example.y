@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../../src/symbolTable.h"
 
 extern int yylex();
 extern void yyerror(const char*);
@@ -109,21 +110,30 @@ void executeProgram();
 %token IDENTIFIER
 %token COMMENTS
 
-%start program
-
 %union {
     int number;
     double decimal;
     char* string;
+    Enumtypes typeValue;
 }
+
+%left '+' '-'
+%left '*' '/'
+
+%type <typeValue> type
+
+%start program
+
 
 %%
 
-program: stmts {
+program: 
+    stmts {
     executeProgram();
 }
 
-stmt: conditional
+stmt: 
+    conditional
     | repetition
     | func
     | var
@@ -132,27 +142,40 @@ stmt: conditional
     | block
     ;
 
-block: BLOCK_OPEN stmts BLOCK_CLOSE {
+block: 
+    BLOCK_OPEN stmts BLOCK_CLOSE {
+    $$ = $2;
     printf("Block statement\n");
 }
 
-conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt {
-    printf("If statement\n");
+conditional: 
+    IF OPEN_PAREN expr CLOSE_PAREN stmt {
+    if ($3){
+        $5;
+    }
 }
     | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {
-    printf("If-else statement\n");
+    if ($3){
+        $5;
+    } else {
+        $7;
+    }
 }
     | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {
-    printf("Switch statement\n");
+    switch($3){
+        $6;
+    }
 }
     ;
 
-caselist: caselist CASE term COLON stmts
+caselist: 
+    caselist CASE term COLON stmts
     | caselist DEFAULT COLON stmts
     |
     ;
 
-repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
+repetition: 
+    WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
     printf("While loop\n");
 }
     | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt {
@@ -163,7 +186,8 @@ repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
 }
     ;
 
-var: type IDENTIFIER vector SEMI_COLON {
+var: 
+    type IDENTIFIER vector SEMI_COLON {
     printf("Variable declaration\n");
 }
     | type MUL pointer SEMI_COLON {
@@ -171,11 +195,13 @@ var: type IDENTIFIER vector SEMI_COLON {
 }
     ;
 
-pointer: IDENTIFIER vector
+pointer: 
+    IDENTIFIER vector
 	| MUL pointer
     ;
 
-funcid: IDENTIFIER
+funcid: 
+    IDENTIFIER
     | MAIN
     | PRINTF
     | SCANF
@@ -188,7 +214,8 @@ funcid: IDENTIFIER
     | FREE
     ;
 
-func: type funcid OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {
+func: 
+    type funcid OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {
     printf("Function definition\n");
 }
     | type funcid OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
@@ -196,23 +223,28 @@ func: type funcid OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOS
 }
     ;
 
-typelist: typelist COMMA type IDENTIFIER vector
+typelist: 
+    typelist COMMA type IDENTIFIER vector
     | type IDENTIFIER vector
     ;
 
-termlist: termlist COMMA term
+termlist: 
+    termlist COMMA term
     | term
     ;
 
-opttypelist: typelist
+opttypelist: 
+    typelist
     |
     ;
 
-opttermlist: termlist
+opttermlist: 
+    termlist
     |
     ;
 
-commands: RETURN optexpr SEMI_COLON {
+commands: 
+    RETURN optexpr SEMI_COLON {
     printf("Return statement\n");
 }
     | BREAK SEMI_COLON {
@@ -250,46 +282,52 @@ commands: RETURN optexpr SEMI_COLON {
 }
     ;
 
-varlist: varlist var
+varlist: 
+    varlist var
     |                   {printf("empty varlist\n");}
     ;
 
-idlist: IDENTIFIER COMMA idlist
+idlist: 
+    IDENTIFIER COMMA idlist
     | IDENTIFIER
     ;
 
-optexpr: expr
+optexpr: 
+    expr                        {  }
+    |                           
+    ;                           
+
+stmts:                          
+    stmts stmt                  {  }
     |
     ;
 
-stmts: stmts stmt
-    |
-    ;
-
-expr: attr assign expr {
+expr: 
+    attr assign expr {
     printf("Assignment expression\n");
-}
-    | expr op term {
+}                               
+    | expr op term {            
     printf("Binary operation expression\n");
-}
+}                               
     | expr rel term {
     printf("Relational operation expression\n");
-}
+}                               
     | expr cond term {
     printf("Conditional operation expression\n");
-}
+}                               
     | LOGICAL_NOT expr {
     printf("Logical NOT expression\n");
-}
+}                               
     | expr QUEST stmt COLON stmt {
     printf("Ternary conditional expression\n");
-}
-    | term {
+}                               
+    | term {                    
     printf("Term expression\n");
-}
+}                               
     ;
 
-assign: ASSIGN
+assign: 
+    ASSIGN
     | ADD_ASSIGN
     | SUB_ASSIGN
     | MUL_ASSIGN
@@ -302,7 +340,8 @@ assign: ASSIGN
     | BITWISE_XOR_ASSIGN
     ;
 
-op: ADD
+op: 
+    ADD
     | SUB
     | MUL
     | DIV
@@ -315,7 +354,8 @@ op: ADD
     | BITWISE_XOR
     ;
 
-rel: EQ
+rel: 
+    EQ
     | NE
     | LT
     | LE
@@ -323,11 +363,13 @@ rel: EQ
     | GE
     ;
 
-cond: LOGICAL_AND
+cond: 
+    LOGICAL_AND
     | LOGICAL_OR
     ;
 
-term: INTEGER {
+term: 
+    INTEGER {
     printf("Integer term\n");
 }
     | DECIMAL {
@@ -347,7 +389,8 @@ term: INTEGER {
 }
     ;
 
-attr: IDENTIFIER vector {
+attr: 
+    IDENTIFIER vector {
     printf("Identifier attr 1\n");
 }
     | IDENTIFIER vector DOT attr {
@@ -358,7 +401,8 @@ attr: IDENTIFIER vector {
 }
     ;
 
-boolean: TRUE {
+boolean: 
+    TRUE {
     printf("True boolean term\n");
 }
     | FALSE {
@@ -366,21 +410,24 @@ boolean: TRUE {
 }
     ;
 
-vector: vector OPEN_BRACKET expr CLOSE_BRACKET
+vector: 
+    vector OPEN_BRACKET expr CLOSE_BRACKET
     |
     ;
 
-type: modifier INT
-    | modifier CHAR
-    | modifier FLOAT
-    | modifier DOUBLE
-    | modifier BOOL
-    | STRUCT IDENTIFIER
-    | ENUM IDENTIFIER
-    | IDENTIFIER
+type: 
+    modifier INT                { $$ = type_int; }
+    | modifier CHAR             { $$ = type_char; }
+    | modifier FLOAT            { $$ = type_float; }
+    | modifier DOUBLE           { $$ = type_double; }
+    | modifier BOOL             { $$ = type_bool; }
+    | STRUCT IDENTIFIER         {  }
+    | ENUM IDENTIFIER           {  }
+    | IDENTIFIER                {  }
     ;
 
-modifier: UNSIGNED
+modifier: 
+    UNSIGNED
     | SIGNED
     | SHORT
     | LONG
