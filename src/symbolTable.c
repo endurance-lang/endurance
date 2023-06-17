@@ -76,9 +76,11 @@ const char* getTypeString(Enumtypes type) {
             return "ENUM";
         case type_types:
             return "TYPES";
+        case type_func:
+            return "FUNCTION";
+            break;
         default:
             return "UNKNOWN";
-
     }
 }
 
@@ -169,5 +171,5 @@ void symbolTableShow(SymbolTable *st, FILE* f) {
         showSymbolList(list,f);
         list = list->prox;
     }
-    fprintf(f,"---\n");
+    fprintf(f,"\n---\n\n");
 }

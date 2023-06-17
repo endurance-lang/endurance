@@ -27,13 +27,20 @@ Symbol *symbolNew(char *id, Enumtypes type, int size) {
     case type_int:
         new->address = (int *) malloc(size * sizeof(int));
         break;
+
     case type_struct:
         new->address = (int *) malloc(size * sizeof(int));
         break;
+
     case type_enum:
         new->address = (int *) malloc(size * sizeof(int));
         break;
+    
     case type_types:
+        new->address = (int *) malloc(size * sizeof(int));
+        break;
+
+    case type_func:
         new->address = (int *) malloc(size * sizeof(int));
         break;
 

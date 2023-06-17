@@ -12,7 +12,8 @@ enum types {
     type_float,
     type_struct,
     type_enum,
-    type_types
+    type_types,
+    type_func
 };
 
 struct symbol {
