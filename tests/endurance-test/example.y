@@ -122,6 +122,13 @@ void executeProgram();
 %start program
 
 
+%nonassoc IFX
+%nonassoc ELSE
+
+%left ADD SUB 
+%left DIV MUL
+%nonassoc UNARY
+
 %%
 
 program: 
@@ -149,8 +156,7 @@ block:
     printf("Block statement\n");
 }
 
-conditional: 
-    IF OPEN_PAREN expr CLOSE_PAREN stmt {
+conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt %prec IFX {
     printf("If statement\n");
 }
     | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {
@@ -317,8 +323,8 @@ expr:
 }                               
     | expr cond term {
     printf("Conditional operation expression\n");
-}                               
-    | LOGICAL_NOT expr {
+}
+    | LOGICAL_NOT expr %prec UNARY {
     printf("Logical NOT expression\n");
 }                               
     | expr QUEST stmt COLON stmt {
