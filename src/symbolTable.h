@@ -1,6 +1,7 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
+#include <stdio.h>
 #include "symbol.h"
 
 typedef struct symboltable SymbolTable;
@@ -17,7 +18,6 @@ void symbolTableDeleteBlock(SymbolTable *st);
 void symbolTableInsert(SymbolTable *st, Symbol *sym);
 Symbol*  symbolTableFind(SymbolTable *st, char *id);
 void symbolTableDelete(SymbolTable *st);
-void symbolTableShow(SymbolTable *st);
-
+void symbolTableShow(SymbolTable *st,FILE* f);
 
 #endif

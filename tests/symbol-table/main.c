@@ -2,24 +2,31 @@
 #include "../../src/symbolTable.h"
 
 int main() {
-    Symbol *search;
-    SymbolTable *st = symbolTableNew();
+    FILE *output = stdout;
+
+    Symbol* search;
+    SymbolTable* st = symbolTableNew();
     symbolTableCreateBlock(st);
     symbolTableInsert(st, symbolNew("var", type_int, 1));
+    symbolTableInsert(st, symbolNew("teste", type_int, 2));
+    symbolTableInsert(st, symbolNew("test-2", type_int, 2));
+    symbolTableShow(st,output);
     search = symbolTableFind(st, "variavi");
-    printf("%lld - expected 0\n", search);
+    
     search = symbolTableFind(st, "var");
-    printf("%lld - expected number x\n", search);
+   
     symbolTableCreateBlock(st);
     symbolTableInsert(st, symbolNew("var", type_char, 1));
+    symbolTableShow(st,output);
     search = symbolTableFind(st, "var");
-    printf("%lld - expected number y\n", search);
+    
     symbolTableDeleteBlock(st);
+    symbolTableShow(st,output);
     search = symbolTableFind(st, "var");
-    printf("%lld - expected number x\n", search);
+   
     symbolTableDeleteBlock(st);
+    symbolTableShow(st,output);
     search = symbolTableFind(st, "var");
-    printf("%lld - expected 0\n", search);
 
     symbolTableDelete(st);
 

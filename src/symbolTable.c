@@ -57,17 +57,51 @@ void deleteSymbolList(SymbolNode *head){
     }
 }
 
-void showSymbolList(SymbolNode *head){
-    SymbolNode* aux = head;
-    while(aux != NULL){
-        printf("%s ", aux->sym->id);
-        // printf("",aux->sym->address);
-        // printf("",aux->sym->type);
-        aux = aux->prox;
+// Função auxiliar para retornar a string do tipo
+const char* getTypeString(Enumtypes type) {
+    switch (type) {
+        case type_int:
+            return "INT";
+        case type_float:
+            return "FLOAT";
+        case type_double:
+            return "DOUBLE";
+        case type_char:
+            return "CHAR";
+        case type_bool:
+            return "BOOL";
+        case type_struct:
+            return "STRUCT";
+        case type_enum:
+            return "ENUM";
+        case type_types:
+            return "TYPES";
+        default:
+            return "UNKNOWN";
+
     }
-    printf("\n");
 }
 
+
+SymbolNode* getSymbolTableHead(SymbolTable* st) {
+    return st->priv->head->headNode;
+}
+
+
+
+void showSymbolList(List* list,FILE* f) {
+    fprintf(f,"===========================================================\n");
+    fprintf(f,"| \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-19s\033[0m |\n", "ID", "Type", "Address");
+    fprintf(f,"===========================================================\n");
+
+    SymbolNode* aux = list->headNode;
+    while (aux != NULL) {
+        fprintf(f,"| \033[38;5;49m%-15s\033[0m | \033[38;5;208m%-15s\033[0m | \033[38;5;193m%-19p\033[0m |\n", aux->sym->id, getTypeString(aux->sym->type), aux->sym->address);
+        aux = aux->prox;
+    }
+
+    fprintf(f,"===========================================================\n");
+}
 
 /*
     Public
@@ -129,11 +163,11 @@ void symbolTableDelete(SymbolTable *st){
     free(st);
 }
 
-void symbolTableShow(SymbolTable *st){
-    List *aux = st->priv->head;
-    while(aux != NULL) {
-        showSymbolList(aux->headNode);
-        aux = aux->prox;
+void symbolTableShow(SymbolTable *st, FILE* f) {
+    List* list = st->priv->head;
+    while (list != NULL) {
+        showSymbolList(list,f);
+        list = list->prox;
     }
-    printf("--- \n");
+    fprintf(f,"---\n");
 }
