@@ -5,7 +5,19 @@ funcid -> MAIN
 opttypelist -> EPS
 stmts -> EPS
 modifier -> EPS
-type -> BOOL
+type -> INT
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+modifier -> EPS
+type -> INT
+vector -> EPS
+var -> type ID vector ;
+stmt -> var
+stmts -> stmts stmt
+modifier -> EPS
+type -> INT
 vector -> EPS
 var -> type ID vector ;
 stmt -> var
@@ -13,38 +25,8 @@ stmts -> stmts stmt
 vector -> EPS
 attr -> ID vector
 assign -> =
-boolean -> TRUE
-term -> boolean
-expr -> term
-expr -> attr assign expr
-stmt -> expr ;
-stmts -> stmts stmt
 vector -> EPS
 attr -> ID vector
 term -> attr
 expr -> term
-caselist -> EPS
-boolean -> TRUE
-term -> boolean
-stmts -> EPS
-commands -> BREAK ;
-stmt -> commands
-stmts -> stmts stmt
-caselist -> caselist CASE term : stmts
-boolean -> FALSE
-term -> boolean
-stmts -> EPS
-commands -> BREAK ;
-stmt -> commands
-stmts -> stmts stmt
-caselist -> caselist CASE term : stmts
-stmts -> EPS
-caselist -> caselist DEFAULT term : stmts
-conditional: SWITCH ( expr ) { caselist }
-stmt -> conditional
-stmts -> stmts stmt
-block -> { stmts }
-func -> type funcid ( opttypelist ) { stmts }
-stmt -> func
-stmts -> stmts stmt
-program -> stmts
+expr -> attr assign expr
