@@ -237,7 +237,6 @@ funcid: IDENTIFIER  { $$ = $1; fprintf(prod, "funcid -> ID\n"); }
 
 func: type funcid {addId($2, type_func); blockOpen();} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
     fprintf(prod, "func -> type funcid ( opttypelist ) { stmts }\n");
-    
 }
     ;
 
@@ -486,6 +485,18 @@ void onExit() {
 }
 
 void onStart() {
+    char sourceCode[1000000];
+    size_t bytesRead = fread(sourceCode, sizeof(char), sizeof(sourceCode) - 1, stdin);
+    sourceCode[bytesRead] = '\0';
+
+    printSourceCodeWithLineNumbers(sourceCode);
+
+    yyin = fmemopen(sourceCode, bytesRead, "r");
+    
+    prod = fopen("producoes.output", "w");
+    st = symbolTableNew();
+    symbolTableCreateBlock(st);
+
     symbolTableInsert(st, symbolNew("parrot", type_func, 1));
     symbolTableInsert(st, symbolNew("plunder", type_func, 1));
     symbolTableInsert(st, symbolNew("swab", type_func, 1));
@@ -506,10 +517,6 @@ void yyerror(const char *s) {
 }
 
 int main(void) {
-    prod = fopen("producoes.output", "w");
-    st = symbolTableNew();
-    symbolTableCreateBlock(st);
-
     onStart();
     yyparse();
     onExit();
