@@ -1,6 +1,6 @@
 %{
 #include <stdio.h>
-#include "../symbolTable.h"
+#include "../symbol-table/symbolTable.h"
 #include "translate.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
 
 int line = 1;

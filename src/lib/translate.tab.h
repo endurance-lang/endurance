@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_TRANSLATE_TAB_H_INCLUDED
 # define YY_YY_TRANSLATE_TAB_H_INCLUDED
@@ -44,104 +45,109 @@
 extern int yydebug;
 #endif
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    UNSIGNED = 258,
-    SIGNED = 259,
-    SHORT = 260,
-    LONG = 261,
-    INCLUDE = 262,
-    MAIN = 263,
-    BREAK = 264,
-    CASE = 265,
-    CONST = 266,
-    CONTINUE = 267,
-    DEFAULT = 268,
-    IF = 269,
-    ELSE = 270,
-    ENUM = 271,
-    RETURN = 272,
-    STRUCT = 273,
-    INT = 274,
-    FLOAT = 275,
-    DOUBLE = 276,
-    BOOL = 277,
-    TRUE = 278,
-    FALSE = 279,
-    CHAR = 280,
-    DO = 281,
-    PRINTF = 282,
-    SCANF = 283,
-    FOR = 284,
-    GOTO = 285,
-    SIZEOF = 286,
-    SWITCH = 287,
-    TYPEDEF = 288,
-    UNION = 289,
-    WHILE = 290,
-    FREE = 291,
-    POINTER = 292,
-    SLICE = 293,
-    SOME = 294,
-    REDUCE = 295,
-    FILTER = 296,
-    MAP = 297,
-    SORT = 298,
-    CLOSE_BRACKET = 299,
-    OPEN_BRACKET = 300,
-    CLOSE_PAREN = 301,
-    OPEN_PAREN = 302,
-    BLOCK_CLOSE = 303,
-    BLOCK_OPEN = 304,
-    DOT = 305,
-    INCREMENT = 306,
-    DECREMENT = 307,
-    ADD = 308,
-    SUB = 309,
-    MUL = 310,
-    DIV = 311,
-    BITWISE_AND = 312,
-    BITWISE_OR = 313,
-    BITWISE_NOT = 314,
-    MOD = 315,
-    LEFT_SHIFT = 316,
-    RIGHT_SHIFT = 317,
-    LT = 318,
-    GT = 319,
-    LE = 320,
-    GE = 321,
-    EQ = 322,
-    NE = 323,
-    BITWISE_XOR = 324,
-    LOGICAL_AND = 325,
-    LOGICAL_OR = 326,
-    LOGICAL_NOT = 327,
-    QUEST = 328,
-    COLON = 329,
-    SEMI_COLON = 330,
-    ASSIGN = 331,
-    ADD_ASSIGN = 332,
-    SUB_ASSIGN = 333,
-    MUL_ASSIGN = 334,
-    DIV_ASSIGN = 335,
-    MOD_ASSIGN = 336,
-    LEFT_SHIFT_ASSIGN = 337,
-    RIGHT_SHIFT_ASSIGN = 338,
-    BITWISE_AND_ASSIGN = 339,
-    BITWISE_OR_ASSIGN = 340,
-    BITWISE_XOR_ASSIGN = 341,
-    COMMA = 342,
-    INTEGER = 343,
-    DECIMAL = 344,
-    STRING = 345,
-    IDENTIFIER = 346,
-    COMMENTS = 347,
-    IFX = 348,
-    UNARY = 349
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    UNSIGNED = 258,                /* UNSIGNED  */
+    SIGNED = 259,                  /* SIGNED  */
+    SHORT = 260,                   /* SHORT  */
+    LONG = 261,                    /* LONG  */
+    INCLUDE = 262,                 /* INCLUDE  */
+    MAIN = 263,                    /* MAIN  */
+    BREAK = 264,                   /* BREAK  */
+    CASE = 265,                    /* CASE  */
+    CONST = 266,                   /* CONST  */
+    CONTINUE = 267,                /* CONTINUE  */
+    DEFAULT = 268,                 /* DEFAULT  */
+    IF = 269,                      /* IF  */
+    ELSE = 270,                    /* ELSE  */
+    ENUM = 271,                    /* ENUM  */
+    RETURN = 272,                  /* RETURN  */
+    STRUCT = 273,                  /* STRUCT  */
+    INT = 274,                     /* INT  */
+    FLOAT = 275,                   /* FLOAT  */
+    DOUBLE = 276,                  /* DOUBLE  */
+    BOOL = 277,                    /* BOOL  */
+    TRUE = 278,                    /* TRUE  */
+    FALSE = 279,                   /* FALSE  */
+    CHAR = 280,                    /* CHAR  */
+    DO = 281,                      /* DO  */
+    PRINTF = 282,                  /* PRINTF  */
+    SCANF = 283,                   /* SCANF  */
+    FOR = 284,                     /* FOR  */
+    GOTO = 285,                    /* GOTO  */
+    SIZEOF = 286,                  /* SIZEOF  */
+    SWITCH = 287,                  /* SWITCH  */
+    TYPEDEF = 288,                 /* TYPEDEF  */
+    UNION = 289,                   /* UNION  */
+    WHILE = 290,                   /* WHILE  */
+    FREE = 291,                    /* FREE  */
+    POINTER = 292,                 /* POINTER  */
+    SLICE = 293,                   /* SLICE  */
+    SOME = 294,                    /* SOME  */
+    REDUCE = 295,                  /* REDUCE  */
+    FILTER = 296,                  /* FILTER  */
+    MAP = 297,                     /* MAP  */
+    SORT = 298,                    /* SORT  */
+    CLOSE_BRACKET = 299,           /* CLOSE_BRACKET  */
+    OPEN_BRACKET = 300,            /* OPEN_BRACKET  */
+    CLOSE_PAREN = 301,             /* CLOSE_PAREN  */
+    OPEN_PAREN = 302,              /* OPEN_PAREN  */
+    BLOCK_CLOSE = 303,             /* BLOCK_CLOSE  */
+    BLOCK_OPEN = 304,              /* BLOCK_OPEN  */
+    DOT = 305,                     /* DOT  */
+    INCREMENT = 306,               /* INCREMENT  */
+    DECREMENT = 307,               /* DECREMENT  */
+    ADD = 308,                     /* ADD  */
+    SUB = 309,                     /* SUB  */
+    MUL = 310,                     /* MUL  */
+    DIV = 311,                     /* DIV  */
+    BITWISE_AND = 312,             /* BITWISE_AND  */
+    BITWISE_OR = 313,              /* BITWISE_OR  */
+    BITWISE_NOT = 314,             /* BITWISE_NOT  */
+    MOD = 315,                     /* MOD  */
+    LEFT_SHIFT = 316,              /* LEFT_SHIFT  */
+    RIGHT_SHIFT = 317,             /* RIGHT_SHIFT  */
+    LT = 318,                      /* LT  */
+    GT = 319,                      /* GT  */
+    LE = 320,                      /* LE  */
+    GE = 321,                      /* GE  */
+    EQ = 322,                      /* EQ  */
+    NE = 323,                      /* NE  */
+    BITWISE_XOR = 324,             /* BITWISE_XOR  */
+    LOGICAL_AND = 325,             /* LOGICAL_AND  */
+    LOGICAL_OR = 326,              /* LOGICAL_OR  */
+    LOGICAL_NOT = 327,             /* LOGICAL_NOT  */
+    QUEST = 328,                   /* QUEST  */
+    COLON = 329,                   /* COLON  */
+    SEMI_COLON = 330,              /* SEMI_COLON  */
+    ASSIGN = 331,                  /* ASSIGN  */
+    ADD_ASSIGN = 332,              /* ADD_ASSIGN  */
+    SUB_ASSIGN = 333,              /* SUB_ASSIGN  */
+    MUL_ASSIGN = 334,              /* MUL_ASSIGN  */
+    DIV_ASSIGN = 335,              /* DIV_ASSIGN  */
+    MOD_ASSIGN = 336,              /* MOD_ASSIGN  */
+    LEFT_SHIFT_ASSIGN = 337,       /* LEFT_SHIFT_ASSIGN  */
+    RIGHT_SHIFT_ASSIGN = 338,      /* RIGHT_SHIFT_ASSIGN  */
+    BITWISE_AND_ASSIGN = 339,      /* BITWISE_AND_ASSIGN  */
+    BITWISE_OR_ASSIGN = 340,       /* BITWISE_OR_ASSIGN  */
+    BITWISE_XOR_ASSIGN = 341,      /* BITWISE_XOR_ASSIGN  */
+    COMMA = 342,                   /* COMMA  */
+    INTEGER = 343,                 /* INTEGER  */
+    DECIMAL = 344,                 /* DECIMAL  */
+    STRING = 345,                  /* STRING  */
+    IDENTIFIER = 346,              /* IDENTIFIER  */
+    COMMENTS = 347,                /* COMMENTS  */
+    IFX = 348,                     /* IFX  */
+    UNARY = 349                    /* UNARY  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -155,7 +161,7 @@ union YYSTYPE
     char* string;
     Enumtypes typeValue;
 
-#line 159 "translate.tab.h"
+#line 165 "translate.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -166,6 +172,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_TRANSLATE_TAB_H_INCLUDED  */

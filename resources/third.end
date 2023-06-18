@@ -4,7 +4,7 @@ jib oggin() ⚓️
     sailor endurance;
     endurance = "a";
 
-    spyglass(davy_jones != "b") ⚓️
+    spyglass(endurance != "b") ⚓️
         parrot("Blackbeard");
     ⚓️; parley ⚓️
         parrot("Davy Jones");
