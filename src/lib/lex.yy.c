@@ -626,7 +626,7 @@ char *yytext;
 #line 1 "lex.l"
 #line 2 "lex.l"
 #include <stdio.h>
-#include "../symbolTable.h"
+#include "../symbol-table/symbolTable.h"
 #include "translate.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
 
 int line = 1;
