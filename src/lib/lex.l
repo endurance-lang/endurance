@@ -34,7 +34,7 @@ leeward                     { return SIGNED; }
 cutlass                     { return SHORT; }
 musket                      { return LONG; }
 inport                      { return INCLUDE; }
-oggin                       { return MAIN; }
+oggin                       { yylval.string = strdup(yytext); return MAIN; }
 anchor                      { return BREAK; }
 trade                       { return CASE; }
 rigging                     { return CONST; }
@@ -55,8 +55,8 @@ arr                         { return FALSE; }
 sailor                      { return CHAR; }
 
 weigh_anchor                { return DO; }
-parrot                      { return PRINTF; }
-plunder                     { return SCANF; }
+parrot                      { yylval.string = strdup(yytext); return PRINTF; }
+plunder                     { yylval.string = strdup(yytext); return SCANF; }
 voyage                      { return FOR; }
 compass                     { return GOTO; }
 rummage                     { return SIZEOF; }
@@ -64,15 +64,15 @@ sweet                       { return SWITCH; }
 charter                     { return TYPEDEF; }
 treasure                    { return UNION; }
 squall                      { return WHILE; }
-swab                        { return FREE; }
+swab                        { yylval.string = strdup(yytext); return FREE; }
 harpoon                     { return POINTER; }
 
-gully                       { return SLICE; }
-hoard                       { return SOME; }
-booty                       { return REDUCE; }
-net                         { return FILTER; }
-chart                       { return MAP; }
-plunderhaul                 { return SORT; }
+gully                       { yylval.string = strdup(yytext); return SLICE; }
+hoard                       { yylval.string = strdup(yytext); return SOME; }
+booty                       { yylval.string = strdup(yytext); return REDUCE; }
+net                         { yylval.string = strdup(yytext); return FILTER; }
+chart                       { yylval.string = strdup(yytext); return MAP; }
+plunderhaul                 { yylval.string = strdup(yytext); return SORT; }
 
 "]"                         { return CLOSE_BRACKET; }
 "["                         { return OPEN_BRACKET; }
@@ -126,5 +126,5 @@ plunderhaul                 { return SORT; }
 {decimal_neg}               { yylval.decimal = atof(yytext); return DECIMAL; }
 {word}                      { yylval.string = strdup(yytext); return STRING; }
 {identifier}                { yylval.string = strdup(yytext); return IDENTIFIER; }
-.                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); }
+.                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); return INVALID; }
 %%

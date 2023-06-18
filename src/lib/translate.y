@@ -11,6 +11,7 @@ extern FILE* yyin; // Declarar a variável global de entrada do analisador léxi
 extern int line;
 
 void onExit();
+void onStart();
 void executeProgram();
 
 SymbolTable *st;
@@ -19,7 +20,6 @@ FILE *prod;
 void blockOpen();
 void blockClose();
 void addId(char *id, Enumtypes type);
-
 
 %}
 
@@ -35,7 +35,7 @@ void addId(char *id, Enumtypes type);
 %token SHORT
 %token LONG
 %token INCLUDE
-%token MAIN
+%token <string> MAIN
 %token BREAK
 %token CASE
 %token CONST
@@ -54,8 +54,8 @@ void addId(char *id, Enumtypes type);
 %token FALSE
 %token CHAR
 %token DO
-%token PRINTF
-%token SCANF
+%token <string> PRINTF
+%token <string> SCANF
 %token FOR
 %token GOTO
 %token SIZEOF
@@ -63,14 +63,14 @@ void addId(char *id, Enumtypes type);
 %token TYPEDEF
 %token UNION
 %token WHILE
-%token FREE
+%token <string> FREE
 %token POINTER
-%token SLICE
-%token SOME
-%token REDUCE
-%token FILTER
-%token MAP
-%token SORT
+%token <string> SLICE
+%token <string> SOME
+%token <string> REDUCE
+%token <string> FILTER
+%token <string> MAP
+%token <string> SORT
 %token CLOSE_BRACKET
 %token OPEN_BRACKET
 %token CLOSE_PAREN
@@ -120,9 +120,11 @@ void addId(char *id, Enumtypes type);
 %token STRING
 %token <string> IDENTIFIER
 %token COMMENTS
+%token INVALID
 
 
 %type <typeValue> type 
+%type <string> pointer funcid
 
 %start program
 
@@ -172,13 +174,8 @@ stmt: conditional {
     | expr SEMI_COLON {
         fprintf(prod, "stmt -> expr ;\n");
 }
-    | block {
-        fprintf(prod, "stmt -> block\n");
-    }
-    ;
-
-block: {blockOpen();} BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
-        fprintf(prod, "block -> { stmts }\n");
+    | {blockOpen();} BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
+        fprintf(prod, "stmts -> { stmts }\n");
 }
 
 conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt %prec IFX {
@@ -211,45 +208,43 @@ repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
 var: type IDENTIFIER {addId($2, $1);} vector SEMI_COLON  {
     fprintf(prod, "var -> type ID vector ;\n");
 }
-    | type MUL pointer SEMI_COLON {
+    | type MUL pointer {addId($3, $1);} SEMI_COLON {
     fprintf(prod, "var -> type * pointer ;\n");
 }
     ;
 
 pointer: IDENTIFIER vector {
         fprintf(prod, "pointer -> ID vector\n");
+        $$ = $1;
     }
 	| MUL pointer {
         fprintf(prod, "pointer -> * pointer\n");
+        $$ = $2;
     }
     ;
 
-funcid: IDENTIFIER  { fprintf(prod, "funcid -> ID\n"); }
-    | MAIN          { fprintf(prod, "funcid -> MAIN\n"); }
-    | PRINTF        { fprintf(prod, "funcid -> PRINTF\n"); }
-    | SCANF         { fprintf(prod, "funcid -> SCANF\n"); }
-    | SLICE         { fprintf(prod, "funcid -> SLICE\n"); }
-    | SOME          { fprintf(prod, "funcid -> SOME\n"); }
-    | REDUCE        { fprintf(prod, "funcid -> REDUCE\n"); }
-    | FILTER        { fprintf(prod, "funcid -> FILTER\n"); }
-    | MAP           { fprintf(prod, "funcid -> MAP\n"); }
-    | SORT          { fprintf(prod, "funcid -> SORT\n"); }
-    | FREE          { fprintf(prod, "funcid -> FREE\n"); }
+funcid: IDENTIFIER  { $$ = $1; fprintf(prod, "funcid -> ID\n"); }
+    | MAIN          { $$ = $1; fprintf(prod, "funcid -> MAIN\n"); }
+    | PRINTF        { $$ = $1; fprintf(prod, "funcid -> PRINTF\n"); }
+    | SCANF         { $$ = $1; fprintf(prod, "funcid -> SCANF\n"); }
+    | SLICE         { $$ = $1; fprintf(prod, "funcid -> SLICE\n"); }
+    | SOME          { $$ = $1; fprintf(prod, "funcid -> SOME\n"); }
+    | REDUCE        { $$ = $1; fprintf(prod, "funcid -> REDUCE\n"); }
+    | FILTER        { $$ = $1; fprintf(prod, "funcid -> FILTER\n"); }
+    | MAP           { $$ = $1; fprintf(prod, "funcid -> MAP\n"); }
+    | SORT          { $$ = $1; fprintf(prod, "funcid -> SORT\n"); }
+    | FREE          { $$ = $1; fprintf(prod, "funcid -> FREE\n"); }
     ;
 
-func: type funcid OPEN_PAREN opttypelist CLOSE_PAREN block {
+func: type funcid {addId($2, type_func); blockOpen();} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
     fprintf(prod, "func -> type funcid ( opttypelist ) { stmts }\n");
-    
-}
-    | type funcid OPEN_PAREN opttypelist CLOSE_PAREN SEMI_COLON {
-    fprintf(prod, "func -> type funcid ( opttypelist ) ;\n");
 }
     ;
 
-typelist: typelist COMMA type IDENTIFIER vector {
+typelist: typelist COMMA type IDENTIFIER {addId($4, $3);} vector {
     fprintf(prod, "typelist -> typelist , type ID\n");
 }
-    | type IDENTIFIER vector {
+    | type IDENTIFIER {addId($2, $1);} vector {
         fprintf(prod, "typelist -> type ID vector\n");
     }
     ;
@@ -398,6 +393,13 @@ term:
 }
     | funcid OPEN_PAREN opttermlist CLOSE_PAREN {
     fprintf(prod, "term -> funcid ( opttermlist )\n");
+    if(!symbolTableFind(st, $1)) {
+        char msg[100];
+        sprintf(msg, "Funcao nao declarada \"%s\"", $1);
+        yyerror(msg);
+        onExit();
+        exit(0);
+    }
 }
     | attr {
     fprintf(prod, "term -> attr\n");
@@ -406,6 +408,13 @@ term:
 
 attr: IDENTIFIER vector {
     fprintf(prod, "attr -> ID vector\n");
+    if(!symbolTableFind(st, $1)) {
+        char msg[100];
+        sprintf(msg, "Identificador nao declarado \"%s\"", $1);
+        yyerror(msg);
+        onExit();
+        exit(0);
+    }
 }
     | IDENTIFIER vector DOT attr {
     fprintf(prod, "attr -> ID vector . attr\n");
@@ -461,6 +470,13 @@ void blockClose() {
 }
 
 void addId(char *id, Enumtypes type) {
+    if(symbolTableFindInBlock(st, id)) {
+        char msg[100];
+        sprintf(msg, "Redeclaração do identificador \"%s\"", id);
+        yyerror(msg);
+        onExit();
+        exit(0);
+    }
     symbolTableInsert(st, symbolNew(id, type, 1));
 }
 
@@ -469,15 +485,7 @@ void onExit() {
     symbolTableDelete(st);
 }
 
-void executeProgram() {
-    printf("Programa sintaticamente correto\n");
-}
-
-void yyerror(const char *s) {
-    printf("Erro próximo a linha %d: %s\n", line, s);
-}
-
-int main(void) {
+void onStart() {
     char sourceCode[1000000];
     size_t bytesRead = fread(sourceCode, sizeof(char), sizeof(sourceCode) - 1, stdin);
     sourceCode[bytesRead] = '\0';
@@ -486,9 +494,32 @@ int main(void) {
 
     yyin = fmemopen(sourceCode, bytesRead, "r");
     
-    prod = fopen("producoes.output", "w");
+    prod = fopen("./build/producoes.output", "w");
     st = symbolTableNew();
     symbolTableCreateBlock(st);
+
+    symbolTableInsert(st, symbolNew("parrot", type_func, 1));
+    // symbolTableInsert(st, symbolNew("plunder", type_func, 1));
+    // symbolTableInsert(st, symbolNew("swab", type_func, 1));
+    // symbolTableInsert(st, symbolNew("gully", type_func, 1));
+    // symbolTableInsert(st, symbolNew("hoard", type_func, 1));
+    // symbolTableInsert(st, symbolNew("booty", type_func, 1));
+    // symbolTableInsert(st, symbolNew("net", type_func, 1));
+    // symbolTableInsert(st, symbolNew("chart", type_func, 1));
+    // symbolTableInsert(st, symbolNew("plunderhaul", type_func, 1));
+}
+
+void executeProgram() {
+    symbolTableShow(st, stdout);
+    printf("Programa sintaticamente correto\n");
+}
+
+void yyerror(const char *s) {
+    printf("Erro proximo a linha %d. %s\n", line, s);
+}
+
+int main(void) {
+    onStart();
     yyparse();
     onExit();
     return 0;

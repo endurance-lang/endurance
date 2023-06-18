@@ -942,7 +942,7 @@ YY_RULE_SETUP
 case 7:
 YY_RULE_SETUP
 #line 37 "lex.l"
-{ return MAIN; }
+{ yylval.string = strdup(yytext); return MAIN; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
@@ -1037,12 +1037,12 @@ YY_RULE_SETUP
 case 26:
 YY_RULE_SETUP
 #line 58 "lex.l"
-{ return PRINTF; }
+{ yylval.string = strdup(yytext); return PRINTF; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 59 "lex.l"
-{ return SCANF; }
+{ yylval.string = strdup(yytext); return SCANF; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
@@ -1082,7 +1082,7 @@ YY_RULE_SETUP
 case 35:
 YY_RULE_SETUP
 #line 67 "lex.l"
-{ return FREE; }
+{ yylval.string = strdup(yytext); return FREE; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
@@ -1092,32 +1092,32 @@ YY_RULE_SETUP
 case 37:
 YY_RULE_SETUP
 #line 70 "lex.l"
-{ return SLICE; }
+{ yylval.string = strdup(yytext); return SLICE; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 71 "lex.l"
-{ return SOME; }
+{ yylval.string = strdup(yytext); return SOME; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 72 "lex.l"
-{ return REDUCE; }
+{ yylval.string = strdup(yytext); return REDUCE; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 73 "lex.l"
-{ return FILTER; }
+{ yylval.string = strdup(yytext); return FILTER; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 74 "lex.l"
-{ return MAP; }
+{ yylval.string = strdup(yytext); return MAP; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 75 "lex.l"
-{ return SORT; }
+{ yylval.string = strdup(yytext); return SORT; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
@@ -1378,7 +1378,7 @@ YY_RULE_SETUP
 case 94:
 YY_RULE_SETUP
 #line 129 "lex.l"
-{ printf("Token não reconhecido. LEXEMA: %s\n", yytext); }
+{ printf("Token não reconhecido. LEXEMA: %s\n", yytext); return INVALID; }
 	YY_BREAK
 case 95:
 YY_RULE_SETUP

@@ -1,0 +1,13 @@
+/ahoy início do bloco 1 belay/
+jib a;
+boat x;
+⚓️ /ahoy início do bloco 2 belay/
+    sailor a;
+    ⚓️ /ahoy início do bloco 3 belay/
+        boat z;
+        sailor y;
+        jib x;
+    ⚓️; /ahoy fim do bloco 3 belay/
+⚓️; /ahoy fim do bloco 2 belay/
+/ahoy fim do bloco 1 belay/
+

@@ -19,11 +19,11 @@ test-second:
 test-third:
 	./build/a.out < resources/third.end
 
-test-fourth:
-	./build/a.out < resources/fourth.end
-
 test-input:
 	./build/a.out < resources/input.end
 
 test-error:
 	./build/a.out < resources/error.end
+
+run:
+	./build/a.out < $(FILE)
