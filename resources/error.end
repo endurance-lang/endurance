@@ -6,6 +6,7 @@ jib oggin() ⚓️
     jib num_2;
     jib sum;
 
+    {}
     sum = num_1 ++ num_2;
     
     land_ho sum;
