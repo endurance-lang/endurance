@@ -6,21 +6,17 @@ typedef enum types Enumtypes;
 
 // Enumeration for different types
 enum types {
-    type_int,     // Integer type
-    type_char,    // Character type
-    type_double,  // Double type
-    type_bool,    // Boolean type
-    type_float,   // Float type
-    type_struct,  // Struct type
-    type_enum,    // Enum type
-    type_types,   // Types type
-    type_func     // Function type
+    SymbolTypeVariable,
+    SymbolTypeFunction,
+    SymbolTypeType
 };
 
 struct symbol {
     char *id;       // Identifier
-    Enumtypes type; // Type
-    void *address;  // Address
+    Enumtypes symbolType; // Type
+    char *type;
+    int size;
+    int address;  // Address
 };
 
 /**
@@ -32,7 +28,7 @@ struct symbol {
  *
  * @return Pointer to the created symbol
  */
-Symbol *symbolNew(char *id, Enumtypes type, int size);
+Symbol *symbolNew(char *id, Enumtypes symbolType, char *type, int size);
 
 /**
  * Delete a symbol and free its memory.

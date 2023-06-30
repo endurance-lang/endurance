@@ -4,6 +4,9 @@
 #include <string.h>
 #include "../symbol-table/symbolTable.h"
 #include "../utils/print-source-code.h"
+#include "../risc-v/riscV-context.h"
+#include <stdarg.h>
+#include <assert.h>
 
 extern int yylex();
 extern void yyerror(const char*);
@@ -15,122 +18,48 @@ void onStart();
 void executeProgram();
 
 SymbolTable *st;
-FILE *prod;
+FILE *prod, *gen;
+
+FILE *friscv;
+RiscVContext *riscv;
 
 void blockOpen();
 void blockClose();
-void addId(char *id, Enumtypes type);
+
+// void handleStruct();
+void handleVar(char *type, char *id, int size);
+void handleAttr(char *id);
+void handleOperation(int opcode, ...);
+void reportAndExit(const char *s, ...);
 
 %}
 
 %union {
-    int number;
+    char *string;
+    int integer;
     double decimal;
-    char* string;
-    Enumtypes typeValue;
-};
+    int boolean;
+}
 
-%token UNSIGNED 
-%token SIGNED
-%token SHORT
-%token LONG
-%token INCLUDE
-%token <string> MAIN
-%token BREAK
-%token CASE
-%token CONST
-%token CONTINUE
-%token DEFAULT
-%token IF
-%token ELSE
-%token ENUM
-%token RETURN
-%token STRUCT
-%token INT
-%token FLOAT
-%token DOUBLE
-%token BOOL
-%token TRUE
-%token FALSE
-%token CHAR
-%token DO
-%token <string> PRINTF
-%token <string> SCANF
-%token FOR
-%token GOTO
-%token SIZEOF
-%token SWITCH
-%token TYPEDEF
-%token UNION
-%token WHILE
-%token <string> FREE
-%token POINTER
-%token <string> SLICE
-%token <string> SOME
-%token <string> REDUCE
-%token <string> FILTER
-%token <string> MAP
-%token <string> SORT
-%token CLOSE_BRACKET
-%token OPEN_BRACKET
-%token CLOSE_PAREN
-%token OPEN_PAREN
-%token BLOCK_CLOSE
-%token BLOCK_OPEN
-%token DOT
-%token INCREMENT
-%token DECREMENT
-%token ADD
-%token SUB
-%token MUL
-%token DIV
-%token BITWISE_AND
-%token BITWISE_OR
-%token BITWISE_NOT
-%token MOD
-%token LEFT_SHIFT
-%token RIGHT_SHIFT
-%token LT
-%token GT
-%token LE
-%token GE
-%token EQ
-%token NE
-%token BITWISE_XOR
-%token LOGICAL_AND
-%token LOGICAL_OR
-%token LOGICAL_NOT
-%token QUEST
-%token COLON
-%token SEMI_COLON
-%token ASSIGN
-%token ADD_ASSIGN
-%token SUB_ASSIGN
-%token MUL_ASSIGN
-%token DIV_ASSIGN
-%token MOD_ASSIGN
-%token LEFT_SHIFT_ASSIGN
-%token RIGHT_SHIFT_ASSIGN
-%token BITWISE_AND_ASSIGN
-%token BITWISE_OR_ASSIGN
-%token BITWISE_XOR_ASSIGN
-%token COMMA
-%token INTEGER
-%token DECIMAL
-%token STRING
+%token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
+
+%token DECIMAL STRING DOT
+
 %token <string> IDENTIFIER
-%token COMMENTS
-%token INVALID
+%token <integer> INTEGER
+%token <boolean> TRUE FALSE
 
+%type <integer> constvector exprvector expr const term
+%type <boolean> boolean
+%type <string> attr
 
-%type <typeValue> type 
-%type <string> pointer funcid
+/* %type <node> constvector exprvector expr boolean const attr term */
 
 %start program
 
 %left COMMA
-%right ASSIGN ADD_ASSIGN DIV_ASSIGN MOD_ASSIGN MUL_ASSIGN SUB_ASSIGN BITWISE_OR_ASSIGN LEFT_SHIFT_ASSIGN BITWISE_AND_ASSIGN BITWISE_XOR_ASSIGN RIGHT_SHIFT_ASSIGN
-%right QUEST COLON
+%right ASSIGN
+%right COLON
 %left LOGICAL_OR
 %left LOGICAL_AND
 %left BITWISE_OR
@@ -141,8 +70,8 @@ void addId(char *id, Enumtypes type);
 %left LEFT_SHIFT RIGHT_SHIFT
 %left ADD SUB
 %left MUL DIV MOD
-%right INCREMENT DECREMENT LOGICAL_NOT SIZEOF BITWISE_NOT
-%left OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET POINTER DOT
+%right LOGICAL_NOT SIZEOF BITWISE_NOT
+%left OPEN_PAREN CLOSE_PAREN OPEN_BRACKET CLOSE_BRACKET POINTER
 
 %nonassoc IFX
 %nonassoc ELSE
@@ -150,338 +79,214 @@ void addId(char *id, Enumtypes type);
 
 %%
 
-program: stmts {
-    fprintf(prod, "program -> stmts\n");
-    executeProgram();
-}
+program: stmts {  }
     ;
 
-stmt: conditional {
-        fprintf(prod, "stmt -> conditional\n");
-}
-    | repetition {
-        fprintf(prod, "stmt -> repetition\n");
-}
-    | func {
-        fprintf(prod, "stmt -> func\n");
-}
-    | var {
-        fprintf(prod, "stmt -> var\n");
-}
-    | commands {
-        fprintf(prod, "stmt -> commands\n");
-}
-    | expr SEMI_COLON {
-        fprintf(prod, "stmt -> expr ;\n");
-}
-    | {blockOpen();} BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
-        fprintf(prod, "stmts -> { stmts }\n");
-}
-
-conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt %prec IFX {
-    fprintf(prod, "conditional: IF ( expr ) stmt\n");
-}
-    | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {
-    fprintf(prod, "conditional: IF ( expr ) stmt ELSE stmt\n");
-}
-    | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {
-    fprintf(prod, "conditional: SWITCH ( expr ) { caselist }\n");
-}
+stmts: stmts stmt                   {  }
+    |                               {  }
     ;
 
-caselist: caselist CASE term COLON stmts    { fprintf(prod, "caselist -> caselist CASE term : stmts\n"); }
-    | caselist DEFAULT COLON stmts          { fprintf(prod, "caselist -> caselist DEFAULT term : stmts\n"); }
-    |                                       { fprintf(prod, "caselist -> EPS\n"); }
+stmt: conditional               {  }
+    | repetition                {  }
+    | func                      {  }
+    | var SEMI_COLON            {  }
+    | commands                  {  }
+    | expr SEMI_COLON           {  }
+    | {} BLOCK_OPEN stmts BLOCK_CLOSE {} {  }
+
+conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt %prec IFX {  }
+    | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {  }
+    | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  }
     ;
 
-repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {
-    fprintf(prod, "repetition -> WHILE ( expr ) stmt\n");
-}
-    | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt {
-    fprintf(prod, "repetition -> FOR ( optexpr ; optexpr ; optexpr ) stmt\n");
-}
-    | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON {
-    fprintf(prod, "repetition -> DO stmt WHILE ( expr ) ;\n");
-}
+caselist: caselist CASE term COLON stmts    {  }
+    | caselist DEFAULT COLON stmts          {  }
+    |                                       {  }
     ;
 
-var: type IDENTIFIER {addId($2, $1);} vector SEMI_COLON  {
-    fprintf(prod, "var -> type ID vector ;\n");
-}
-    | type MUL pointer {addId($3, $1);} SEMI_COLON {
-    fprintf(prod, "var -> type * pointer ;\n");
-}
+repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {}
+    | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt {}
+    | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON {}
     ;
 
-pointer: IDENTIFIER vector {
-        fprintf(prod, "pointer -> ID vector\n");
-        $$ = $1;
-    }
-	| MUL pointer {
-        fprintf(prod, "pointer -> * pointer\n");
-        $$ = $2;
-    }
+var: IDENTIFIER IDENTIFIER constvector { handleVar($1, $2, $3); }
     ;
 
-funcid: IDENTIFIER  { $$ = $1; fprintf(prod, "funcid -> ID\n"); }
-    | MAIN          { $$ = $1; fprintf(prod, "funcid -> MAIN\n"); }
-    | PRINTF        { $$ = $1; fprintf(prod, "funcid -> PRINTF\n"); }
-    | SCANF         { $$ = $1; fprintf(prod, "funcid -> SCANF\n"); }
-    | SLICE         { $$ = $1; fprintf(prod, "funcid -> SLICE\n"); }
-    | SOME          { $$ = $1; fprintf(prod, "funcid -> SOME\n"); }
-    | REDUCE        { $$ = $1; fprintf(prod, "funcid -> REDUCE\n"); }
-    | FILTER        { $$ = $1; fprintf(prod, "funcid -> FILTER\n"); }
-    | MAP           { $$ = $1; fprintf(prod, "funcid -> MAP\n"); }
-    | SORT          { $$ = $1; fprintf(prod, "funcid -> SORT\n"); }
-    | FREE          { $$ = $1; fprintf(prod, "funcid -> FREE\n"); }
+func: IDENTIFIER IDENTIFIER {} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {}
     ;
 
-func: type funcid {addId($2, type_func); blockOpen();} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {blockClose();} {
-    fprintf(prod, "func -> type funcid ( opttypelist ) { stmts }\n");
-}
+typelist: typelist COMMA var {}
+    | var {}
     ;
 
-typelist: typelist COMMA type IDENTIFIER {addId($4, $3);} vector {
-    fprintf(prod, "typelist -> typelist , type ID\n");
-}
-    | type IDENTIFIER {addId($2, $1);} vector {
-        fprintf(prod, "typelist -> type ID vector\n");
-    }
+termlist: termlist COMMA term {}
+    | term {  }
     ;
 
-termlist: termlist COMMA term {
-    fprintf(prod, "termlist -> termlist , term\n");
-}
-    | term {
-        fprintf(prod, "termlist -> term\n");
-    }
+opttypelist: typelist   {  }
+    |                   {  }
     ;
 
-opttypelist: typelist   { fprintf(prod, "opttypelist -> typelist\n"); }
-    |                   { fprintf(prod, "opttypelist -> EPS\n"); }
-    ;
-
-opttermlist: termlist   { fprintf(prod, "opttermlist -> termlist\n"); }
-    |                   { fprintf(prod, "opttermlist -> EPS"); }
+opttermlist: termlist   {  }
+    |                   {  }
     ;
 
 commands: 
-    RETURN optexpr SEMI_COLON {
-    fprintf(prod, "commands -> RETURN optexpr ;\n");
-}
-    | BREAK SEMI_COLON {
-    fprintf(prod, "commands -> BREAK ;\n");
-}
-    | CONTINUE SEMI_COLON {
-    fprintf(prod, "commands -> continue ;\n");
-}
-    | TYPEDEF type IDENTIFIER vector SEMI_COLON {
-    fprintf(prod, "commands -> TYPEDEF type ID vector ;\n");
-}
-    | INCLUDE STRING {
-    fprintf(prod, "commands -> INCLUDE STRING\n");
-}
-    | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE {
-    fprintf(prod, "commands -> STRUCT ID ( varlist )\n");
-}
-    | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE {
-    fprintf(prod, "commands -> ENUM ID ( idlist )\n");
-}
-    | UNION IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE {
-    fprintf(prod, "commands -> UNION ID ( varlist )\n");
-}
-    | GOTO IDENTIFIER COLON {
-    fprintf(prod, "commands -> GOTO ID :\n");
-}
-    | IDENTIFIER COLON {
-    fprintf(prod, "commands -> IDENTIFIER :\n");
-}
-    | SIZEOF OPEN_PAREN type CLOSE_PAREN SEMI_COLON {
-    fprintf(prod, "commands -> SIZEOF ( type ) ;\n");
-}   
+    RETURN optexpr SEMI_COLON {}
+    | BREAK SEMI_COLON {}
+    | CONTINUE SEMI_COLON {}
+    | TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON {}
+    | INCLUDE STRING SEMI_COLON {}
+    | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE { }
+    | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE { }
     ;
 
-varlist: varlist var            { fprintf(prod, "varlist -> varlist var\n"); }
-    |                           { fprintf(prod, "varlist -> EPS\n"); }
+varlist: varlist var SEMI_COLON     {  }
+    |                               {  }
     ;
 
-idlist: IDENTIFIER COMMA idlist { fprintf(prod, "idlist -> ID , idlist\n"); }
-    | IDENTIFIER                { fprintf(prod, "idlist -> ID\n"); }
+idlist: IDENTIFIER COMMA idlist     {  }
+    | IDENTIFIER                    {  }
     ;
 
-optexpr: expr                       { fprintf(prod, "optexpr -> expr\n"); }
-    |                               { fprintf(prod, "optexpr -> EPS\n"); }
+optexpr: expr                       {  }
+    |                               { }
     ;                           
 
-stmts: stmts stmt                   { fprintf(prod, "stmts -> stmts stmt\n"); }
-    |                               { fprintf(prod, "stmts -> EPS\n"); }
+expr: expr ADD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr SUB expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr MUL expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr DIV expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr BITWISE_AND expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr BITWISE_OR expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr BITWISE_NOT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr BITWISE_XOR expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LEFT_SHIFT expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr RIGHT_SHIFT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr EQ expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr NE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr GT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr GE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LOGICAL_AND expr         { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LOGICAL_OR expr          { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | OPEN_PAREN expr CLOSE_PAREN   { /* retorna segundo parametro */ }
+    | LOGICAL_NOT expr %prec UNARY  { /* geraTemp1, chama codeGen(op, t1) */ }
+    | SUB expr %prec UNARY          { /* geraTemp1, chama codeGen(op, t1) */ }
+    | term                          { /* retorna primeiro parametro */ }
+    | attr ASSIGN expr              { /* geraTemp1, geraTemp2, chama codeGen(t1, t2) */ }
+    | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
 
-expr: term op expr { 
-    fprintf(prod, "expr -> expr op term\n"); 
-}                                 
-    | term rel expr { 
-    fprintf(prod, "expr -> expr rel term\n"); 
-}                                 
-    | term cond expr { 
-    fprintf(prod, "expr -> expr cond term\n"); 
-}                         
-    | LOGICAL_NOT expr %prec UNARY { 
-    fprintf(prod, "expr -> ! expr\n"); 
-}                                                  
-    | term { 
-    fprintf(prod, "expr -> term\n"); 
-}                         
-    | OPEN_PAREN expr CLOSE_PAREN { 
-    fprintf(prod, "expr -> ( expr )\n"); 
-}         
-    | attr assign expr { 
-    fprintf(prod, "expr -> attr assign expr\n"); 
-}                
+
+term: const { $$ = $1; }
+    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { /* cria a funcao e fala o temp */ $$ = 0; }
+    | attr { handleAttr($1); $$ = codeGenVariable(riscv, $1); }
     ;
 
-assign: ASSIGN                  { fprintf(prod, "assign -> =\n"); }
-    | ADD_ASSIGN                { fprintf(prod, "assign -> +=\n"); }
-    | SUB_ASSIGN                { fprintf(prod, "assign -> -=\n"); }
-    | MUL_ASSIGN                { fprintf(prod, "assign -> *=\n"); }
-    | DIV_ASSIGN                { fprintf(prod, "assign -> /=\n"); }
-    | MOD_ASSIGN                { fprintf(prod, "assign -> %%=\n"); }
-    | LEFT_SHIFT_ASSIGN         { fprintf(prod, "assign -> <<=\n"); }
-    | RIGHT_SHIFT_ASSIGN        { fprintf(prod, "assign -> >>=\n"); }
-    | BITWISE_AND_ASSIGN        { fprintf(prod, "assign -> &=\n"); }
-    | BITWISE_OR_ASSIGN         { fprintf(prod, "assign -> |=\n"); }
-    | BITWISE_XOR_ASSIGN        { fprintf(prod, "assign -> ^=\n"); }
+attr: IDENTIFIER exprvector     { $$ = $1; }
+    | attr POINTER attr         {  }
     ;
 
-op: ADD                         { fprintf(prod, "op -> +\n"); }
-    | SUB                       { fprintf(prod, "op -> -\n"); }
-    | MUL                       { fprintf(prod, "op -> *\n"); }
-    | DIV                       { fprintf(prod, "op -> /\n"); }
-    | MOD                       { fprintf(prod, "op -> %%\n"); }
-    | BITWISE_AND               { fprintf(prod, "op -> &\n"); }
-    | BITWISE_OR                { fprintf(prod, "op -> |\n"); }
-    | BITWISE_NOT               { fprintf(prod, "op -> ~\n"); }
-    | LEFT_SHIFT                { fprintf(prod, "op -> <<\n"); }
-    | RIGHT_SHIFT               { fprintf(prod, "op -> >>\n"); }
-    | BITWISE_XOR               { fprintf(prod, "op -> ^\n"); }
+const: INTEGER          { $$ = codeGenInteger(riscv, $1); }
+    | DECIMAL           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
+    | STRING            { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
+    | boolean           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
+
+boolean: TRUE                   { $$ = $1; }
+    | FALSE                     { $$ = $1; }
     ;
 
-rel: EQ                         { fprintf(prod, "rel -> ==\n"); }
-    | NE                        { fprintf(prod, "rel -> !=\n"); }
-    | LT                        { fprintf(prod, "rel -> <\n"); }
-    | LE                        { fprintf(prod, "rel -> <=\n"); }
-    | GT                        { fprintf(prod, "rel -> >\n"); }
-    | GE                        { fprintf(prod, "rel -> >=\n"); }
+exprvector:
+    OPEN_BRACKET expr CLOSE_BRACKET { $$ = $2; }
+    | /* EPS */                     { $$ = 0; }
     ;
 
-cond: LOGICAL_AND               { fprintf(prod, "cond -> &&\n"); }
-    | LOGICAL_OR                { fprintf(prod, "cond -> ||\n"); }
-    ;
-
-term: 
-    INTEGER {
-    fprintf(prod, "term -> INTEGER\n");
-}
-    | DECIMAL {
-    fprintf(prod, "term -> DECIMAL\n");
-}
-    | STRING {
-    fprintf(prod, "term -> STRING\n");
-}
-    | boolean {
-    fprintf(prod, "term -> boolean\n");
-}
-    | funcid OPEN_PAREN opttermlist CLOSE_PAREN {
-    fprintf(prod, "term -> funcid ( opttermlist )\n");
-    if(!symbolTableFind(st, $1)) {
-        char msg[100];
-        sprintf(msg, "Funcao nao declarada \"%s\"", $1);
-        yyerror(msg);
-        onExit();
-        exit(0);
-    }
-}
-    | attr {
-    fprintf(prod, "term -> attr\n");
-}
-    ;
-
-attr: IDENTIFIER vector {
-    fprintf(prod, "attr -> ID vector\n");
-    if(!symbolTableFind(st, $1)) {
-        char msg[100];
-        sprintf(msg, "Identificador nao declarado \"%s\"", $1);
-        yyerror(msg);
-        onExit();
-        exit(0);
-    }
-}
-    | IDENTIFIER vector DOT attr {
-    fprintf(prod, "attr -> ID vector . attr\n");
-}
-    | IDENTIFIER vector POINTER attr {
-    fprintf(prod, "attr -> ID vector POINTER attr\n");
-}
-    ;
-
-boolean: 
-    TRUE {
-    fprintf(prod, "boolean -> TRUE\n");
-}
-    | FALSE {
-    fprintf(prod, "boolean -> FALSE\n");
-}
-    ;
-
-vector: vector OPEN_BRACKET expr CLOSE_BRACKET {
-    fprintf(prod, "vector -> vector [ expr ]");
-}
-    |           {
-        fprintf(prod, "vector -> EPS\n");
-    }
-    ;
-
-type: modifier INT              { fprintf(prod, "type -> INT\n"); $$ = type_int; }
-    | modifier CHAR             { fprintf(prod, "type -> CHAR\n"); $$ = type_char; }
-    | modifier FLOAT            { fprintf(prod, "type -> FLOAT\n"); $$ = type_float; }
-    | modifier DOUBLE           { fprintf(prod, "type -> DOUBLE\n"); $$ = type_double; }
-    | modifier BOOL             { fprintf(prod, "type -> BOOL\n"); $$ = type_bool; }
-    | STRUCT IDENTIFIER         { fprintf(prod, "type -> STRUCT ID\n"); $$ = type_struct; }
-    | ENUM IDENTIFIER           { fprintf(prod, "type -> ENUM ID\n"); $$ = type_enum; }
-    ;
-
-modifier: UNSIGNED              { fprintf(prod, "modifier -> UNSIGNED\n"); }
-    | SIGNED                    { fprintf(prod, "modifier -> SIGNED\n"); }
-    | SHORT                     { fprintf(prod, "modifier -> SHORT\n"); }
-    | LONG                      { fprintf(prod, "modifier -> LONG\n"); }
-    | CONST                     { fprintf(prod, "modifier -> CONST\n"); }
-    |                           { fprintf(prod, "modifier -> EPS\n"); }
-    ;   
+constvector: 
+    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$ = $2; }
+    | /* EPS */                     { $$ = 1; }
+    ; 
 
 %%
 
-void blockOpen() {
-    symbolTableCreateBlock(st);
-}
-
-void blockClose() {
-    symbolTableShow(st, stdout);
-    symbolTableDeleteBlock(st);
-}
-
-void addId(char *id, Enumtypes type) {
-    if(symbolTableFindInBlock(st, id)) {
-        char msg[100];
-        sprintf(msg, "Redeclaração do identificador \"%s\"", id);
-        yyerror(msg);
-        onExit();
-        exit(0);
+/**
+ * Handle variable creation.
+ *
+ * @param _type     - Node Type
+ * @param _id       - Variable Id
+ * @param _sz       - How many copys of the type this variable stores
+ *
+ * @return Nothing
+ */
+void handleVar(char *type, char *id, int size) {
+    Symbol *sym_type = symbolTableFind(st, type);
+    if(!sym_type || sym_type->symbolType != SymbolTypeType) {
+        reportAndExit("\"%s\" nao e um tipo de dados.", type);
     }
-    symbolTableInsert(st, symbolNew(id, type, 1));
+
+    Symbol *sym_id = symbolTableFindInBlock(st, id);
+    if(sym_id) {
+        reportAndExit("Redeclaracao do identificador \"%s\"", id);
+    }
+
+    int allocSize = sym_type->size * size;
+
+    symbolTableInsert(st, symbolNew(id, SymbolTypeVariable, type, allocSize));
+
+    printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
+}
+
+void handleAttr(char *id) {
+    Symbol *sym_id = symbolTableFind(st, id);
+    if(!sym_id) {
+        reportAndExit("\"%s\" nao eh uma variavel declarada.", id);
+    }
+    if(sym_id->symbolType != SymbolTypeVariable) {
+        reportAndExit("\"%s\" nao eh um valor modificavel.", id);
+    }
+}
+
+/* void handleOperation(int opcode, ...) {
+    va_list args;
+    va_start(args, opcode);
+
+    switch(opcode) {
+    case ASSIGN: {
+        STNIdentifier *left = STN_IDENTIFIER(va_arg(args, SyntaxTreeNode*));
+        STNOperation *right = STN_OPERATION(va_arg(args, SyntaxTreeNode*));
+
+        Symbol *sym_id = symbolTableFind(st, left->id);
+        if(!sym_id) reportAndExit("Variável \"%s\" nao declarada\n", left->id);
+        if(sym_id->type != SymbolTypeVariable) reportAndExit("\"%s\" nao e uma variavel\n", left->id);
+        STNReturnExec r = stnExecute(STN(right));
+        if(strcmp(sym_id->datatype, r.type)) 
+            reportAndExit("Impossivel assinalar um valor do tipo \"%s\" para uma variavel do tipo \"%s\"\n", r.type, sym_id->datatype);
+        fprintf(gen, "addi Rd, R%d, 0\n", r.temp);
+        break;
+    }
+    default: reportAndExit("Invalid Operation\n");
+    };
+
+    va_end(args);
+} */
+
+void reportAndExit(const char *s, ...) {
+    char msg[100];
+    va_list args;
+    va_start(args, s);
+    vsnprintf(msg, sizeof(msg), s, args);
+    va_end(args);
+    yyerror(msg);
+    onExit();
+    exit(0);
 }
 
 void onExit() {
+    fclose(gen);
     fclose(prod);
+    fclose(friscv);
     symbolTableDelete(st);
 }
 
@@ -495,18 +300,22 @@ void onStart() {
     yyin = fmemopen(sourceCode, bytesRead, "r");
     
     prod = fopen("./build/producoes.output", "w");
-    st = symbolTableNew();
-    symbolTableCreateBlock(st);
+    gen = fopen("./build/code.output", "w");
 
-    symbolTableInsert(st, symbolNew("parrot", type_func, 1));
-    // symbolTableInsert(st, symbolNew("plunder", type_func, 1));
-    // symbolTableInsert(st, symbolNew("swab", type_func, 1));
-    // symbolTableInsert(st, symbolNew("gully", type_func, 1));
-    // symbolTableInsert(st, symbolNew("hoard", type_func, 1));
-    // symbolTableInsert(st, symbolNew("booty", type_func, 1));
-    // symbolTableInsert(st, symbolNew("net", type_func, 1));
-    // symbolTableInsert(st, symbolNew("chart", type_func, 1));
-    // symbolTableInsert(st, symbolNew("plunderhaul", type_func, 1));
+    st = symbolTableNew();
+
+    friscv = fopen("./build/riscv.asm", "w");
+    riscv = riscV_ContextNew(friscv, st);
+
+
+
+    symbolTableCreateBlock(st);
+    
+    // jib a;
+    // symbol {a, variavel, jib, 4, 0}
+    
+    
+    symbolTableInsert(st, symbolNew("jib", SymbolTypeType, "jib", 0));
 }
 
 void executeProgram() {

@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "riscv-context.h": "c",
+        "register-manager.h": "c",
+        "ratio": "c"
+    }
+}

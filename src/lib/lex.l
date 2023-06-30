@@ -1,6 +1,5 @@
 %{
 #include <stdio.h>
-#include "../symbol-table/symbolTable.h"
 #include "translate.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
 
 int line = 1;
@@ -13,13 +12,9 @@ int line = 1;
 ws                          [ \t\n]
 
 digit                       [0-9]
-positive                    [+]?{digit}+
-negative                    [-]{digit}+
-decimal_pos                 [+]?{digit}+[.]{digit}+
-decimal_neg                 [-]{digit}+[.]{digit}+ 
+integer                     {digit}+
+decimal                     {digit}+[.]{digit}+
 
-low                         [a-z]
-upper                       [A-Z]
 word1q                      [']([^'\n]|"\\\'")*[']
 word2q                      ["]([^"\n]|"\\\"")*["]
 word                        {word1q}|{word2q}
@@ -29,12 +24,8 @@ identifier                  [A-Za-z_][A-Za-z0-9_]*
 %%
 \/ahoy.*belay\/             {  }
 
-windward                    { return UNSIGNED; }
-leeward                     { return SIGNED; }
-cutlass                     { return SHORT; }
-musket                      { return LONG; }
 inport                      { return INCLUDE; }
-oggin                       { yylval.string = strdup(yytext); return MAIN; }
+oggin                       { yylval.string = strdup(yytext); return IDENTIFIER; }
 anchor                      { return BREAK; }
 trade                       { return CASE; }
 rigging                     { return CONST; }
@@ -46,17 +37,17 @@ crew                        { return ENUM; }
 land_ho                     { return RETURN; }
 chest                       { return STRUCT; }
 
-jib                         { return INT; }
-boat                        { return FLOAT; }
-ship                        { return DOUBLE; }
-addled                      { return BOOL; }
-aye                         { return TRUE; }
-arr                         { return FALSE; }
-sailor                      { return CHAR; }
+jib                         { yylval.string = strdup(yytext); return IDENTIFIER; }
+boat                        { yylval.string = strdup(yytext); return IDENTIFIER; }
+ship                        { yylval.string = strdup(yytext); return IDENTIFIER; }
+addled                      { yylval.string = strdup(yytext); return IDENTIFIER; }
+aye                         { yylval.boolean = 1; return TRUE; }
+arr                         { yylval.boolean = 0; return FALSE; }
+sailor                      { yylval.string = strdup(yytext); return IDENTIFIER; }
 
 weigh_anchor                { return DO; }
-parrot                      { yylval.string = strdup(yytext); return PRINTF; }
-plunder                     { yylval.string = strdup(yytext); return SCANF; }
+parrot                      { yylval.string = strdup(yytext); return IDENTIFIER; }
+plunder                     { yylval.string = strdup(yytext); return IDENTIFIER; }
 voyage                      { return FOR; }
 compass                     { return GOTO; }
 rummage                     { return SIZEOF; }
@@ -64,15 +55,15 @@ sweet                       { return SWITCH; }
 charter                     { return TYPEDEF; }
 treasure                    { return UNION; }
 squall                      { return WHILE; }
-swab                        { yylval.string = strdup(yytext); return FREE; }
+swab                        { yylval.string = strdup(yytext); return IDENTIFIER; }
 harpoon                     { return POINTER; }
 
-gully                       { yylval.string = strdup(yytext); return SLICE; }
-hoard                       { yylval.string = strdup(yytext); return SOME; }
-booty                       { yylval.string = strdup(yytext); return REDUCE; }
-net                         { yylval.string = strdup(yytext); return FILTER; }
-chart                       { yylval.string = strdup(yytext); return MAP; }
-plunderhaul                 { yylval.string = strdup(yytext); return SORT; }
+gully                       { yylval.string = strdup(yytext); return IDENTIFIER; }
+hoard                       { yylval.string = strdup(yytext); return IDENTIFIER; }
+booty                       { yylval.string = strdup(yytext); return IDENTIFIER; }
+net                         { yylval.string = strdup(yytext); return IDENTIFIER; }
+chart                       { yylval.string = strdup(yytext); return IDENTIFIER; }
+plunderhaul                 { yylval.string = strdup(yytext); return IDENTIFIER; }
 
 "]"                         { return CLOSE_BRACKET; }
 "["                         { return OPEN_BRACKET; }
@@ -81,8 +72,6 @@ plunderhaul                 { yylval.string = strdup(yytext); return SORT; }
 "⚓️;"                       { return BLOCK_CLOSE; }
 "⚓️"                        { return BLOCK_OPEN; }
 "."                         { return DOT; }
-"++"                        { return INCREMENT; }
-"--"                        { return DECREMENT; }
 "+"                         { return ADD; }
 "-"                         { return SUB; }
 "*"                         { return MUL; }
@@ -103,27 +92,14 @@ plunderhaul                 { yylval.string = strdup(yytext); return SORT; }
 "rum"                       { return LOGICAL_AND; }
 "grog"                      { return LOGICAL_OR; }
 "sober"                     { return LOGICAL_NOT; }
-"?"                         { return QUEST; }
 ":"                         { return COLON; }
 ";"                         { return SEMI_COLON; }
 "="                         { return ASSIGN; }
-"+="                        { return ADD_ASSIGN; }
-"-="                        { return SUB_ASSIGN; }
-"*="                        { return MUL_ASSIGN; }
-"/="                        { return DIV_ASSIGN; }
-"%="                        { return MOD_ASSIGN; }
-"<<="                       { return LEFT_SHIFT_ASSIGN; }
-">>="                       { return RIGHT_SHIFT_ASSIGN; }
-"&="                        { return BITWISE_AND_ASSIGN; }
-"|="                        { return BITWISE_OR_ASSIGN; }
-"^="                        { return BITWISE_XOR_ASSIGN; }
 ","                         { return COMMA; }
 
 {ws}                        { line += (*yytext == '\n'); }
-{positive}                  { yylval.number = atoi(yytext); return INTEGER; }
-{negative}                  { yylval.number = atoi(yytext); return INTEGER; }
-{decimal_pos}               { yylval.decimal = atof(yytext); return DECIMAL; }
-{decimal_neg}               { yylval.decimal = atof(yytext); return DECIMAL; }
+{integer}                   { yylval.integer = atoi(yytext); return INTEGER; }
+{decimal}                   { yylval.decimal = atof(yytext); return DECIMAL; }
 {word}                      { yylval.string = strdup(yytext); return STRING; }
 {identifier}                { yylval.string = strdup(yytext); return IDENTIFIER; }
 .                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); return INVALID; }
