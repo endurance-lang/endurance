@@ -13,10 +13,9 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     new->fileName = filename;
     new->symbolTable = st;
     new->rm = rManagerCreate();
+    new->if_else = new->if_exit = new->rep_entry = new->rep_exit = NULL;
     return new;
 }
-
-void getReg();
 
 char* getLabel() {
     char *label = (char*) malloc(100 * sizeof(char));
@@ -124,6 +123,25 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
     fprintf(context->fileName, "LW x%d, 0(x%d)\n", regdes, tempReg);
 
     return regdes;
+}
+
+void riscVCodeExpr(RiscVContext *context, int reg){
+    char* currentLabelElse = getLabel();
+    char* currentLabelExit = getLabel();
+    pushLabel(&context->if_else,currentLabelElse);
+    pushLabel(&context->if_exit,currentLabelExit);
+    fprintf(context->fileName, "BEQ x0, x%d, %s\n", reg, currentLabelElse);
+}
+
+void riscVCodeElse(RiscVContext *context){
+    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->if_exit->label);
+    fprintf(context->fileName, "%s:\n", context->if_else->label);
+}
+
+void riscVCodeExit(RiscVContext *context){
+    fprintf(context->fileName, "%s:\n", context->if_exit->label);
+    popLabel(&context->if_exit);
+    popLabel(&context->if_else);
 }
 
 void riscVSaveRegisters(RiscVContext *context) {

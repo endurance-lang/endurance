@@ -3,6 +3,7 @@
         "riscv-context.h": "c",
         "register-manager.h": "c",
         "ratio": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "label-stack.h": "c"
     }
 }

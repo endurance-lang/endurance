@@ -43,30 +43,9 @@ void handleCondExpr(ExprData e);
 void handleCondElse();
 void handleCondExit();
 
-struct label_stack {
-    char *label;
-    struct label_stack *next;
-};
-
-// void addLabel(struct label_stack **lst, char *label) {
-//     struct label_stack *new = (struct label_stack *) malloc(sizeof(struct label_stack));
-//     new->label = label;
-//     new->next = *lst;
-//     *lst = new;
-// }
-
-// char *useLabel(struct label_stack **lst) {
-//     char *label = (*lst)->label;
-//     struct label_stack *aux;
-//     *lst = (*lst)->next;
-//     free(aux);
-//     return label;
-// }
-
-// struct label_stack *stack = NULL;
-
-char *currentLabelExit;
-char *currentLabelElse;
+void handleRepEntry();
+void handleRepExpr(ExprData e);
+void handleRepExit();
 
 %}
 
@@ -144,9 +123,12 @@ caselist: caselist CASE term COLON stmts    {  }
     |                                       {  }
     ;
 
-repetition: WHILE OPEN_PAREN expr CLOSE_PAREN stmt {}
+repetition: WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt {}
     | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt {}
     | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON {}
+    ;
+
+repexpr: { handleRepEntry(); } expr { handleRepExpr($2); }
     ;
 
 var: IDENTIFIER IDENTIFIER constvector { handleVar($1, $2, $3); }
@@ -329,19 +311,27 @@ ExprData handleAssignExpr(char *id, ExprData e) {
 }
 
 void handleCondExpr(ExprData e) {
-    currentLabelElse = getLabel();
-    currentLabelExit = getLabel();
-    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, currentLabelElse);
-    /* saddLabel(&stack, label); */
+    riscVCodeExpr(riscv,e.reg);
 }
 
 void handleCondElse() {
-    fprintf(friscv, "BEQ x0, x0, %s\n", currentLabelExit);
-    fprintf(friscv, "%s:\n", currentLabelElse);
+    riscVCodeElse(riscv);
 }
 
 void handleCondExit() {
-    fprintf(friscv, "%s:\n", currentLabelExit);
+    riscVCodeExit(riscv);
+}
+
+void handleRepEntry() {
+
+}
+
+void handleRepExpr(ExprData e) {
+
+}
+
+void handleRepExit() {
+
 }
 
 /* void handleOperation(int opcode, ...) {
