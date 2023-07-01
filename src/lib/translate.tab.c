@@ -1726,19 +1726,19 @@ yyreduce:
 
   case 20:
 #line 126 "translate.y"
-                                                      {}
+                                                      { handleRepExit(); }
 #line 1731 "translate.tab.c"
     break;
 
   case 21:
 #line 127 "translate.y"
-                                                                                    {}
+                                                                                    { handleRepExit(); }
 #line 1737 "translate.tab.c"
     break;
 
   case 22:
 #line 128 "translate.y"
-                                                           {}
+                                                           { handleRepExit(); }
 #line 1743 "translate.tab.c"
     break;
 
@@ -2464,15 +2464,30 @@ void handleCondExit() {
 }
 
 void handleRepEntry() {
+    char *lbl_entry = getLabel();
+    char *lbl_exit = getLabel();
+    pushLabel(&riscv->rep_entry, lbl_entry);
+    pushLabel(&riscv->rep_exit, lbl_exit);
 
+    fprintf(friscv, "%s:\n", lbl_entry);
+    /* label_entry:
+    BEQ x0, expr, label_exit
+
+
+
+    BEQ x0, x0, label_entry
+    label_exit: */
 }
 
 void handleRepExpr(ExprData e) {
-
+    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, riscv->rep_exit->label);
 }
 
 void handleRepExit() {
-
+    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
+    fprintf(friscv, "%s:\n", riscv->rep_exit->label);
+    popLabel(&riscv->rep_entry);
+    popLabel(&riscv->rep_exit);
 }
 
 /* void handleOperation(int opcode, ...) {

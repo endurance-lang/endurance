@@ -123,9 +123,9 @@ caselist: caselist CASE term COLON stmts    {  }
     |                                       {  }
     ;
 
-repetition: WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt {}
-    | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt {}
-    | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON {}
+repetition: WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { handleRepExit(); }
+    | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt { handleRepExit(); }
+    | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON { handleRepExit(); }
     ;
 
 repexpr: { handleRepEntry(); } expr { handleRepExpr($2); }
@@ -323,15 +323,30 @@ void handleCondExit() {
 }
 
 void handleRepEntry() {
+    char *lbl_entry = getLabel();
+    char *lbl_exit = getLabel();
+    pushLabel(&riscv->rep_entry, lbl_entry);
+    pushLabel(&riscv->rep_exit, lbl_exit);
 
+    fprintf(friscv, "%s:\n", lbl_entry);
+    /* label_entry:
+    BEQ x0, expr, label_exit
+
+
+
+    BEQ x0, x0, label_entry
+    label_exit: */
 }
 
 void handleRepExpr(ExprData e) {
-
+    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, riscv->rep_exit->label);
 }
 
 void handleRepExit() {
-
+    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
+    fprintf(friscv, "%s:\n", riscv->rep_exit->label);
+    popLabel(&riscv->rep_entry);
+    popLabel(&riscv->rep_exit);
 }
 
 /* void handleOperation(int opcode, ...) {

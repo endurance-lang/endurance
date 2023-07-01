@@ -1,18 +1,6 @@
-jib a;
-jib b;
-jib c;
+jib i;
 
-a = 1;
-b = 0;
-
-spyglass (a) ⚓️
-    spyglass (b) ⚓️
-        c = 1;
-    ⚓️; parley ⚓️
-        c = 2;
-    ⚓️;
-⚓️; parley ⚓️
-    c = 3;
+i = 0;
+squall(i - 3) ⚓️
+    i = i + 1;
 ⚓️;
-
-c = 4;
