@@ -34,6 +34,7 @@ void handleVar(char *type, char *id, int size);
 ExprData handleAttr(char *id);
 void handleOperation(int opcode, ...);
 ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2);
+ExprData handleUnaryExpr(int opcode, ExprData e);
 ExprData handleAssignExpr(char *id, ExprData e);
 void reportAndExit(const char *s, ...);
 
@@ -191,17 +192,17 @@ expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
     | expr BITWISE_XOR expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr LEFT_SHIFT expr      { $$ = handleBinaryExpr(LEFT_SHIFT, $1, $3); }
     | expr RIGHT_SHIFT expr     { $$ = handleBinaryExpr(RIGHT_SHIFT, $1, $3); }
-    | expr EQ expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr NE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr GT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr GE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr EQ expr { $$ = handleBinaryExpr(EQ, $1, $3); }
+    | expr NE expr { $$ = handleBinaryExpr(NE, $1, $3); }
+    | expr LT expr { $$ = handleBinaryExpr(LT, $1, $3); }
+    | expr GT expr { $$ = handleBinaryExpr(GT, $1, $3); }
+    | expr LE expr { $$ = handleBinaryExpr(LE, $1, $3); }
+    | expr GE expr { $$ = handleBinaryExpr(GE, $1, $3); }
     | expr LOGICAL_AND expr         { $$ = handleBinaryExpr(LOGICAL_AND, $1, $3); }
     | expr LOGICAL_OR expr          { $$ = handleBinaryExpr(LOGICAL_OR, $1, $3); }
     | OPEN_PAREN expr CLOSE_PAREN   { $$ = $2; }
-    | LOGICAL_NOT expr %prec UNARY  { /* geraTemp1, chama codeGen(op, t1) */ }
-    | SUB expr %prec UNARY          {  }
+    | LOGICAL_NOT expr %prec UNARY  { $$ = handleUnaryExpr(LOGICAL_NOT, $2); }
+    | SUB expr %prec UNARY          { $$ = handleUnaryExpr(SUB, $2); }
     | term                          { $$ = $1; }
     | attr ASSIGN expr              { $$ = handleAssignExpr($1, $3); }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
@@ -302,6 +303,13 @@ ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2) {
 
     ret.reg = riscVCodeGenBinaryOperator(riscv, opcode, e1.reg, e2.reg);
 
+    return ret;
+}
+
+ExprData handleUnaryExpr(int opcode, ExprData e) {
+    ExprData ret;
+    ret.returnType = e.returnType;
+    ret.reg = riscVCodeGenUnaryOperator(riscv, opcode, e.reg);
     return ret;
 }
 

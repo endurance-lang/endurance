@@ -23,6 +23,7 @@ char* getLabel();
 int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2);
 int riscVCodeGenInteger(RiscVContext *context, int num);
 int riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2);
+int  riscVCodeGenUnaryOperator(RiscVContext *context, int op, int reg1);
 int riscVCodeGenVariable(RiscVContext *context,char* var);
 void riscVSaveRegisters(RiscVContext *context);
 void riscVCodeExpr(RiscVContext *context, int reg);

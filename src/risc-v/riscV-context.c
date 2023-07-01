@@ -81,14 +81,78 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
     case LOGICAL_OR:
         fprintf(context->fileName, "OR x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
+    case EQ: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "BEQ x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+        break;
+    }
+    case NE: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "BNE x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+        break;
+    }
+    case LT: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "BGE x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+        break;
+    }
+
+    case GT: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "BGE x%d, x%d, %s\n", reg2, reg1, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+        break;
+    }
+    case LE: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "BLT x%d, x%d, %s\n", reg2, reg1, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+        break;
+    }
+    case GE: {
+        char *lbl = getLabel();
+        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "BLT x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "%s:\n", lbl);
+    }
     default:
-        printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V",op);
+        printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V\n",op);
         exit(0);
         break;
     }
     return regdes;
 }
-
+int  riscVCodeGenUnaryOperator(RiscVContext *context, int op, int reg1){
+    int regdes = rManagerGetRegTemp(context->rm);
+    switch (op)
+    {
+    case LOGICAL_NOT:
+        fprintf(context->fileName,"XORi x%d, x%d, 1\n", regdes, reg1);
+        break;
+    case SUB:
+        fprintf(context->fileName,"SUB x%d, x0, x%d\n",regdes,reg1);
+        break;
+    default:
+        printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V\n",op);
+        exit(0);
+        break;
+    }
+    return regdes;
+}
 //Code for Variables
 int riscVCodeGenVariable(RiscVContext *context, char *var){
     int regdes = -4;
