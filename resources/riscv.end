@@ -1,4 +1,10 @@
 jib a;
+a = 0;
+
 jib b;
-a = 10;
-b = -a;
+
+spyglass (a) ⚓️
+    b = a + 1;
+⚓️; parley ⚓️
+    b = 10;
+⚓️;

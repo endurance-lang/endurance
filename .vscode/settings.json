@@ -2,6 +2,7 @@
     "files.associations": {
         "riscv-context.h": "c",
         "register-manager.h": "c",
-        "ratio": "c"
+        "ratio": "c",
+        "types.h": "c"
     }
 }

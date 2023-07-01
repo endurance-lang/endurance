@@ -7,6 +7,7 @@ struct register_manager{
     int lastTempUsed;
     int lastAccessTime[12];
     char *registers[32];
+    int timer;
 };
 
 RManager *rManagerCreate();
@@ -18,5 +19,6 @@ void rManagerFreeRegVar(RManager *rm, int reg);
 char *rManagerVarToFreeSpace(RManager *rm);
 char *rManagerGetVar(RManager *rm, int regNumber);
 int rManagerGetRegTemp(RManager *rm);
+void rManagerFreeAllRegisters(RManager *rm);
 
 #endif

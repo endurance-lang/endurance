@@ -5,6 +5,7 @@
 #include "../symbol-table/symbolTable.h"
 #include "../utils/print-source-code.h"
 #include "../risc-v/riscV-context.h"
+#include "types.h"
 #include <stdarg.h>
 #include <assert.h>
 
@@ -30,20 +31,53 @@ void blockClose();
 
 // void handleStruct();
 void handleVar(char *type, char *id, int size);
-void handleAttr(char *id);
+ExprData handleAttr(char *id);
 void handleOperation(int opcode, ...);
+ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2);
+ExprData handleAssignExpr(char *id, ExprData e);
 void reportAndExit(const char *s, ...);
 
 char *mergeStrPointers(char *a, char *b);
 
+void handleCondExpr(ExprData e);
+void handleCondElse();
+void handleCondExit();
+
+struct label_stack {
+    char *label;
+    struct label_stack *next;
+};
+
+// void addLabel(struct label_stack **lst, char *label) {
+//     struct label_stack *new = (struct label_stack *) malloc(sizeof(struct label_stack));
+//     new->label = label;
+//     new->next = *lst;
+//     *lst = new;
+// }
+
+// char *useLabel(struct label_stack **lst) {
+//     char *label = (*lst)->label;
+//     struct label_stack *aux;
+//     *lst = (*lst)->next;
+//     free(aux);
+//     return label;
+// }
+
+// struct label_stack *stack = NULL;
+
+char *currentLabelExit;
+char *currentLabelElse;
+
 %}
+
 
 %union {
     char *string;
     int integer;
     double decimal;
     int boolean;
-}
+    ExprData exprData;
+};
 
 %token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
 
@@ -53,11 +87,10 @@ char *mergeStrPointers(char *a, char *b);
 %token <integer> INTEGER
 %token <boolean> TRUE FALSE
 
-%type <integer> constvector exprvector expr const term
+%type <integer> constvector
 %type <boolean> boolean
 %type <string> attr
-
-/* %type <node> constvector exprvector expr boolean const attr term */
+%type <exprData> expr term const exprvector
 
 %start program
 
@@ -96,11 +129,14 @@ stmt: conditional               {  }
     | var SEMI_COLON            {  }
     | commands                  {  }
     | expr SEMI_COLON           {  }
-    | {} BLOCK_OPEN stmts BLOCK_CLOSE {} {  }
+    | BLOCK_OPEN stmts BLOCK_CLOSE {  }
 
-conditional: IF OPEN_PAREN expr CLOSE_PAREN stmt %prec IFX {  }
-    | IF OPEN_PAREN expr CLOSE_PAREN stmt ELSE stmt {  }
-    | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  }
+conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX { handleCondElse(); handleCondExit(); }
+    | IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE { handleCondElse();  } stmt { handleCondExit(); }
+    | SWITCH OPEN_PAREN condexpr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  }
+    ;
+
+condexpr: expr                  { handleCondExpr($1); }
     ;
 
 caselist: caselist CASE term COLON stmts    {  }
@@ -157,8 +193,8 @@ optexpr: expr                       {  }
     |                               { }
     ;                           
 
-expr: expr ADD expr {  $$ = riscVCodeGenBinaryOperator(riscv, ADD, $1, $3); }
-    | expr SUB expr { $$ = riscVCodeGenBinaryOperator(riscv, SUB, $1, $3); }
+expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
+    | expr SUB expr { $$ = handleBinaryExpr(SUB, $1, $3); }
     | expr MUL expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr DIV expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
@@ -166,38 +202,38 @@ expr: expr ADD expr {  $$ = riscVCodeGenBinaryOperator(riscv, ADD, $1, $3); }
     | expr BITWISE_OR expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr BITWISE_NOT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr BITWISE_XOR expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LEFT_SHIFT expr      { $$ = riscVCodeGenBinaryOperator(riscv, LEFT_SHIFT, $1, $3); }
-    | expr RIGHT_SHIFT expr     { $$ = riscVCodeGenBinaryOperator(riscv, RIGHT_SHIFT, $1, $3); }
+    | expr LEFT_SHIFT expr      { $$ = handleBinaryExpr(LEFT_SHIFT, $1, $3); }
+    | expr RIGHT_SHIFT expr     { $$ = handleBinaryExpr(RIGHT_SHIFT, $1, $3); }
     | expr EQ expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr NE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr LT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr GT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr LE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr GE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LOGICAL_AND expr         { $$ = riscVCodeGenBinaryOperator(riscv, LOGICAL_AND, $1, $3); }
-    | expr LOGICAL_OR expr          { $$ = riscVCodeGenBinaryOperator(riscv, ADD, $1, $3); }
+    | expr LOGICAL_AND expr         { $$ = handleBinaryExpr(LOGICAL_AND, $1, $3); }
+    | expr LOGICAL_OR expr          { $$ = handleBinaryExpr(LOGICAL_OR, $1, $3); }
     | OPEN_PAREN expr CLOSE_PAREN   { $$ = $2; }
     | LOGICAL_NOT expr %prec UNARY  { /* geraTemp1, chama codeGen(op, t1) */ }
-    | SUB expr %prec UNARY          { $$ = riscVCodeGenBinaryOperator(riscv, SUB, 0, $2); }
+    | SUB expr %prec UNARY          {  }
     | term                          { $$ = $1; }
-    | attr ASSIGN expr              { $$ = riscVCodeGenAssign(riscv, $1, $3); }
+    | attr ASSIGN expr              { $$ = handleAssignExpr($1, $3); }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
 
 
 term: const { $$ = $1; }
-    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { /* cria a funcao e fala o temp */ $$ = 0; }
-    | attr { handleAttr($1); $$ = riscVCodeGenVariable(riscv, $1); }
+    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { /* cria a funcao e fala o temp */ }
+    | attr { $$ = handleAttr($1); }
     ;
 
 attr: IDENTIFIER exprvector     { $$ = $1; }
     | attr POINTER attr         { $$ = mergeStrPointers($1, $3); }
     ;
 
-const: INTEGER          { $$ = riscVCodeGenInteger(riscv, $1); }
-    | DECIMAL           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
-    | STRING            { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
-    | boolean           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
+const: INTEGER          { $$.returnType = strdup("jib"); $$.reg = riscVCodeGenInteger(riscv, $1); }
+    | DECIMAL           { $$.returnType = strdup("ship"); $$.reg = 0;  }
+    | STRING            { /* chama codeGen() e retorna o Temporary */  }
+    | boolean           { /* chama codeGen() e retorna o Temporary */  }
 
 boolean: TRUE                   { $$ = $1; }
     | FALSE                     { $$ = $1; }
@@ -205,7 +241,7 @@ boolean: TRUE                   { $$ = $1; }
 
 exprvector:
     OPEN_BRACKET expr CLOSE_BRACKET { $$ = $2; }
-    | /* EPS */                     { $$ = 0; }
+    | /* EPS */                     {  }
     ;
 
 constvector: 
@@ -243,7 +279,7 @@ void handleVar(char *type, char *id, int size) {
     printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
 }
 
-void handleAttr(char *id) {
+ExprData handleAttr(char *id) {
     Symbol *sym_id = symbolTableFind(st, id);
     if(!sym_id) {
         reportAndExit("\"%s\" nao eh uma variavel declarada.", id);
@@ -251,6 +287,11 @@ void handleAttr(char *id) {
     if(sym_id->symbolType != SymbolTypeVariable) {
         reportAndExit("\"%s\" nao eh um valor modificavel.", id);
     }
+    
+    ExprData ret;
+    ret.returnType = sym_id->data.variable.type;
+    ret.reg = riscVCodeGenVariable(riscv, id);
+    return ret;
 }
 
 char *mergeStrPointers(char *a, char *b) {
@@ -263,6 +304,44 @@ char *mergeStrPointers(char *a, char *b) {
     strcat(cat, ".");
     strcat(cat, b);
     return cat;
+}
+
+ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2) {
+    if(strcmp(e1.returnType, e2.returnType))
+        reportAndExit("Impossivel fazer a operação entre tipos \"%s\" e \"%s\".", e1.returnType, e2.returnType);
+    
+    ExprData ret;
+    ret.returnType = e1.returnType;
+
+    ret.reg = riscVCodeGenBinaryOperator(riscv, opcode, e1.reg, e2.reg);
+
+    return ret;
+}
+
+ExprData handleAssignExpr(char *id, ExprData e) {
+    Symbol *sym = symbolTableFind(st, id);
+
+    if(strcmp(sym->data.variable.type, e.returnType)) reportAndExit("Impossivel atribuir um valor do tipo \"%s\" para uma variavel do tipo \"%s\".", e.returnType, sym->data.variable.type);
+
+    ExprData ret;
+    ret.returnType = e.returnType;
+    ret.reg = riscVCodeGenAssign(riscv, id, e.reg);
+}
+
+void handleCondExpr(ExprData e) {
+    currentLabelElse = getLabel();
+    currentLabelExit = getLabel();
+    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, currentLabelElse);
+    /* saddLabel(&stack, label); */
+}
+
+void handleCondElse() {
+    fprintf(friscv, "BEQ x0, x0, %s\n", currentLabelExit);
+    fprintf(friscv, "%s:\n", currentLabelElse);
+}
+
+void handleCondExit() {
+    fprintf(friscv, "%s:\n", currentLabelExit);
 }
 
 /* void handleOperation(int opcode, ...) {
@@ -301,6 +380,8 @@ void reportAndExit(const char *s, ...) {
 }
 
 void onExit() {
+    riscVSaveRegisters(riscv);
+
     fclose(gen);
     fclose(prod);
     fclose(friscv);

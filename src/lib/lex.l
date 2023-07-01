@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "types.h"
 #include "translate.tab.h" // Inclua o arquivo .tab.h gerado pelo Bison
 
 int line = 1;

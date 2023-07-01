@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "../lib/types.h"
 #include "../lib/translate.tab.h"
 
 static int newlabel = 1;
@@ -15,14 +16,13 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     return new;
 }
 
-// void getReg();
-// char* getLabel(){
-//     char *label;
-//     strcpy(label,"label");
-//     //strcat(label,(char*)(newlabel));
-//     newlabel++;
-//     return label;
-// }
+void getReg();
+
+char* getLabel() {
+    char *label = (char*) malloc(100 * sizeof(char));
+    sprintf(label,"label_%d", newlabel++);
+    return label;
+}
 
 
 int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2){
@@ -126,3 +126,19 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
     return regdes;
 }
 
+void riscVSaveRegisters(RiscVContext *context) {
+    for(int i=0;i<32;i++){
+        char *varToFree = rManagerGetVar(context->rm,i);
+        if (varToFree != NULL){
+            int tempReg = rManagerGetRegTemp(context->rm);
+            Symbol *sym =  symbolTableFind(context->symbolTable, varToFree);
+            fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+            fprintf(context->fileName, "SW x%d, 0(x%d)\n", i, tempReg);
+
+            rManagerFreeRegVar(context->rm,i);
+        }
+    }
+    
+    //free all reg
+    rManagerFreeAllRegisters(context->rm);
+}

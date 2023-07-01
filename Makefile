@@ -7,7 +7,7 @@ build: $(TARGET)
 $(TARGET): $(OBJFILES)
 	cd ./src/lib && \
 	flex -o lex.yy.c lex.l && \
-	bison -d -o translate.tab.c translate.y && \
+	bison -d -v -o translate.tab.c translate.y && \
 	gcc translate.tab.c lex.yy.c ../utils/print-source-code.c ../symbol-table/symbol.c ../symbol-table/symbolTable.c ../risc-v/*.c -o ../../build/a.out
 
 test-first:

@@ -4,12 +4,13 @@
 
 static int vars[] = {8, 9, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
 static int temps[] = {5, 6, 7, 28, 29, 30, 31};
-static int timer = 0;
+
 
 RManager *rManagerCreate()
 {
     RManager *rm = (RManager *) malloc(sizeof(RManager));
     rm->lastTempUsed = -1;
+    rm->timer = 0;
     for (int i = 0; i < 32; i++)
     {
         rm->registers[i] = NULL;
@@ -27,8 +28,8 @@ int rManagerAddVar(RManager *rm, char *varName){
         if (!rm->registers[pos])
         {
             rm->registers[pos] = strdup(varName);
-            timer++;
-            rm->lastAccessTime[i] = timer;
+            rm->timer++;
+            rm->lastAccessTime[i] = rm->timer;
             return pos;
         }
     }
@@ -41,8 +42,8 @@ int rManagerGetRegVar(RManager *rm, char *varName)
         int pos = vars[i];
         if (rm->registers[pos] && !strcmp(varName, rm->registers[pos]))
         {
-            timer++;
-            rm->lastAccessTime[i] = timer;
+            rm->timer++;
+            rm->lastAccessTime[i] = rm->timer;
             return pos;
         }
     }
@@ -63,6 +64,7 @@ int rManagerHasSpaceVar(RManager *rm){
 }
 
 void rManagerFreeRegVar(RManager *rm, int reg){
+    if(!rm->registers[reg]) return;
     free(rm->registers[reg]);
     rm->registers[reg] = NULL;
     for(int i = 0; i< 12;i++){
@@ -83,7 +85,6 @@ char *rManagerVarToFreeSpace(RManager *rm){
             minpos = vars[i];
         }
     }
-    
     return rm->registers[minpos];
 }
 
@@ -108,3 +109,17 @@ int rManagerGetRegTemp(RManager *rm)
     rm->lastTempUsed = (rm->lastTempUsed + 1) % 7;
     return temps[rm->lastTempUsed];
 }
+
+void rManagerFreeAllRegisters(RManager *rm){
+    for (int i = 0; i < 12; i++)
+    {
+        int pos = vars[i];
+        if (!rm->registers[pos])
+        {
+            free(rm->registers[pos]);
+            rm->registers[pos] = NULL;
+            rm->lastAccessTime[i] = 0;
+        }
+    }
+}
+
