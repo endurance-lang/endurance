@@ -23,6 +23,8 @@ FILE *prod, *gen;
 FILE *friscv;
 RiscVContext *riscv;
 
+int nextAddress = 0;
+
 void blockOpen();
 void blockClose();
 
@@ -31,6 +33,8 @@ void handleVar(char *type, char *id, int size);
 void handleAttr(char *id);
 void handleOperation(int opcode, ...);
 void reportAndExit(const char *s, ...);
+
+char *mergeStrPointers(char *a, char *b);
 
 %}
 
@@ -153,8 +157,8 @@ optexpr: expr                       {  }
     |                               { }
     ;                           
 
-expr: expr ADD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr SUB expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+expr: expr ADD expr {  $$ = riscVCodeGenBinaryOperator(riscv, ADD, $1, $3); }
+    | expr SUB expr { $$ = riscVCodeGenBinaryOperator(riscv, SUB, $1, $3); }
     | expr MUL expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr DIV expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
@@ -162,35 +166,35 @@ expr: expr ADD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr BITWISE_OR expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr BITWISE_NOT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr BITWISE_XOR expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LEFT_SHIFT expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr RIGHT_SHIFT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr LEFT_SHIFT expr      { $$ = riscVCodeGenBinaryOperator(riscv, LEFT_SHIFT, $1, $3); }
+    | expr RIGHT_SHIFT expr     { $$ = riscVCodeGenBinaryOperator(riscv, RIGHT_SHIFT, $1, $3); }
     | expr EQ expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr NE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr LT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr GT expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr LE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
     | expr GE expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LOGICAL_AND expr         { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr LOGICAL_OR expr          { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | OPEN_PAREN expr CLOSE_PAREN   { /* retorna segundo parametro */ }
+    | expr LOGICAL_AND expr         { $$ = riscVCodeGenBinaryOperator(riscv, LOGICAL_AND, $1, $3); }
+    | expr LOGICAL_OR expr          { $$ = riscVCodeGenBinaryOperator(riscv, ADD, $1, $3); }
+    | OPEN_PAREN expr CLOSE_PAREN   { $$ = $2; }
     | LOGICAL_NOT expr %prec UNARY  { /* geraTemp1, chama codeGen(op, t1) */ }
-    | SUB expr %prec UNARY          { /* geraTemp1, chama codeGen(op, t1) */ }
-    | term                          { /* retorna primeiro parametro */ }
-    | attr ASSIGN expr              { /* geraTemp1, geraTemp2, chama codeGen(t1, t2) */ }
+    | SUB expr %prec UNARY          { $$ = riscVCodeGenBinaryOperator(riscv, SUB, 0, $2); }
+    | term                          { $$ = $1; }
+    | attr ASSIGN expr              { $$ = riscVCodeGenAssign(riscv, $1, $3); }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
 
 
 term: const { $$ = $1; }
     | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { /* cria a funcao e fala o temp */ $$ = 0; }
-    | attr { handleAttr($1); $$ = codeGenVariable(riscv, $1); }
+    | attr { handleAttr($1); $$ = riscVCodeGenVariable(riscv, $1); }
     ;
 
 attr: IDENTIFIER exprvector     { $$ = $1; }
-    | attr POINTER attr         {  }
+    | attr POINTER attr         { $$ = mergeStrPointers($1, $3); }
     ;
 
-const: INTEGER          { $$ = codeGenInteger(riscv, $1); }
+const: INTEGER          { $$ = riscVCodeGenInteger(riscv, $1); }
     | DECIMAL           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
     | STRING            { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
     | boolean           { /* chama codeGen() e retorna o Temporary */ $$ = 0; }
@@ -231,9 +235,10 @@ void handleVar(char *type, char *id, int size) {
         reportAndExit("Redeclaracao do identificador \"%s\"", id);
     }
 
-    int allocSize = sym_type->size * size;
+    int allocSize = sym_type->data.type.bytes * size;
 
-    symbolTableInsert(st, symbolNew(id, SymbolTypeVariable, type, allocSize));
+    symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize));
+    nextAddress += allocSize;
 
     printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
 }
@@ -246,6 +251,18 @@ void handleAttr(char *id) {
     if(sym_id->symbolType != SymbolTypeVariable) {
         reportAndExit("\"%s\" nao eh um valor modificavel.", id);
     }
+}
+
+char *mergeStrPointers(char *a, char *b) {
+    if(!a || !b) return NULL;
+    int la = strlen(a);
+    int lb = strlen(b);
+    char *cat = (char*) malloc((la + lb + 2) * sizeof(char)); // size(a) + '.' + size(b) + '\0'
+    cat[0] = '\0'; // make sure that this is a empty string
+    strcat(cat, a);
+    strcat(cat, ".");
+    strcat(cat, b);
+    return cat;
 }
 
 /* void handleOperation(int opcode, ...) {
@@ -315,7 +332,7 @@ void onStart() {
     // symbol {a, variavel, jib, 4, 0}
     
     
-    symbolTableInsert(st, symbolNew("jib", SymbolTypeType, "jib", 0));
+    symbolTableInsert(st, symbolTypeNew("jib", 4));
 }
 
 void executeProgram() {

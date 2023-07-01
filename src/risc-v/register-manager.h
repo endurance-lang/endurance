@@ -11,7 +11,12 @@ struct register_manager{
 
 RManager *rManagerCreate();
 int rManagerGetRegVar(RManager *rm, char *varName);
-char * rManagerGetVar(RManager *rm, int regNumber);
+int rManagerHasVar(RManager *rm, char *varName);
+int rManagerAddVar(RManager *rm, char *varName);
+int rManagerHasSpaceVar(RManager *rm);
+void rManagerFreeRegVar(RManager *rm, int reg);
+char *rManagerVarToFreeSpace(RManager *rm);
+char *rManagerGetVar(RManager *rm, int regNumber);
 int rManagerGetRegTemp(RManager *rm);
 
 #endif

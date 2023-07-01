@@ -1,2 +1,4 @@
 jib a;
-a;
+jib b;
+a = 10;
+b = -a;

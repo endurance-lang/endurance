@@ -25,16 +25,40 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
 // }
 
 
-void codeGenAssign(RiscVContext *context, char* var, int reg2){
-    int regdes = rManagerGetRegVar(context->rm,var);
-    fprintf(context->fileName,"ADD x%d, x%d, x0\n",regdes, reg2);
+int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2){
+    int regdes;
+    if(rManagerHasVar(context->rm, var)) regdes = rManagerGetRegVar(context->rm, var);
+    else if(rManagerHasSpaceVar(context->rm)) regdes = rManagerAddVar(context->rm, var);
+    else {
+        char *toFree = rManagerVarToFreeSpace(context->rm);
+        int regToFree = rManagerGetRegVar(context->rm, toFree);
+        Symbol *sym =  symbolTableFind(context->symbolTable, toFree);
+
+        int tempReg = rManagerGetRegTemp(context->rm);
+        fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+        fprintf(context->fileName, "SW x%d, 0(x%d)\n", regToFree, tempReg);
+
+        rManagerFreeRegVar(context->rm, regToFree);
+        
+        if(!rManagerHasSpaceVar(context->rm)) {
+            printf("riscV-context.c emit -> codeGenAssign error\n");
+            exit(0);
+        }
+
+        regdes = rManagerAddVar(context->rm, var);
+    }
+
+    fprintf(context->fileName,"ADD x%d, x%d, x0\n", regdes, reg2);
+    return regdes;
 }
-int codeGenInteger(RiscVContext *context, int num){
+
+int riscVCodeGenInteger(RiscVContext *context, int num){
     int regdes = rManagerGetRegTemp(context->rm);
     fprintf(context->fileName,"ADDi x%d, x0, %d\n",regdes,num);
     return regdes;
 }
-void codeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2){
+
+int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2){
     int regdes = rManagerGetRegTemp(context->rm);
     switch (op)
     {
@@ -61,19 +85,44 @@ void codeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2){
         exit(0);
         break;
     }
+    return regdes;
 }
-int codeGenVariable(RiscVContext *context,char* var){
-    
-    // pegar a var na tabela de simbolos (S) em C
-    Symbol *S = symbolTableFind(context->symbolTable, var);
-    // // pegar a posição da memoria da var (S.address) em C
-    // // colocar esse endereço em um temp (T = S.address) no riscV
-    int regtemp = rManagerGetRegTemp(context->rm);
-    fprintf(context->fileName,"ADDi x%d, x0, %d\n",regtemp, S->address);
-    // // pegar um reg pra variavel (R)
-    int regdes = rManagerGetRegVar(context->rm, var);
-    // // load em R o valor em 0(T) "lw R, 0(T)"
-    fprintf(context->fileName,"LW x%d, 0(x%d)\n",regdes,regtemp);
-    return 0;
+
+int riscVCodeGenVariable(RiscVContext *context, char *var){
+    int regdes = -4;
+    if(rManagerHasVar(context->rm, var)) {
+        // printf(".%s. ta dentro ???? \n", var);
+        return rManagerGetRegVar(context->rm, var);
+    }
+    else if(rManagerHasSpaceVar(context->rm)) {
+        regdes = rManagerAddVar(context->rm, var);
+        // printf("add .%s. on reg %d\n", var, regdes);
+    }
+    else {
+        char *toFree = rManagerVarToFreeSpace(context->rm);
+        int regToFree = rManagerGetRegVar(context->rm, toFree);
+        Symbol *sym =  symbolTableFind(context->symbolTable, toFree);
+
+        int tempReg = rManagerGetRegTemp(context->rm);
+        fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+        fprintf(context->fileName, "SW x%d, 0(x%d)\n", regToFree, tempReg);
+
+        rManagerFreeRegVar(context->rm, regToFree);
+        
+        if(!rManagerHasSpaceVar(context->rm)) {
+            printf("riscV-context.c emit -> Deu ruim paizao\n");
+            exit(0);
+        }
+
+        regdes = rManagerAddVar(context->rm, var);
+    }
+
+
+    int tempReg = rManagerGetRegTemp(context->rm);
+    Symbol *sym =  symbolTableFind(context->symbolTable, var);
+    fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+    fprintf(context->fileName, "LW x%d, 0(x%d)\n", regdes, tempReg);
+
+    return regdes;
 }
 

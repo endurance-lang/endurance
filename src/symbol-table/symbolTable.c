@@ -65,19 +65,19 @@ SymbolNode* getSymbolTableHead(SymbolTable* st) {
 
 
 
-void showSymbolList(List* list,FILE* f) {
-    fprintf(f,"===========================================================\n");
-    fprintf(f,"| \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-19s\033[0m |\n", "ID", "Type", "Address");
-    fprintf(f,"===========================================================\n");
+// void showSymbolList(List* list,FILE* f) {
+//     fprintf(f,"===========================================================\n");
+//     fprintf(f,"| \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-15s\033[0m | \033[38;5;196m%-19s\033[0m |\n", "ID", "Type", "Address");
+//     fprintf(f,"===========================================================\n");
 
-    SymbolNode* aux = list->headNode;
-    while (aux != NULL) {
-        fprintf(f,"| \033[38;5;49m%-15s\033[0m | \033[38;5;208m%-15s\033[0m | \033[38;5;193m%-19d\033[0m |\n", aux->sym->id, aux->sym->type, aux->sym->address);
-        aux = aux->prox;
-    }
+//     SymbolNode* aux = list->headNode;
+//     while (aux != NULL) {
+//         fprintf(f,"| \033[38;5;49m%-15s\033[0m | \033[38;5;208m%-15s\033[0m | \033[38;5;193m%-19d\033[0m |\n", aux->sym->id, aux->sym->type, aux->sym->address);
+//         aux = aux->prox;
+//     }
 
-    fprintf(f,"===========================================================\n");
-}
+//     fprintf(f,"===========================================================\n");
+// }
 
 /*
     Public
@@ -140,10 +140,10 @@ void symbolTableDelete(SymbolTable *st){
 }
 
 void symbolTableShow(SymbolTable *st, FILE* f) {
-    List* list = st->priv->head;
-    while (list != NULL) {
-        showSymbolList(list,f);
-        list = list->prox;
-    }
-    fprintf(f,"\n---\n\n");
+    // List* list = st->priv->head;
+    // while (list != NULL) {
+    //     showSymbolList(list,f);
+    //     list = list->prox;
+    // }
+    // fprintf(f,"\n---\n\n");
 }

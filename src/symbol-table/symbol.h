@@ -12,23 +12,55 @@ enum types {
 };
 
 struct symbol {
-    char *id;       // Identifier
-    Enumtypes symbolType; // Type
-    char *type;
-    int size;
-    int address;  // Address
+    Enumtypes symbolType;
+    char *id;
+    union {
+        struct {
+            char *type;
+            int address;
+            int size;
+        } variable;
+        struct {
+            int bytes;
+        } type;
+        struct {
+            char *returnType;
+            /* parameter list */
+        } function;
+    } data;
 };
 
 /**
- * Create a new symbol.
+ * Create a new variable symbol.
  *
- * @param id     - Identifier for the symbol
- * @param type   - Type of the symbol (Enumtypes)
- * @param size   - Size of the symbol
+ * @param id        - variable name
+ * @param type      - variable type
+ * @param address   - first byte address
+ * @param size      - size == 0 if this is a variable; size > 0 if this is an array with size items;
  *
- * @return Pointer to the created symbol
+ * @return Pointer to the created symbol variable
  */
-Symbol *symbolNew(char *id, Enumtypes symbolType, char *type, int size);
+Symbol *symbolVariableNew(char *id, char *type, int address, int size);
+
+/**
+ * Create a new type symbol.
+ *
+ * @param id        - type name
+ * @param bytes     - the number of bytes this type uses in memory
+ *
+ * @return Pointer to the created symbol type
+ */
+Symbol *symbolTypeNew(char *id, int bytes);
+
+/**
+ * Create a new function symbol.
+ *
+ * @param id            - function name
+ * @param returnType    - return type of funcition
+ *
+ * @return Pointer to the created symbol type
+ */
+Symbol *symbolFunctionNew(char *id, char *returnType /*, paramList*/);
 
 /**
  * Delete a symbol and free its memory.
