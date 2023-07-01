@@ -145,7 +145,9 @@ repetition: {handleRepEntry();} WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { hand
         popLabel(&riscv->for_update);
     }
 
-    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON { handleRepExit(); }
+    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr {
+        handleRepExpr($6);
+    } CLOSE_PAREN SEMI_COLON { handleRepExit(); }
     ;
 
 repexpr: expr { handleRepExpr($1); }
