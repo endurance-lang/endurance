@@ -13,7 +13,7 @@ struct riscVcontext
     SymbolTable* symbolTable;
     FILE* fileName;
     RManager* rm;
-    LabelStack *if_else, *if_exit, *rep_entry, *rep_exit;
+    LabelStack *if_else, *if_exit, *rep_entry, *rep_exit, *for_stmt, *for_update;
 };
 
 

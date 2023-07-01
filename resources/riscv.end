@@ -1,6 +1,7 @@
 jib i;
+jib a;
 
-i = 0;
-squall(i - 3) ⚓️
-    i = i + 1;
+a = 0;
+voyage(i = 0; i - 3 ; i = i + 1) ⚓️
+    a = a + 2;
 ⚓️;

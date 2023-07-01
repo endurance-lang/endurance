@@ -13,7 +13,7 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     new->fileName = filename;
     new->symbolTable = st;
     new->rm = rManagerCreate();
-    new->if_else = new->if_exit = new->rep_entry = new->rep_exit = NULL;
+    new->if_else = new->if_exit = new->rep_entry = new->rep_exit = new->for_stmt, new->for_update = NULL;
     return new;
 }
 

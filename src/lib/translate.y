@@ -47,6 +47,8 @@ void handleRepEntry();
 void handleRepExpr(ExprData e);
 void handleRepExit();
 
+void handleForExit();
+
 %}
 
 
@@ -123,12 +125,30 @@ caselist: caselist CASE term COLON stmts    {  }
     |                                       {  }
     ;
 
-repetition: WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { handleRepExit(); }
-    | FOR OPEN_PAREN optexpr SEMI_COLON optexpr SEMI_COLON optexpr CLOSE_PAREN stmt { handleRepExit(); }
-    | DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON { handleRepExit(); }
+repetition: {handleRepEntry();} WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { handleRepExit(); }
+    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {
+        char *lbl_stmt = getLabel();
+        char *lbl_update = getLabel();
+        pushLabel(&riscv->for_stmt, lbl_stmt);
+        pushLabel(&riscv->for_update, lbl_update);
+        fprintf(friscv, "BEQ x0, x0, %s\n", lbl_stmt);
+        fprintf(friscv, "%s:\n", lbl_update);
+    } optexpr {
+        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
+        fprintf(friscv, "%s:\n", riscv->for_stmt->label);
+    } CLOSE_PAREN stmt {
+        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
+        fprintf(friscv, "%s:\n", riscv->rep_exit->label);
+        popLabel(&riscv->rep_entry);
+        popLabel(&riscv->rep_exit);
+        popLabel(&riscv->for_stmt);
+        popLabel(&riscv->for_update);
+    }
+
+    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr CLOSE_PAREN SEMI_COLON { handleRepExit(); }
     ;
 
-repexpr: { handleRepEntry(); } expr { handleRepExpr($2); }
+repexpr: expr { handleRepExpr($1); }
     ;
 
 var: IDENTIFIER IDENTIFIER constvector { handleVar($1, $2, $3); }
@@ -329,13 +349,6 @@ void handleRepEntry() {
     pushLabel(&riscv->rep_exit, lbl_exit);
 
     fprintf(friscv, "%s:\n", lbl_entry);
-    /* label_entry:
-    BEQ x0, expr, label_exit
-
-
-
-    BEQ x0, x0, label_entry
-    label_exit: */
 }
 
 void handleRepExpr(ExprData e) {
@@ -347,6 +360,24 @@ void handleRepExit() {
     fprintf(friscv, "%s:\n", riscv->rep_exit->label);
     popLabel(&riscv->rep_entry);
     popLabel(&riscv->rep_exit);
+}
+
+void handleForExit() {
+    /* initialize
+    entry:
+        RepExpr -> verifica e se vai pro final
+
+        BEQ x0, x0, lbl_stmt
+        lbl_last:
+
+        last expr
+        BEQ x0, x0, entry
+        lbl_stmt:
+        stmt
+        BEQ x0, x0, lbl_last
+    exit: */
+
+    
 }
 
 /* void handleOperation(int opcode, ...) {
