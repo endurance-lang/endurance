@@ -28,5 +28,11 @@ void riscVSaveRegisters(RiscVContext *context);
 void riscVCodeExpr(RiscVContext *context, int reg);
 void riscVCodeElse(RiscVContext *context);
 void riscVCodeExit(RiscVContext *context);
+void riscVCodeRepEntry(RiscVContext *context);
+void riscVCodeRepExpr(RiscVContext *context, int reg);
+void riscVCodeRepExit(RiscVContext *context);
+void riscVCodeForStmtUpdate(RiscVContext *context);
+void riscVCodeForEntryStmt(RiscVContext *context);
+void riscVCodeForUpdateExit(RiscVContext *context);
 
 #endif

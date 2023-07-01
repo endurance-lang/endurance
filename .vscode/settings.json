@@ -4,6 +4,7 @@
         "register-manager.h": "c",
         "ratio": "c",
         "types.h": "c",
-        "label-stack.h": "c"
+        "label-stack.h": "c",
+        "symboltable.h": "c"
     }
 }

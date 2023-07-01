@@ -17,13 +17,14 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     return new;
 }
 
+//return the next label
 char* getLabel() {
     char *label = (char*) malloc(100 * sizeof(char));
     sprintf(label,"label_%d", newlabel++);
     return label;
 }
 
-
+//code for assign
 int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2){
     int regdes;
     if(rManagerHasVar(context->rm, var)) regdes = rManagerGetRegVar(context->rm, var);
@@ -57,6 +58,7 @@ int riscVCodeGenInteger(RiscVContext *context, int num){
     return regdes;
 }
 
+//Code for binary operations
 int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2){
     int regdes = rManagerGetRegTemp(context->rm);
     switch (op)
@@ -87,6 +89,7 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
     return regdes;
 }
 
+//Code for Variables
 int riscVCodeGenVariable(RiscVContext *context, char *var){
     int regdes = -4;
     if(rManagerHasVar(context->rm, var)) {
@@ -125,6 +128,8 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
     return regdes;
 }
 
+
+//code for IF-ELSE
 void riscVCodeExpr(RiscVContext *context, int reg){
     char* currentLabelElse = getLabel();
     char* currentLabelExit = getLabel();
@@ -144,6 +149,54 @@ void riscVCodeExit(RiscVContext *context){
     popLabel(&context->if_else);
 }
 
+//Code for repetition
+void riscVCodeRepEntry(RiscVContext *context){
+    
+    char *lbl_entry = getLabel();
+    char *lbl_exit = getLabel();
+    pushLabel(&context->rep_entry, lbl_entry);
+    pushLabel(&context->rep_exit, lbl_exit);
+    fprintf(context->fileName, "%s:\n", lbl_entry);
+    
+}
+
+void riscVCodeRepExpr(RiscVContext *context, int reg){
+    fprintf(context->fileName, "BEQ x0, x%d, %s\n", reg, context->rep_exit->label);
+}
+
+void riscVCodeRepExit(RiscVContext *context){
+    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->rep_entry->label);
+    fprintf(context->fileName, "%s:\n", context->rep_exit->label);
+    popLabel(&context->rep_entry);
+    popLabel(&context->rep_exit);
+}
+
+
+//Code for FOR
+void riscVCodeForStmtUpdate(RiscVContext *context){
+    char *lbl_stmt = getLabel();
+    char *lbl_update = getLabel();
+    pushLabel(&context->for_stmt, lbl_stmt);
+    pushLabel(&context->for_update, lbl_update);
+    fprintf(context->fileName, "BEQ x0, x0, %s\n", lbl_stmt);
+    fprintf(context->fileName, "%s:\n", lbl_update);
+}
+
+void riscVCodeForEntryStmt(RiscVContext *context){
+    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->rep_entry->label);
+    fprintf(context->fileName, "%s:\n", context->for_stmt->label);
+}
+
+void riscVCodeForUpdateExit(RiscVContext *context){
+    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->for_update->label);
+    fprintf(context->fileName, "%s:\n", context->rep_exit->label);
+    popLabel(&context->rep_entry);
+    popLabel(&context->rep_exit);
+    popLabel(&context->for_stmt);
+    popLabel(&context->for_update);
+}
+
+//only store all registers
 void riscVSaveRegisters(RiscVContext *context) {
     for(int i=0;i<32;i++){
         char *varToFree = rManagerGetVar(context->rm,i);

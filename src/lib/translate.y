@@ -47,7 +47,9 @@ void handleRepEntry();
 void handleRepExpr(ExprData e);
 void handleRepExit();
 
-void handleForExit();
+void handleForStmtUpdate();
+void handleForEntryStmt();
+void handleForUpdateExit();
 
 %}
 
@@ -126,28 +128,9 @@ caselist: caselist CASE term COLON stmts    {  }
     ;
 
 repetition: {handleRepEntry();} WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { handleRepExit(); }
-    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {
-        char *lbl_stmt = getLabel();
-        char *lbl_update = getLabel();
-        pushLabel(&riscv->for_stmt, lbl_stmt);
-        pushLabel(&riscv->for_update, lbl_update);
-        fprintf(friscv, "BEQ x0, x0, %s\n", lbl_stmt);
-        fprintf(friscv, "%s:\n", lbl_update);
-    } optexpr {
-        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
-        fprintf(friscv, "%s:\n", riscv->for_stmt->label);
-    } CLOSE_PAREN stmt {
-        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
-        fprintf(friscv, "%s:\n", riscv->rep_exit->label);
-        popLabel(&riscv->rep_entry);
-        popLabel(&riscv->rep_exit);
-        popLabel(&riscv->for_stmt);
-        popLabel(&riscv->for_update);
-    }
+    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleForStmtUpdate();} optexpr {handleForEntryStmt();} CLOSE_PAREN stmt {handleForUpdateExit();}
 
-    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr {
-        handleRepExpr($6);
-    } CLOSE_PAREN SEMI_COLON { handleRepExit(); }
+    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr {handleRepExpr($6);} CLOSE_PAREN SEMI_COLON {handleRepExit();}
     ;
 
 repexpr: expr { handleRepExpr($1); }
@@ -345,66 +328,33 @@ void handleCondExit() {
 }
 
 void handleRepEntry() {
-    char *lbl_entry = getLabel();
-    char *lbl_exit = getLabel();
-    pushLabel(&riscv->rep_entry, lbl_entry);
-    pushLabel(&riscv->rep_exit, lbl_exit);
-
-    fprintf(friscv, "%s:\n", lbl_entry);
+    riscVCodeRepEntry(riscv);
 }
 
 void handleRepExpr(ExprData e) {
-    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, riscv->rep_exit->label);
+    riscVCodeRepExpr(riscv,e.reg);
 }
 
 void handleRepExit() {
-    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
+    riscVCodeRepExit(riscv);
+}
+
+void handleForStmtUpdate() {
+    riscVCodeForStmtUpdate(riscv);
+}
+
+void handleForEntryStmt() {
+    riscVCodeForEntryStmt(riscv);
+}
+
+void handleForUpdateExit() {
+    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
     fprintf(friscv, "%s:\n", riscv->rep_exit->label);
     popLabel(&riscv->rep_entry);
     popLabel(&riscv->rep_exit);
+    popLabel(&riscv->for_stmt);
+    popLabel(&riscv->for_update);
 }
-
-void handleForExit() {
-    /* initialize
-    entry:
-        RepExpr -> verifica e se vai pro final
-
-        BEQ x0, x0, lbl_stmt
-        lbl_last:
-
-        last expr
-        BEQ x0, x0, entry
-        lbl_stmt:
-        stmt
-        BEQ x0, x0, lbl_last
-    exit: */
-
-    
-}
-
-/* void handleOperation(int opcode, ...) {
-    va_list args;
-    va_start(args, opcode);
-
-    switch(opcode) {
-    case ASSIGN: {
-        STNIdentifier *left = STN_IDENTIFIER(va_arg(args, SyntaxTreeNode*));
-        STNOperation *right = STN_OPERATION(va_arg(args, SyntaxTreeNode*));
-
-        Symbol *sym_id = symbolTableFind(st, left->id);
-        if(!sym_id) reportAndExit("Variável \"%s\" nao declarada\n", left->id);
-        if(sym_id->type != SymbolTypeVariable) reportAndExit("\"%s\" nao e uma variavel\n", left->id);
-        STNReturnExec r = stnExecute(STN(right));
-        if(strcmp(sym_id->datatype, r.type)) 
-            reportAndExit("Impossivel assinalar um valor do tipo \"%s\" para uma variavel do tipo \"%s\"\n", r.type, sym_id->datatype);
-        fprintf(gen, "addi Rd, R%d, 0\n", r.temp);
-        break;
-    }
-    default: reportAndExit("Invalid Operation\n");
-    };
-
-    va_end(args);
-} */
 
 void reportAndExit(const char *s, ...) {
     char msg[100];

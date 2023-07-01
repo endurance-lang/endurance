@@ -116,10 +116,12 @@ void handleRepEntry();
 void handleRepExpr(ExprData e);
 void handleRepExit();
 
-void handleForExit();
+void handleForStmtUpdate();
+void handleForEntryStmt();
+void handleForUpdateExit();
 
 
-#line 123 "translate.tab.c"
+#line 125 "translate.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -245,7 +247,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 55 "translate.y"
+#line 57 "translate.y"
 
     char *string;
     int integer;
@@ -253,7 +255,7 @@ union YYSTYPE
     int boolean;
     ExprData exprData;
 
-#line 257 "translate.tab.c"
+#line 259 "translate.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -635,16 +637,16 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   100,   100,   103,   104,   107,   108,   109,   110,   111,
-     112,   113,   115,   116,   116,   117,   120,   123,   124,   125,
-     128,   128,   129,   129,   136,   129,   148,   148,   148,   153,
-     156,   159,   159,   162,   163,   166,   167,   170,   171,   174,
-     175,   179,   180,   181,   182,   183,   184,   185,   188,   189,
-     192,   193,   196,   197,   200,   201,   202,   203,   204,   205,
-     206,   207,   208,   209,   210,   211,   212,   213,   214,   215,
-     216,   217,   218,   219,   220,   221,   222,   223,   224,   228,
-     229,   230,   233,   234,   237,   238,   239,   240,   242,   243,
-     247,   248,   252,   253
+       0,   102,   102,   105,   106,   109,   110,   111,   112,   113,
+     114,   115,   117,   118,   118,   119,   122,   125,   126,   127,
+     130,   130,   131,   131,   131,   131,   133,   133,   133,   136,
+     139,   142,   142,   145,   146,   149,   150,   153,   154,   157,
+     158,   162,   163,   164,   165,   166,   167,   168,   171,   172,
+     175,   176,   179,   180,   183,   184,   185,   186,   187,   188,
+     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
+     199,   200,   201,   202,   203,   204,   205,   206,   207,   211,
+     212,   213,   216,   217,   220,   221,   222,   223,   225,   226,
+     230,   231,   235,   236
 };
 #endif
 
@@ -1626,578 +1628,559 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 100 "translate.y"
+#line 102 "translate.y"
                {  }
-#line 1632 "translate.tab.c"
+#line 1634 "translate.tab.c"
     break;
 
   case 3:
-#line 103 "translate.y"
+#line 105 "translate.y"
                                     {  }
-#line 1638 "translate.tab.c"
+#line 1640 "translate.tab.c"
     break;
 
   case 4:
-#line 104 "translate.y"
+#line 106 "translate.y"
                                     {  }
-#line 1644 "translate.tab.c"
+#line 1646 "translate.tab.c"
     break;
 
   case 5:
-#line 107 "translate.y"
+#line 109 "translate.y"
                                 {  }
-#line 1650 "translate.tab.c"
+#line 1652 "translate.tab.c"
     break;
 
   case 6:
-#line 108 "translate.y"
+#line 110 "translate.y"
                                 {  }
-#line 1656 "translate.tab.c"
+#line 1658 "translate.tab.c"
     break;
 
   case 7:
-#line 109 "translate.y"
+#line 111 "translate.y"
                                 {  }
-#line 1662 "translate.tab.c"
+#line 1664 "translate.tab.c"
     break;
 
   case 8:
-#line 110 "translate.y"
+#line 112 "translate.y"
                                 {  }
-#line 1668 "translate.tab.c"
+#line 1670 "translate.tab.c"
     break;
 
   case 9:
-#line 111 "translate.y"
+#line 113 "translate.y"
                                 {  }
-#line 1674 "translate.tab.c"
+#line 1676 "translate.tab.c"
     break;
 
   case 10:
-#line 112 "translate.y"
+#line 114 "translate.y"
                                 {  }
-#line 1680 "translate.tab.c"
+#line 1682 "translate.tab.c"
     break;
 
   case 11:
-#line 113 "translate.y"
+#line 115 "translate.y"
                                    {  }
-#line 1686 "translate.tab.c"
+#line 1688 "translate.tab.c"
     break;
 
   case 12:
-#line 115 "translate.y"
+#line 117 "translate.y"
                                                                { handleCondElse(); handleCondExit(); }
-#line 1692 "translate.tab.c"
+#line 1694 "translate.tab.c"
     break;
 
   case 13:
-#line 116 "translate.y"
+#line 118 "translate.y"
                                                    { handleCondElse();  }
-#line 1698 "translate.tab.c"
+#line 1700 "translate.tab.c"
     break;
 
   case 14:
-#line 116 "translate.y"
+#line 118 "translate.y"
                                                                                { handleCondExit(); }
-#line 1704 "translate.tab.c"
+#line 1706 "translate.tab.c"
     break;
 
   case 15:
-#line 117 "translate.y"
+#line 119 "translate.y"
                                                                              {  }
-#line 1710 "translate.tab.c"
+#line 1712 "translate.tab.c"
     break;
 
   case 16:
-#line 120 "translate.y"
+#line 122 "translate.y"
                                 { handleCondExpr((yyvsp[0].exprData)); }
-#line 1716 "translate.tab.c"
+#line 1718 "translate.tab.c"
     break;
 
   case 17:
-#line 123 "translate.y"
+#line 125 "translate.y"
                                             {  }
-#line 1722 "translate.tab.c"
+#line 1724 "translate.tab.c"
     break;
 
   case 18:
-#line 124 "translate.y"
+#line 126 "translate.y"
                                             {  }
-#line 1728 "translate.tab.c"
+#line 1730 "translate.tab.c"
     break;
 
   case 19:
-#line 125 "translate.y"
+#line 127 "translate.y"
                                             {  }
-#line 1734 "translate.tab.c"
+#line 1736 "translate.tab.c"
     break;
 
   case 20:
-#line 128 "translate.y"
+#line 130 "translate.y"
             {handleRepEntry();}
-#line 1740 "translate.tab.c"
+#line 1742 "translate.tab.c"
     break;
 
   case 21:
-#line 128 "translate.y"
+#line 130 "translate.y"
                                                                           { handleRepExit(); }
-#line 1746 "translate.tab.c"
+#line 1748 "translate.tab.c"
     break;
 
   case 22:
-#line 129 "translate.y"
+#line 131 "translate.y"
                              {handleRepEntry();}
-#line 1752 "translate.tab.c"
+#line 1754 "translate.tab.c"
     break;
 
   case 23:
-#line 129 "translate.y"
-                                                                               {
-        char *lbl_stmt = getLabel();
-        char *lbl_update = getLabel();
-        pushLabel(&riscv->for_stmt, lbl_stmt);
-        pushLabel(&riscv->for_update, lbl_update);
-        fprintf(friscv, "BEQ x0, x0, %s\n", lbl_stmt);
-        fprintf(friscv, "%s:\n", lbl_update);
-    }
-#line 1765 "translate.tab.c"
+#line 131 "translate.y"
+                                                                               {handleForStmtUpdate();}
+#line 1760 "translate.tab.c"
     break;
 
   case 24:
-#line 136 "translate.y"
-              {
-        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
-        fprintf(friscv, "%s:\n", riscv->for_stmt->label);
-    }
-#line 1774 "translate.tab.c"
+#line 131 "translate.y"
+                                                                                                                {handleForEntryStmt();}
+#line 1766 "translate.tab.c"
     break;
 
   case 25:
-#line 139 "translate.y"
-                       {
-        fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
-        fprintf(friscv, "%s:\n", riscv->rep_exit->label);
-        popLabel(&riscv->rep_entry);
-        popLabel(&riscv->rep_exit);
-        popLabel(&riscv->for_stmt);
-        popLabel(&riscv->for_update);
-    }
-#line 1787 "translate.tab.c"
+#line 131 "translate.y"
+                                                                                                                                                         {handleForUpdateExit();}
+#line 1772 "translate.tab.c"
     break;
 
   case 26:
-#line 148 "translate.y"
+#line 133 "translate.y"
       {handleRepEntry();}
-#line 1793 "translate.tab.c"
+#line 1778 "translate.tab.c"
     break;
 
   case 27:
-#line 148 "translate.y"
-                                                        {
-        handleRepExpr((yyvsp[0].exprData));
-    }
-#line 1801 "translate.tab.c"
+#line 133 "translate.y"
+                                                        {handleRepExpr((yyvsp[0].exprData));}
+#line 1784 "translate.tab.c"
     break;
 
   case 28:
-#line 150 "translate.y"
-                             { handleRepExit(); }
-#line 1807 "translate.tab.c"
+#line 133 "translate.y"
+                                                                                                    {handleRepExit();}
+#line 1790 "translate.tab.c"
     break;
 
   case 29:
-#line 153 "translate.y"
+#line 136 "translate.y"
               { handleRepExpr((yyvsp[0].exprData)); }
-#line 1813 "translate.tab.c"
+#line 1796 "translate.tab.c"
     break;
 
   case 30:
-#line 156 "translate.y"
+#line 139 "translate.y"
                                        { handleVar((yyvsp[-2].string), (yyvsp[-1].string), (yyvsp[0].integer)); }
-#line 1819 "translate.tab.c"
+#line 1802 "translate.tab.c"
     break;
 
   case 31:
-#line 159 "translate.y"
+#line 142 "translate.y"
                             {}
-#line 1825 "translate.tab.c"
+#line 1808 "translate.tab.c"
     break;
 
   case 32:
-#line 159 "translate.y"
+#line 142 "translate.y"
                                                                                                {}
-#line 1831 "translate.tab.c"
+#line 1814 "translate.tab.c"
     break;
 
   case 33:
-#line 162 "translate.y"
+#line 145 "translate.y"
                              {}
-#line 1837 "translate.tab.c"
+#line 1820 "translate.tab.c"
     break;
 
   case 34:
-#line 163 "translate.y"
+#line 146 "translate.y"
           {}
-#line 1843 "translate.tab.c"
+#line 1826 "translate.tab.c"
     break;
 
   case 35:
-#line 166 "translate.y"
+#line 149 "translate.y"
                               {}
-#line 1849 "translate.tab.c"
+#line 1832 "translate.tab.c"
     break;
 
   case 36:
-#line 167 "translate.y"
+#line 150 "translate.y"
            {  }
-#line 1855 "translate.tab.c"
+#line 1838 "translate.tab.c"
     break;
 
   case 37:
-#line 170 "translate.y"
+#line 153 "translate.y"
                         {  }
-#line 1861 "translate.tab.c"
+#line 1844 "translate.tab.c"
     break;
 
   case 38:
-#line 171 "translate.y"
+#line 154 "translate.y"
                         {  }
-#line 1867 "translate.tab.c"
+#line 1850 "translate.tab.c"
     break;
 
   case 39:
-#line 174 "translate.y"
+#line 157 "translate.y"
                         {  }
-#line 1873 "translate.tab.c"
+#line 1856 "translate.tab.c"
     break;
 
   case 40:
-#line 175 "translate.y"
+#line 158 "translate.y"
                         {  }
-#line 1879 "translate.tab.c"
+#line 1862 "translate.tab.c"
     break;
 
   case 41:
-#line 179 "translate.y"
+#line 162 "translate.y"
                               {}
-#line 1885 "translate.tab.c"
+#line 1868 "translate.tab.c"
     break;
 
   case 42:
-#line 180 "translate.y"
+#line 163 "translate.y"
                        {}
-#line 1891 "translate.tab.c"
+#line 1874 "translate.tab.c"
     break;
 
   case 43:
-#line 181 "translate.y"
+#line 164 "translate.y"
                           {}
-#line 1897 "translate.tab.c"
+#line 1880 "translate.tab.c"
     break;
 
   case 44:
-#line 182 "translate.y"
+#line 165 "translate.y"
                                                {}
-#line 1903 "translate.tab.c"
+#line 1886 "translate.tab.c"
     break;
 
   case 45:
-#line 183 "translate.y"
+#line 166 "translate.y"
                                 {}
-#line 1909 "translate.tab.c"
+#line 1892 "translate.tab.c"
     break;
 
   case 46:
-#line 184 "translate.y"
+#line 167 "translate.y"
                                                        { }
-#line 1915 "translate.tab.c"
+#line 1898 "translate.tab.c"
     break;
 
   case 47:
-#line 185 "translate.y"
+#line 168 "translate.y"
                                                     { }
-#line 1921 "translate.tab.c"
+#line 1904 "translate.tab.c"
     break;
 
   case 48:
-#line 188 "translate.y"
+#line 171 "translate.y"
                                     {  }
-#line 1927 "translate.tab.c"
+#line 1910 "translate.tab.c"
     break;
 
   case 49:
-#line 189 "translate.y"
+#line 172 "translate.y"
                                     {  }
-#line 1933 "translate.tab.c"
+#line 1916 "translate.tab.c"
     break;
 
   case 50:
-#line 192 "translate.y"
+#line 175 "translate.y"
                                     {  }
-#line 1939 "translate.tab.c"
+#line 1922 "translate.tab.c"
     break;
 
   case 51:
-#line 193 "translate.y"
+#line 176 "translate.y"
                                     {  }
-#line 1945 "translate.tab.c"
+#line 1928 "translate.tab.c"
     break;
 
   case 52:
-#line 196 "translate.y"
+#line 179 "translate.y"
                                     {  }
-#line 1951 "translate.tab.c"
+#line 1934 "translate.tab.c"
     break;
 
   case 53:
-#line 197 "translate.y"
+#line 180 "translate.y"
                                     { }
-#line 1957 "translate.tab.c"
+#line 1940 "translate.tab.c"
     break;
 
   case 54:
-#line 200 "translate.y"
+#line 183 "translate.y"
                     { (yyval.exprData) = handleBinaryExpr(ADD, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 1963 "translate.tab.c"
+#line 1946 "translate.tab.c"
     break;
 
   case 55:
-#line 201 "translate.y"
+#line 184 "translate.y"
                     { (yyval.exprData) = handleBinaryExpr(SUB, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 1969 "translate.tab.c"
+#line 1952 "translate.tab.c"
     break;
 
   case 56:
-#line 202 "translate.y"
+#line 185 "translate.y"
                     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 1975 "translate.tab.c"
+#line 1958 "translate.tab.c"
     break;
 
   case 57:
-#line 203 "translate.y"
+#line 186 "translate.y"
                     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 1981 "translate.tab.c"
+#line 1964 "translate.tab.c"
     break;
 
   case 58:
-#line 204 "translate.y"
+#line 187 "translate.y"
                     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 1987 "translate.tab.c"
+#line 1970 "translate.tab.c"
     break;
 
   case 59:
-#line 205 "translate.y"
+#line 188 "translate.y"
                                 { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 1993 "translate.tab.c"
+#line 1976 "translate.tab.c"
     break;
 
   case 60:
-#line 206 "translate.y"
+#line 189 "translate.y"
                                 { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 1999 "translate.tab.c"
+#line 1982 "translate.tab.c"
     break;
 
   case 61:
-#line 207 "translate.y"
+#line 190 "translate.y"
                                 { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2005 "translate.tab.c"
+#line 1988 "translate.tab.c"
     break;
 
   case 62:
-#line 208 "translate.y"
+#line 191 "translate.y"
                                 { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2011 "translate.tab.c"
+#line 1994 "translate.tab.c"
     break;
 
   case 63:
-#line 209 "translate.y"
+#line 192 "translate.y"
                                 { (yyval.exprData) = handleBinaryExpr(LEFT_SHIFT, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 2017 "translate.tab.c"
+#line 2000 "translate.tab.c"
     break;
 
   case 64:
-#line 210 "translate.y"
+#line 193 "translate.y"
                                 { (yyval.exprData) = handleBinaryExpr(RIGHT_SHIFT, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 2023 "translate.tab.c"
+#line 2006 "translate.tab.c"
     break;
 
   case 65:
-#line 211 "translate.y"
+#line 194 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2029 "translate.tab.c"
+#line 2012 "translate.tab.c"
     break;
 
   case 66:
-#line 212 "translate.y"
+#line 195 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2035 "translate.tab.c"
+#line 2018 "translate.tab.c"
     break;
 
   case 67:
-#line 213 "translate.y"
+#line 196 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2041 "translate.tab.c"
+#line 2024 "translate.tab.c"
     break;
 
   case 68:
-#line 214 "translate.y"
+#line 197 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2047 "translate.tab.c"
+#line 2030 "translate.tab.c"
     break;
 
   case 69:
-#line 215 "translate.y"
+#line 198 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2053 "translate.tab.c"
+#line 2036 "translate.tab.c"
     break;
 
   case 70:
-#line 216 "translate.y"
+#line 199 "translate.y"
                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-#line 2059 "translate.tab.c"
+#line 2042 "translate.tab.c"
     break;
 
   case 71:
-#line 217 "translate.y"
+#line 200 "translate.y"
                                     { (yyval.exprData) = handleBinaryExpr(LOGICAL_AND, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 2065 "translate.tab.c"
+#line 2048 "translate.tab.c"
     break;
 
   case 72:
-#line 218 "translate.y"
+#line 201 "translate.y"
                                     { (yyval.exprData) = handleBinaryExpr(LOGICAL_OR, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
-#line 2071 "translate.tab.c"
+#line 2054 "translate.tab.c"
     break;
 
   case 73:
-#line 219 "translate.y"
+#line 202 "translate.y"
                                     { (yyval.exprData) = (yyvsp[-1].exprData); }
-#line 2077 "translate.tab.c"
+#line 2060 "translate.tab.c"
     break;
 
   case 74:
-#line 220 "translate.y"
+#line 203 "translate.y"
                                     { /* geraTemp1, chama codeGen(op, t1) */ }
-#line 2083 "translate.tab.c"
+#line 2066 "translate.tab.c"
     break;
 
   case 75:
-#line 221 "translate.y"
+#line 204 "translate.y"
                                     {  }
-#line 2089 "translate.tab.c"
+#line 2072 "translate.tab.c"
     break;
 
   case 76:
-#line 222 "translate.y"
+#line 205 "translate.y"
                                     { (yyval.exprData) = (yyvsp[0].exprData); }
-#line 2095 "translate.tab.c"
+#line 2078 "translate.tab.c"
     break;
 
   case 77:
-#line 223 "translate.y"
+#line 206 "translate.y"
                                     { (yyval.exprData) = handleAssignExpr((yyvsp[-2].string), (yyvsp[0].exprData)); }
-#line 2101 "translate.tab.c"
+#line 2084 "translate.tab.c"
     break;
 
   case 78:
-#line 224 "translate.y"
+#line 207 "translate.y"
                                     { /* return symbol table size of identifier */ }
-#line 2107 "translate.tab.c"
+#line 2090 "translate.tab.c"
     break;
 
   case 79:
-#line 228 "translate.y"
+#line 211 "translate.y"
             { (yyval.exprData) = (yyvsp[0].exprData); }
-#line 2113 "translate.tab.c"
+#line 2096 "translate.tab.c"
     break;
 
   case 80:
-#line 229 "translate.y"
+#line 212 "translate.y"
                                                     { /* cria a funcao e fala o temp */ }
-#line 2119 "translate.tab.c"
+#line 2102 "translate.tab.c"
     break;
 
   case 81:
-#line 230 "translate.y"
+#line 213 "translate.y"
            { (yyval.exprData) = handleAttr((yyvsp[0].string)); }
-#line 2125 "translate.tab.c"
+#line 2108 "translate.tab.c"
     break;
 
   case 82:
-#line 233 "translate.y"
+#line 216 "translate.y"
                                 { (yyval.string) = (yyvsp[-1].string); }
-#line 2131 "translate.tab.c"
+#line 2114 "translate.tab.c"
     break;
 
   case 83:
-#line 234 "translate.y"
+#line 217 "translate.y"
                                 { (yyval.string) = mergeStrPointers((yyvsp[-2].string), (yyvsp[0].string)); }
-#line 2137 "translate.tab.c"
+#line 2120 "translate.tab.c"
     break;
 
   case 84:
-#line 237 "translate.y"
+#line 220 "translate.y"
                         { (yyval.exprData).returnType = strdup("jib"); (yyval.exprData).reg = riscVCodeGenInteger(riscv, (yyvsp[0].integer)); }
-#line 2143 "translate.tab.c"
+#line 2126 "translate.tab.c"
     break;
 
   case 85:
-#line 238 "translate.y"
+#line 221 "translate.y"
                         { (yyval.exprData).returnType = strdup("ship"); (yyval.exprData).reg = 0;  }
-#line 2149 "translate.tab.c"
+#line 2132 "translate.tab.c"
     break;
 
   case 86:
-#line 239 "translate.y"
+#line 222 "translate.y"
                         { /* chama codeGen() e retorna o Temporary */  }
-#line 2155 "translate.tab.c"
+#line 2138 "translate.tab.c"
     break;
 
   case 87:
-#line 240 "translate.y"
+#line 223 "translate.y"
                         { /* chama codeGen() e retorna o Temporary */  }
-#line 2161 "translate.tab.c"
+#line 2144 "translate.tab.c"
     break;
 
   case 88:
-#line 242 "translate.y"
+#line 225 "translate.y"
                                 { (yyval.boolean) = (yyvsp[0].boolean); }
-#line 2167 "translate.tab.c"
+#line 2150 "translate.tab.c"
     break;
 
   case 89:
-#line 243 "translate.y"
+#line 226 "translate.y"
                                 { (yyval.boolean) = (yyvsp[0].boolean); }
-#line 2173 "translate.tab.c"
+#line 2156 "translate.tab.c"
     break;
 
   case 90:
-#line 247 "translate.y"
+#line 230 "translate.y"
                                     { (yyval.exprData) = (yyvsp[-1].exprData); }
-#line 2179 "translate.tab.c"
+#line 2162 "translate.tab.c"
     break;
 
   case 91:
-#line 248 "translate.y"
+#line 231 "translate.y"
                                     {  }
-#line 2185 "translate.tab.c"
+#line 2168 "translate.tab.c"
     break;
 
   case 92:
-#line 252 "translate.y"
+#line 235 "translate.y"
                                        { (yyval.integer) = (yyvsp[-1].integer); }
-#line 2191 "translate.tab.c"
+#line 2174 "translate.tab.c"
     break;
 
   case 93:
-#line 253 "translate.y"
+#line 236 "translate.y"
                                     { (yyval.integer) = 1; }
-#line 2197 "translate.tab.c"
+#line 2180 "translate.tab.c"
     break;
 
 
-#line 2201 "translate.tab.c"
+#line 2184 "translate.tab.c"
 
       default: break;
     }
@@ -2429,7 +2412,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 256 "translate.y"
+#line 239 "translate.y"
 
 
 /**
@@ -2522,66 +2505,33 @@ void handleCondExit() {
 }
 
 void handleRepEntry() {
-    char *lbl_entry = getLabel();
-    char *lbl_exit = getLabel();
-    pushLabel(&riscv->rep_entry, lbl_entry);
-    pushLabel(&riscv->rep_exit, lbl_exit);
-
-    fprintf(friscv, "%s:\n", lbl_entry);
+    riscVCodeRepEntry(riscv);
 }
 
 void handleRepExpr(ExprData e) {
-    fprintf(friscv, "BEQ x0, x%d, %s\n", e.reg, riscv->rep_exit->label);
+    riscVCodeRepExpr(riscv,e.reg);
 }
 
 void handleRepExit() {
-    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->rep_entry->label);
+    riscVCodeRepExit(riscv);
+}
+
+void handleForStmtUpdate() {
+    riscVCodeForStmtUpdate(riscv);
+}
+
+void handleForEntryStmt() {
+    riscVCodeForEntryStmt(riscv);
+}
+
+void handleForUpdateExit() {
+    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
     fprintf(friscv, "%s:\n", riscv->rep_exit->label);
     popLabel(&riscv->rep_entry);
     popLabel(&riscv->rep_exit);
+    popLabel(&riscv->for_stmt);
+    popLabel(&riscv->for_update);
 }
-
-void handleForExit() {
-    /* initialize
-    entry:
-        RepExpr -> verifica e se vai pro final
-
-        BEQ x0, x0, lbl_stmt
-        lbl_last:
-
-        last expr
-        BEQ x0, x0, entry
-        lbl_stmt:
-        stmt
-        BEQ x0, x0, lbl_last
-    exit: */
-
-    
-}
-
-/* void handleOperation(int opcode, ...) {
-    va_list args;
-    va_start(args, opcode);
-
-    switch(opcode) {
-    case ASSIGN: {
-        STNIdentifier *left = STN_IDENTIFIER(va_arg(args, SyntaxTreeNode*));
-        STNOperation *right = STN_OPERATION(va_arg(args, SyntaxTreeNode*));
-
-        Symbol *sym_id = symbolTableFind(st, left->id);
-        if(!sym_id) reportAndExit("Variável \"%s\" nao declarada\n", left->id);
-        if(sym_id->type != SymbolTypeVariable) reportAndExit("\"%s\" nao e uma variavel\n", left->id);
-        STNReturnExec r = stnExecute(STN(right));
-        if(strcmp(sym_id->datatype, r.type)) 
-            reportAndExit("Impossivel assinalar um valor do tipo \"%s\" para uma variavel do tipo \"%s\"\n", r.type, sym_id->datatype);
-        fprintf(gen, "addi Rd, R%d, 0\n", r.temp);
-        break;
-    }
-    default: reportAndExit("Invalid Operation\n");
-    };
-
-    va_end(args);
-} */
 
 void reportAndExit(const char *s, ...) {
     char msg[100];
