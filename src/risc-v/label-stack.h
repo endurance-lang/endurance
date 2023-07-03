@@ -8,7 +8,7 @@ struct labelStack {
     struct labelStack *next;
 };
 
-void pushLabel(LabelStack **lst, char *label);
-void popLabel(LabelStack **lst);
+void labelStackPush(LabelStack **lst, char *label);
+void labelStackPop(LabelStack **lst);
 
 #endif

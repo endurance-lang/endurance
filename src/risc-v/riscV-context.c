@@ -13,7 +13,7 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     new->fileName = filename;
     new->symbolTable = st;
     new->rm = rManagerCreate();
-    new->if_else = new->if_exit = new->rep_entry = new->rep_exit = new->for_stmt, new->for_update = NULL;
+    new->if_else = new->if_exit = new->rep_entry = new->rep_exit = new->rep_stmt, new->rep_update = NULL;
     return new;
 }
 
@@ -61,6 +61,7 @@ int riscVCodeGenInteger(RiscVContext *context, int num){
 //Code for binary operations
 int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg2){
     int regdes = rManagerGetRegTemp(context->rm);
+    fprintf(context->fileName, "# handle operation %d\n", op);
     switch (op)
     {
     case ADD:
@@ -82,52 +83,33 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
         fprintf(context->fileName, "or x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case EQ: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "beq x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "xor x%d, x%d, x%d\n", regdes, reg1, reg2);
+        fprintf(context->fileName, "seqz x%d, x%d\n", regdes, regdes);
         break;
     }
     case NE: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "bne x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "xor x%d, x%d, x%d\n", regdes, reg1, reg2);
+        fprintf(context->fileName, "snez x%d, x%d\n", regdes, regdes);
         break;
     }
     case LT: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "bge x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg1, reg2);
         break;
     }
 
     case GT: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "bge x%d, x%d, %s\n", reg2, reg1, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg2, reg1);
         break;
     }
+    
     case LE: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "blt x%d, x%d, %s\n", reg2, reg1, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg2, reg1);
+        fprintf(context->fileName, "not x%d, x%d\n", regdes, regdes);
         break;
     }
     case GE: {
-        char *lbl = getLabel();
-        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "blt x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "%s:\n", lbl);
+        fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg1, reg2);
+        fprintf(context->fileName, "not x%d, x%d\n", regdes, regdes);
     }
     default:
         printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V\n",op);
@@ -188,70 +170,65 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
 
 
 //code for IF-ELSE
-void riscVCodeExpr(RiscVContext *context, int reg){
+void riscVCodeIfAfterExpr(RiscVContext *context, int reg){
     char* currentLabelElse = getLabel();
     char* currentLabelExit = getLabel();
-    pushLabel(&context->if_else,currentLabelElse);
-    pushLabel(&context->if_exit,currentLabelExit);
+    labelStackPush(&context->if_else,currentLabelElse);
+    labelStackPush(&context->if_exit,currentLabelExit);
     fprintf(context->fileName, "beq x0, x%d, %s\n", reg, currentLabelElse);
 }
 
-void riscVCodeElse(RiscVContext *context){
+void riscVCodeIfAfterStmt(RiscVContext *context){
     fprintf(context->fileName, "beq x0, x0, %s\n", context->if_exit->label);
     fprintf(context->fileName, "%s:\n", context->if_else->label);
 }
 
-void riscVCodeExit(RiscVContext *context){
+void riscVCodeIfAfterElse(RiscVContext *context){
     fprintf(context->fileName, "%s:\n", context->if_exit->label);
-    popLabel(&context->if_exit);
-    popLabel(&context->if_else);
+    labelStackPop(&context->if_exit);
+    labelStackPop(&context->if_else);
 }
 
 //Code for repetition
 void riscVCodeRepEntry(RiscVContext *context){
-    
     char *lbl_entry = getLabel();
     char *lbl_exit = getLabel();
-    pushLabel(&context->rep_entry, lbl_entry);
-    pushLabel(&context->rep_exit, lbl_exit);
+    char *lbl_stmt = getLabel();
+    char *lbl_update = getLabel();
+    labelStackPush(&context->rep_entry, lbl_entry);
+    labelStackPush(&context->rep_exit, lbl_exit);
+    labelStackPush(&context->rep_stmt, lbl_stmt);
+    labelStackPush(&context->rep_update, lbl_update);
     fprintf(context->fileName, "%s:\n", lbl_entry);
-    
 }
 
-void riscVCodeRepExpr(RiscVContext *context, int reg){
+void riscVCodeRepAfterExpr(RiscVContext *context, int reg){
     fprintf(context->fileName, "beq x0, x%d, %s\n", reg, context->rep_exit->label);
+    fprintf(context->fileName, "j %s\n", context->rep_stmt->label);
 }
 
 void riscVCodeRepExit(RiscVContext *context){
-    fprintf(context->fileName, "beq x0, x0, %s\n", context->rep_entry->label);
     fprintf(context->fileName, "%s:\n", context->rep_exit->label);
-    popLabel(&context->rep_entry);
-    popLabel(&context->rep_exit);
+    labelStackPop(&context->rep_entry);
+    labelStackPop(&context->rep_exit);
+    labelStackPop(&context->rep_stmt);
+    labelStackPop(&context->rep_update);
 }
 
-
-//Code for FOR
-void riscVCodeForStmtUpdate(RiscVContext *context){
-    char *lbl_stmt = getLabel();
-    char *lbl_update = getLabel();
-    pushLabel(&context->for_stmt, lbl_stmt);
-    pushLabel(&context->for_update, lbl_update);
-    fprintf(context->fileName, "beq x0, x0, %s\n", lbl_stmt);
-    fprintf(context->fileName, "%s:\n", lbl_update);
+void riscVCodeRepUpdate(RiscVContext *context){
+    fprintf(context->fileName, "%s:\n", context->rep_update->label);
 }
 
-void riscVCodeForEntryStmt(RiscVContext *context){
-    fprintf(context->fileName, "beq x0, x0, %s\n", context->rep_entry->label);
-    fprintf(context->fileName, "%s:\n", context->for_stmt->label);
+void riscVCodeRepStmt(RiscVContext *context){
+    fprintf(context->fileName, "%s:\n", context->rep_stmt->label);
 }
 
-void riscVCodeForUpdateExit(RiscVContext *context){
-    fprintf(context->fileName, "beq x0, x0, %s\n", context->for_update->label);
-    fprintf(context->fileName, "%s:\n", context->rep_exit->label);
-    popLabel(&context->rep_entry);
-    popLabel(&context->rep_exit);
-    popLabel(&context->for_stmt);
-    popLabel(&context->for_update);
+void riscVCodeRepGotoEntry(RiscVContext *context) {
+    fprintf(context->fileName, "j %s\n", context->rep_entry->label);
+}
+
+void riscVCodeRepGotoUpdate(RiscVContext *context) {
+    fprintf(context->fileName, "j %s\n", context->rep_update->label);
 }
 
 //only store all registers

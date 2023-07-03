@@ -127,16 +127,15 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 62 "translate.y"
+#line 61 "translate.y"
 
     char *string;
     int integer;
     double decimal;
     int boolean;
     ExprData exprData;
-    VariableData var;
 
-#line 140 "translate.tab.h"
+#line 139 "translate.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

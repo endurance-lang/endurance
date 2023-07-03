@@ -30,7 +30,7 @@ void blockOpen();
 void blockClose();
 
 // void handleStruct();
-void handleVarDeclaration(char *type, char *id, VariableData v);
+void handleVarDeclaration(char *type, char *id, int size);
 ExprData handleAttr(char *id);
 void handleOperation(int opcode, ...);
 ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2);
@@ -40,18 +40,18 @@ void reportAndExit(const char *s, ...);
 
 char *mergeStrPointers(char *a, char *b);
 
-void handleCondExpr(ExprData e);
-void handleCondElse();
-void handleCondExit();
+void handleIfAfterExpr(ExprData e);
+void handleIfAfterStmt();
+void handleIfAfterElse();
 
 void handleRepEntry();
-void handleRepExpr(ExprData e);
+void handleRepAfterExpr(ExprData e);
+void handleRepUpdate();
+void handleRepStmt();
 void handleRepExit();
 
-void handleForStmtUpdate();
-void handleForEntryStmt();
-void handleForUpdateExit();
-
+void handleRepGotoEntry();
+void handleRepGotoUpdate();
 
 void handleFunctionCall();
 
@@ -64,7 +64,6 @@ void handleFunctionCall();
     double decimal;
     int boolean;
     ExprData exprData;
-    VariableData var;
 };
 
 %token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
@@ -75,7 +74,7 @@ void handleFunctionCall();
 %token <integer> INTEGER
 %token <boolean> TRUE FALSE
 
-%type <var> constvector
+%type <integer> constvector
 %type <boolean> boolean
 %type <string> attr
 %type <exprData> expr term const exprvector
@@ -119,26 +118,27 @@ stmt: conditional               {  }
     | expr SEMI_COLON           {  }
     | BLOCK_OPEN stmts BLOCK_CLOSE {  }
 
-conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX { handleCondElse(); handleCondExit(); }
-    | IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE { handleCondElse();  } stmt { handleCondExit(); }
-    | SWITCH OPEN_PAREN condexpr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  }
+conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX { handleIfAfterStmt(); handleIfAfterElse(); }
+    | IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE { handleIfAfterStmt(); } stmt { handleIfAfterElse(); }
+    /* | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  } */
     ;
 
-condexpr: expr                  { handleCondExpr($1); }
+condexpr: expr                  { handleIfAfterExpr($1); }
     ;
 
-caselist: caselist CASE term COLON stmts    {  }
+/* caselist: caselist CASE term COLON stmts    {  }
     | caselist DEFAULT COLON stmts          {  }
     |                                       {  }
+    ; */
+
+repetition: WHILE {handleRepEntry();} OPEN_PAREN repexpr CLOSE_PAREN {handleRepStmt();} stmt {handleRepGotoEntry();handleRepExit();}
+
+    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleRepUpdate();} optexpr CLOSE_PAREN {handleRepGotoEntry();handleRepStmt();} stmt {handleRepGotoUpdate();handleRepExit();}
+
+    | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();}
     ;
 
-repetition: {handleRepEntry();} WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { handleRepExit(); }
-    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleForStmtUpdate();} optexpr {handleForEntryStmt();} CLOSE_PAREN stmt {handleForUpdateExit();}
-
-    | {handleRepEntry();} DO stmt WHILE OPEN_PAREN expr {handleRepExpr($6);} CLOSE_PAREN SEMI_COLON {handleRepExit();}
-    ;
-
-repexpr: expr { handleRepExpr($1); }
+repexpr: expr { handleRepAfterExpr($1); }
     ;
 
 var: IDENTIFIER IDENTIFIER constvector { handleVarDeclaration($1, $2, $3); }
@@ -237,8 +237,8 @@ exprvector:
     ;
 
 constvector: 
-    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$.size = $2; $$.isArray = 1; }
-    | /* EPS */                     { $$.size = 1; $$.isArray = 0; }
+    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$ = $2; }
+    | /* EPS */                     { $$ = 1; }
     ; 
 
 %%
@@ -252,10 +252,7 @@ constvector:
  *
  * @return Nothing
  */
-void handleVarDeclaration(char *type, char *id, VariableData v) {
-    int size = v.size;
-    int isArray = v.isArray;
-
+void handleVarDeclaration(char *type, char *id, int size) {
     Symbol *sym_type = symbolTableFind(st, type);
     if(!sym_type || sym_type->symbolType != SymbolTypeType) {
         reportAndExit("\"%s\" nao e um tipo de dados.", type);
@@ -266,20 +263,9 @@ void handleVarDeclaration(char *type, char *id, VariableData v) {
         reportAndExit("Redeclaracao do identificador \"%s\"", id);
     }
 
-    int allocSize = sym_type->data.type.bytes;
-    if(!isArray) {
-        symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize, isArray));
-        nextAddress += allocSize;
-        return;
-    }
+    int allocSize = sym_type->data.type.bytes * size;
 
-    if(size <= 0) {
-        reportAndExit("O tamanho do vetor deve ser um inteiro maior que 0.");
-    }
-
-    allocSize *= size;
-
-    symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize, isArray));
+    symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize));
     nextAddress += allocSize;
 
     printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
@@ -341,45 +327,46 @@ ExprData handleAssignExpr(char *id, ExprData e) {
     ret.reg = riscVCodeGenAssign(riscv, id, e.reg);
 }
 
-void handleCondExpr(ExprData e) {
-    riscVCodeExpr(riscv,e.reg);
+/* IF - ELSE */
+void handleIfAfterExpr(ExprData e) {
+    riscVCodeIfAfterExpr(riscv,e.reg);
 }
 
-void handleCondElse() {
-    riscVCodeElse(riscv);
+void handleIfAfterStmt() {
+    riscVCodeIfAfterStmt(riscv);
 }
 
-void handleCondExit() {
-    riscVCodeExit(riscv);
+void handleIfAfterElse() {
+    riscVCodeIfAfterElse(riscv);
 }
 
+/* WHILE - FOR - DO WHILE */
 void handleRepEntry() {
     riscVCodeRepEntry(riscv);
 }
 
-void handleRepExpr(ExprData e) {
-    riscVCodeRepExpr(riscv,e.reg);
+void handleRepAfterExpr(ExprData e) {
+    riscVCodeRepAfterExpr(riscv, e.reg);
 }
 
 void handleRepExit() {
     riscVCodeRepExit(riscv);
 }
 
-void handleForStmtUpdate() {
-    riscVCodeForStmtUpdate(riscv);
+void handleRepUpdate() {
+    riscVCodeRepUpdate(riscv);
 }
 
-void handleForEntryStmt() {
-    riscVCodeForEntryStmt(riscv);
+void handleRepStmt() {
+    riscVCodeRepStmt(riscv);
 }
 
-void handleForUpdateExit() {
-    fprintf(friscv, "BEQ x0, x0, %s\n", riscv->for_update->label);
-    fprintf(friscv, "%s:\n", riscv->rep_exit->label);
-    popLabel(&riscv->rep_entry);
-    popLabel(&riscv->rep_exit);
-    popLabel(&riscv->for_stmt);
-    popLabel(&riscv->for_update);
+void handleRepGotoEntry() {
+    riscVCodeRepGotoEntry(riscv);
+}
+
+void handleRepGotoUpdate() {
+    riscVCodeRepGotoUpdate(riscv);
 }
 
 void handleFunctionCall(char *func) {
