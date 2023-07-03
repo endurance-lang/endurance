@@ -187,13 +187,13 @@ optexpr: expr                       {  }
 
 expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
     | expr SUB expr { $$ = handleBinaryExpr(SUB, $1, $3); }
-    | expr MUL expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr DIV expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr MUL expr { $$ = handleBinaryExpr(MUL, $1, $3); }
+    | expr DIV expr { $$ = handleBinaryExpr(DIV, $1, $3); }
     | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_AND expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_OR expr      { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_NOT expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_XOR expr     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+    | expr BITWISE_AND expr     { $$ = handleBinaryExpr(BITWISE_AND, $1, $3); }
+    | expr BITWISE_OR expr      { $$ = handleBinaryExpr(BITWISE_OR, $1, $3); }
+    | expr BITWISE_NOT expr     { $$ = handleBinaryExpr(BITWISE_NOT, $1, $3); }
+    | expr BITWISE_XOR expr     { $$ = handleBinaryExpr(BITWISE_XOR, $1, $3); }
     | expr LEFT_SHIFT expr      { $$ = handleBinaryExpr(LEFT_SHIFT, $1, $3); }
     | expr RIGHT_SHIFT expr     { $$ = handleBinaryExpr(RIGHT_SHIFT, $1, $3); }
     | expr EQ expr { $$ = handleBinaryExpr(EQ, $1, $3); }

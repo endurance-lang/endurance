@@ -70,6 +70,12 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
     case SUB:
         fprintf(context->fileName,"sub x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
+    case MUL:
+        fprintf(context->fileName,"mul x%d, x%d, x%d\n",regdes,reg1,reg2);
+        break;
+    case DIV:
+        fprintf(context->fileName,"div x%d, x%d, x%d\n",regdes,reg1,reg2);
+        break;
     case LEFT_SHIFT:
         fprintf(context->fileName, "sll x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;

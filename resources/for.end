@@ -1,6 +1,6 @@
 jib i;
-i = 0;
-
-weigh_anchor ⚓️
-    i = i + 1;
-⚓️; squall (i < 3);
+jib a;
+a = 1;
+voyage(i=0; i<3; i = i + 1) ⚓️
+    a = a * 2;
+⚓️;

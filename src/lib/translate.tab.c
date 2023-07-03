@@ -1919,13 +1919,13 @@ yyreduce:
 
   case 52:
 #line 190 "translate.y"
-                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                    { (yyval.exprData) = handleBinaryExpr(MUL, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1924 "translate.tab.c"
     break;
 
   case 53:
 #line 191 "translate.y"
-                    { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                    { (yyval.exprData) = handleBinaryExpr(DIV, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1930 "translate.tab.c"
     break;
 
@@ -1937,25 +1937,25 @@ yyreduce:
 
   case 55:
 #line 193 "translate.y"
-                                { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                                { (yyval.exprData) = handleBinaryExpr(BITWISE_AND, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1942 "translate.tab.c"
     break;
 
   case 56:
 #line 194 "translate.y"
-                                { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                                { (yyval.exprData) = handleBinaryExpr(BITWISE_OR, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1948 "translate.tab.c"
     break;
 
   case 57:
 #line 195 "translate.y"
-                                { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                                { (yyval.exprData) = handleBinaryExpr(BITWISE_NOT, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1954 "translate.tab.c"
     break;
 
   case 58:
 #line 196 "translate.y"
-                                { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
+                                { (yyval.exprData) = handleBinaryExpr(BITWISE_XOR, (yyvsp[-2].exprData), (yyvsp[0].exprData)); }
 #line 1960 "translate.tab.c"
     break;
 
