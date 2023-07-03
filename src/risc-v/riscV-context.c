@@ -156,14 +156,8 @@ int  riscVCodeGenUnaryOperator(RiscVContext *context, int op, int reg1){
 //Code for Variables
 int riscVCodeGenVariable(RiscVContext *context, char *var){
     int regdes = -4;
-    if(rManagerHasVar(context->rm, var)) {
-        // printf(".%s. ta dentro ???? \n", var);
-        return rManagerGetRegVar(context->rm, var);
-    }
-    else if(rManagerHasSpaceVar(context->rm)) {
-        regdes = rManagerAddVar(context->rm, var);
-        // printf("add .%s. on reg %d\n", var, regdes);
-    }
+    if(rManagerHasVar(context->rm, var)) return rManagerGetRegVar(context->rm, var);
+    else if(rManagerHasSpaceVar(context->rm)) regdes = rManagerAddVar(context->rm, var);
     else {
         char *toFree = rManagerVarToFreeSpace(context->rm);
         int regToFree = rManagerGetRegVar(context->rm, toFree);
