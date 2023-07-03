@@ -30,7 +30,7 @@ void blockOpen();
 void blockClose();
 
 // void handleStruct();
-void handleVar(char *type, char *id, int size);
+void handleVarDeclaration(char *type, char *id, VariableData v);
 ExprData handleAttr(char *id);
 void handleOperation(int opcode, ...);
 ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2);
@@ -52,6 +52,9 @@ void handleForStmtUpdate();
 void handleForEntryStmt();
 void handleForUpdateExit();
 
+
+void handleFunctionCall();
+
 %}
 
 
@@ -61,6 +64,7 @@ void handleForUpdateExit();
     double decimal;
     int boolean;
     ExprData exprData;
+    VariableData var;
 };
 
 %token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
@@ -71,7 +75,7 @@ void handleForUpdateExit();
 %token <integer> INTEGER
 %token <boolean> TRUE FALSE
 
-%type <integer> constvector
+%type <var> constvector
 %type <boolean> boolean
 %type <string> attr
 %type <exprData> expr term const exprvector
@@ -137,7 +141,7 @@ repetition: {handleRepEntry();} WHILE OPEN_PAREN repexpr CLOSE_PAREN stmt { hand
 repexpr: expr { handleRepExpr($1); }
     ;
 
-var: IDENTIFIER IDENTIFIER constvector { handleVar($1, $2, $3); }
+var: IDENTIFIER IDENTIFIER constvector { handleVarDeclaration($1, $2, $3); }
     ;
 
 func: IDENTIFIER IDENTIFIER {} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {}
@@ -178,7 +182,7 @@ idlist: IDENTIFIER COMMA idlist     {  }
     ;
 
 optexpr: expr                       {  }
-    |                               { }
+    |                               {  }
     ;                           
 
 expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
@@ -210,7 +214,7 @@ expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
 
 
 term: const { $$ = $1; }
-    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { /* cria a funcao e fala o temp */ }
+    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { handleFunctionCall($1); }
     | attr { $$ = handleAttr($1); }
     ;
 
@@ -233,8 +237,8 @@ exprvector:
     ;
 
 constvector: 
-    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$ = $2; }
-    | /* EPS */                     { $$ = 1; }
+    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$.size = $2; $$.isArray = 1; }
+    | /* EPS */                     { $$.size = 1; $$.isArray = 0; }
     ; 
 
 %%
@@ -248,7 +252,10 @@ constvector:
  *
  * @return Nothing
  */
-void handleVar(char *type, char *id, int size) {
+void handleVarDeclaration(char *type, char *id, VariableData v) {
+    int size = v.size;
+    int isArray = v.isArray;
+
     Symbol *sym_type = symbolTableFind(st, type);
     if(!sym_type || sym_type->symbolType != SymbolTypeType) {
         reportAndExit("\"%s\" nao e um tipo de dados.", type);
@@ -259,9 +266,20 @@ void handleVar(char *type, char *id, int size) {
         reportAndExit("Redeclaracao do identificador \"%s\"", id);
     }
 
-    int allocSize = sym_type->data.type.bytes * size;
+    int allocSize = sym_type->data.type.bytes;
+    if(!isArray) {
+        symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize, isArray));
+        nextAddress += allocSize;
+        return;
+    }
 
-    symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize));
+    if(size <= 0) {
+        reportAndExit("O tamanho do vetor deve ser um inteiro maior que 0.");
+    }
+
+    allocSize *= size;
+
+    symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize, isArray));
     nextAddress += allocSize;
 
     printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
@@ -364,6 +382,15 @@ void handleForUpdateExit() {
     popLabel(&riscv->for_update);
 }
 
+void handleFunctionCall(char *func) {
+    if(!strcmp(func, "parrot")) {
+        fprintf(friscv, "li a0, 1\n");
+        fprintf(friscv, "li a1, 42\n");
+        fprintf(friscv, "ecall\n");
+        return;
+    }
+}
+
 void reportAndExit(const char *s, ...) {
     char msg[100];
     va_list args;
@@ -398,7 +425,7 @@ void onStart() {
 
     st = symbolTableNew();
 
-    friscv = fopen("./build/riscv.asm", "w");
+    friscv = fopen("./output/riscv.s", "w");
     riscv = riscV_ContextNew(friscv, st);
 
 
@@ -410,6 +437,8 @@ void onStart() {
     
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
+    symbolTableInsert(st, symbolTypeNew("void", 4));
+    symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
 }
 
 void executeProgram() {

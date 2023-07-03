@@ -35,8 +35,8 @@ int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2){
         Symbol *sym =  symbolTableFind(context->symbolTable, toFree);
 
         int tempReg = rManagerGetRegTemp(context->rm);
-        fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
-        fprintf(context->fileName, "SW x%d, 0(x%d)\n", regToFree, tempReg);
+        fprintf(context->fileName, "addi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+        fprintf(context->fileName, "sw x%d, 0(x%d)\n", regToFree, tempReg);
 
         rManagerFreeRegVar(context->rm, regToFree);
         
@@ -48,13 +48,13 @@ int riscVCodeGenAssign(RiscVContext *context, char* var, int reg2){
         regdes = rManagerAddVar(context->rm, var);
     }
 
-    fprintf(context->fileName,"ADD x%d, x%d, x0\n", regdes, reg2);
+    fprintf(context->fileName,"add x%d, x%d, x0\n", regdes, reg2);
     return regdes;
 }
 
 int riscVCodeGenInteger(RiscVContext *context, int num){
     int regdes = rManagerGetRegTemp(context->rm);
-    fprintf(context->fileName,"ADDi x%d, x0, %d\n",regdes,num);
+    fprintf(context->fileName,"addi x%d, x0, %d\n",regdes,num);
     return regdes;
 }
 
@@ -64,69 +64,69 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
     switch (op)
     {
     case ADD:
-        fprintf(context->fileName,"ADD x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName,"add x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case SUB:
-        fprintf(context->fileName,"SUB x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName,"sub x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case LEFT_SHIFT:
-        fprintf(context->fileName, "SLL x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName, "sll x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case RIGHT_SHIFT:
-        fprintf(context->fileName, "SRL x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName, "srl x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case LOGICAL_AND:
-        fprintf(context->fileName, "AND x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName, "and x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case LOGICAL_OR:
-        fprintf(context->fileName, "OR x%d, x%d, x%d\n",regdes,reg1,reg2);
+        fprintf(context->fileName, "or x%d, x%d, x%d\n",regdes,reg1,reg2);
         break;
     case EQ: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "BEQ x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "beq x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
         break;
     }
     case NE: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
-        fprintf(context->fileName, "BNE x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "bne x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
         break;
     }
     case LT: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "BGE x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "bge x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
         break;
     }
 
     case GT: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "BGE x%d, x%d, %s\n", reg2, reg1, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "bge x%d, x%d, %s\n", reg2, reg1, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
         break;
     }
     case LE: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "BLT x%d, x%d, %s\n", reg2, reg1, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "blt x%d, x%d, %s\n", reg2, reg1, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
         break;
     }
     case GE: {
         char *lbl = getLabel();
-        fprintf(context->fileName, "ADDi x%d, x0, 0\n", regdes);
-        fprintf(context->fileName, "BLT x%d, x%d, %s\n", reg1, reg2, lbl);
-        fprintf(context->fileName, "ADDi x%d, x0, 1\n", regdes);
+        fprintf(context->fileName, "addi x%d, x0, 0\n", regdes);
+        fprintf(context->fileName, "blt x%d, x%d, %s\n", reg1, reg2, lbl);
+        fprintf(context->fileName, "addi x%d, x0, 1\n", regdes);
         fprintf(context->fileName, "%s:\n", lbl);
     }
     default:
@@ -141,10 +141,10 @@ int  riscVCodeGenUnaryOperator(RiscVContext *context, int op, int reg1){
     switch (op)
     {
     case LOGICAL_NOT:
-        fprintf(context->fileName,"XORi x%d, x%d, 1\n", regdes, reg1);
+        fprintf(context->fileName,"xori x%d, x%d, 1\n", regdes, reg1);
         break;
     case SUB:
-        fprintf(context->fileName,"SUB x%d, x0, x%d\n",regdes,reg1);
+        fprintf(context->fileName,"sub x%d, x0, x%d\n",regdes,reg1);
         break;
     default:
         printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V\n",op);
@@ -170,8 +170,8 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
         Symbol *sym =  symbolTableFind(context->symbolTable, toFree);
 
         int tempReg = rManagerGetRegTemp(context->rm);
-        fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
-        fprintf(context->fileName, "SW x%d, 0(x%d)\n", regToFree, tempReg);
+        fprintf(context->fileName, "addi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+        fprintf(context->fileName, "sw x%d, 0(x%d)\n", regToFree, tempReg);
 
         rManagerFreeRegVar(context->rm, regToFree);
         
@@ -186,8 +186,8 @@ int riscVCodeGenVariable(RiscVContext *context, char *var){
 
     int tempReg = rManagerGetRegTemp(context->rm);
     Symbol *sym =  symbolTableFind(context->symbolTable, var);
-    fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
-    fprintf(context->fileName, "LW x%d, 0(x%d)\n", regdes, tempReg);
+    fprintf(context->fileName, "addi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+    fprintf(context->fileName, "lw x%d, 0(x%d)\n", regdes, tempReg);
 
     return regdes;
 }
@@ -199,11 +199,11 @@ void riscVCodeExpr(RiscVContext *context, int reg){
     char* currentLabelExit = getLabel();
     pushLabel(&context->if_else,currentLabelElse);
     pushLabel(&context->if_exit,currentLabelExit);
-    fprintf(context->fileName, "BEQ x0, x%d, %s\n", reg, currentLabelElse);
+    fprintf(context->fileName, "beq x0, x%d, %s\n", reg, currentLabelElse);
 }
 
 void riscVCodeElse(RiscVContext *context){
-    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->if_exit->label);
+    fprintf(context->fileName, "beq x0, x0, %s\n", context->if_exit->label);
     fprintf(context->fileName, "%s:\n", context->if_else->label);
 }
 
@@ -225,11 +225,11 @@ void riscVCodeRepEntry(RiscVContext *context){
 }
 
 void riscVCodeRepExpr(RiscVContext *context, int reg){
-    fprintf(context->fileName, "BEQ x0, x%d, %s\n", reg, context->rep_exit->label);
+    fprintf(context->fileName, "beq x0, x%d, %s\n", reg, context->rep_exit->label);
 }
 
 void riscVCodeRepExit(RiscVContext *context){
-    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->rep_entry->label);
+    fprintf(context->fileName, "beq x0, x0, %s\n", context->rep_entry->label);
     fprintf(context->fileName, "%s:\n", context->rep_exit->label);
     popLabel(&context->rep_entry);
     popLabel(&context->rep_exit);
@@ -242,17 +242,17 @@ void riscVCodeForStmtUpdate(RiscVContext *context){
     char *lbl_update = getLabel();
     pushLabel(&context->for_stmt, lbl_stmt);
     pushLabel(&context->for_update, lbl_update);
-    fprintf(context->fileName, "BEQ x0, x0, %s\n", lbl_stmt);
+    fprintf(context->fileName, "beq x0, x0, %s\n", lbl_stmt);
     fprintf(context->fileName, "%s:\n", lbl_update);
 }
 
 void riscVCodeForEntryStmt(RiscVContext *context){
-    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->rep_entry->label);
+    fprintf(context->fileName, "beq x0, x0, %s\n", context->rep_entry->label);
     fprintf(context->fileName, "%s:\n", context->for_stmt->label);
 }
 
 void riscVCodeForUpdateExit(RiscVContext *context){
-    fprintf(context->fileName, "BEQ x0, x0, %s\n", context->for_update->label);
+    fprintf(context->fileName, "beq x0, x0, %s\n", context->for_update->label);
     fprintf(context->fileName, "%s:\n", context->rep_exit->label);
     popLabel(&context->rep_entry);
     popLabel(&context->rep_exit);
@@ -267,8 +267,8 @@ void riscVSaveRegisters(RiscVContext *context) {
         if (varToFree != NULL){
             int tempReg = rManagerGetRegTemp(context->rm);
             Symbol *sym =  symbolTableFind(context->symbolTable, varToFree);
-            fprintf(context->fileName, "ADDi x%d, x0, %d\n", tempReg, sym->data.variable.address);
-            fprintf(context->fileName, "SW x%d, 0(x%d)\n", i, tempReg);
+            fprintf(context->fileName, "addi x%d, x0, %d\n", tempReg, sym->data.variable.address);
+            fprintf(context->fileName, "sw x%d, 0(x%d)\n", i, tempReg);
 
             rManagerFreeRegVar(context->rm,i);
         }

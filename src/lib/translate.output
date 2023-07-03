@@ -328,7 +328,7 @@ Nonterminals, with rules where they appear
     exprvector <exprData> (106)
         on left: 89 90
         on right: 81
-    constvector <integer> (107)
+    constvector <var> (107)
         on left: 91 92
         on right: 29
 

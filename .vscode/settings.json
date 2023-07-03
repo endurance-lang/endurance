@@ -6,5 +6,6 @@
         "types.h": "c",
         "label-stack.h": "c",
         "symboltable.h": "c"
-    }
+    },
+    "riscv-venus.variableFormat": "decimal"
 }
