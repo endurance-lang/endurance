@@ -1,0 +1,6 @@
+jib i;
+i = 0;
+
+weigh_anchor ⚓️
+    i = i + 1;
+⚓️; squall (i < 3);
