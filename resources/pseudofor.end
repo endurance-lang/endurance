@@ -1,0 +1,9 @@
+jib i;
+jib j;
+jib a;
+a=10;
+voyage (i = 0; i < 2; i = i + 1) ⚓️
+    voyage (j = 0; j < 2; j = j + 1) ⚓️
+        a = a + 1;
+    ⚓️; 
+⚓️;

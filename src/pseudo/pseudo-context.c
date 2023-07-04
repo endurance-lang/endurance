@@ -181,6 +181,11 @@ void pseudoCodeRepExit(PseudoContext *context){
     instStackPop(&context->repexit);
     fseek(context->fileName,0,SEEK_END);
 }
-void pseudoCodeRepUpdate(PseudoContext *context);
-void pseudoCodeRepGotoUpdate(PseudoContext *context);
+void pseudoCodeRepUpdate(PseudoContext *context){
+    instStackPush(&context->repupdate,numinstr);
+}
+void pseudoCodeRepGotoUpdate(PseudoContext *context){
+    fprintf(context->fileName,"%d: goto %4d\n",numinstr++,context->repupdate->instr);
+    instStackPop(&context->repupdate);
+}
 

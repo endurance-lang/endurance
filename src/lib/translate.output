@@ -4,6 +4,7 @@ Terminals unused in grammar
     CASE
     CONST
     DEFAULT
+    DO
     PRINTF
     SCANF
     GOTO
@@ -61,168 +62,164 @@ Grammar
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-   22 $@7: %empty
+   22 repexpr: expr
 
-   23 repetition: DO $@7 stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON
+   23 var: IDENTIFIER IDENTIFIER constvector
 
-   24 repexpr: expr
+   24 $@7: %empty
 
-   25 var: IDENTIFIER IDENTIFIER constvector
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
 
-   26 $@8: %empty
+   26 typelist: typelist COMMA var
+   27         | var
 
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
+   28 termlist: termlist COMMA term
+   29         | term
 
-   28 typelist: typelist COMMA var
-   29         | var
+   30 opttypelist: typelist
+   31            | %empty
 
-   30 termlist: termlist COMMA term
-   31         | term
-
-   32 opttypelist: typelist
+   32 opttermlist: termlist
    33            | %empty
 
-   34 opttermlist: termlist
-   35            | %empty
+   34 commands: RETURN optexpr SEMI_COLON
+   35         | BREAK SEMI_COLON
+   36         | CONTINUE SEMI_COLON
+   37         | TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON
+   38         | INCLUDE STRING SEMI_COLON
+   39         | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE
+   40         | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE
 
-   36 commands: RETURN optexpr SEMI_COLON
-   37         | BREAK SEMI_COLON
-   38         | CONTINUE SEMI_COLON
-   39         | TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON
-   40         | INCLUDE STRING SEMI_COLON
-   41         | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE
-   42         | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE
+   41 varlist: varlist var SEMI_COLON
+   42        | %empty
 
-   43 varlist: varlist var SEMI_COLON
-   44        | %empty
+   43 idlist: IDENTIFIER COMMA idlist
+   44       | IDENTIFIER
 
-   45 idlist: IDENTIFIER COMMA idlist
-   46       | IDENTIFIER
+   45 optexpr: expr
+   46        | %empty
 
-   47 optexpr: expr
-   48        | %empty
+   47 expr: expr ADD expr
+   48     | expr SUB expr
+   49     | expr MUL expr
+   50     | expr DIV expr
+   51     | expr MOD expr
+   52     | expr BITWISE_AND expr
+   53     | expr BITWISE_OR expr
+   54     | expr BITWISE_NOT expr
+   55     | expr BITWISE_XOR expr
+   56     | expr LEFT_SHIFT expr
+   57     | expr RIGHT_SHIFT expr
+   58     | expr EQ expr
+   59     | expr NE expr
+   60     | expr LT expr
+   61     | expr GT expr
+   62     | expr LE expr
+   63     | expr GE expr
+   64     | expr LOGICAL_AND expr
+   65     | expr LOGICAL_OR expr
+   66     | OPEN_PAREN expr CLOSE_PAREN
+   67     | LOGICAL_NOT expr
+   68     | SUB expr
+   69     | term
+   70     | attr ASSIGN expr
+   71     | SIZEOF IDENTIFIER
 
-   49 expr: expr ADD expr
-   50     | expr SUB expr
-   51     | expr MUL expr
-   52     | expr DIV expr
-   53     | expr MOD expr
-   54     | expr BITWISE_AND expr
-   55     | expr BITWISE_OR expr
-   56     | expr BITWISE_NOT expr
-   57     | expr BITWISE_XOR expr
-   58     | expr LEFT_SHIFT expr
-   59     | expr RIGHT_SHIFT expr
-   60     | expr EQ expr
-   61     | expr NE expr
-   62     | expr LT expr
-   63     | expr GT expr
-   64     | expr LE expr
-   65     | expr GE expr
-   66     | expr LOGICAL_AND expr
-   67     | expr LOGICAL_OR expr
-   68     | OPEN_PAREN expr CLOSE_PAREN
-   69     | LOGICAL_NOT expr
-   70     | SUB expr
-   71     | term
-   72     | attr ASSIGN expr
-   73     | SIZEOF IDENTIFIER
+   72 term: const
+   73     | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN
+   74     | attr
 
-   74 term: const
-   75     | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN
-   76     | attr
+   75 attr: IDENTIFIER exprvector
+   76     | attr POINTER attr
 
-   77 attr: IDENTIFIER exprvector
-   78     | attr POINTER attr
+   77 const: INTEGER
+   78      | DECIMAL
+   79      | STRING
+   80      | boolean
 
-   79 const: INTEGER
-   80      | DECIMAL
-   81      | STRING
-   82      | boolean
+   81 boolean: TRUE
+   82        | FALSE
 
-   83 boolean: TRUE
-   84        | FALSE
+   83 exprvector: OPEN_BRACKET expr CLOSE_BRACKET
+   84           | %empty
 
-   85 exprvector: OPEN_BRACKET expr CLOSE_BRACKET
-   86           | %empty
-
-   87 constvector: OPEN_BRACKET INTEGER CLOSE_BRACKET
-   88            | %empty
+   85 constvector: OPEN_BRACKET INTEGER CLOSE_BRACKET
+   86            | %empty
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    INCLUDE (258) 40
+    INCLUDE (258) 38
     MAIN (259)
-    BREAK (260) 37
+    BREAK (260) 35
     CASE (261)
     CONST (262)
-    CONTINUE (263) 38
+    CONTINUE (263) 36
     DEFAULT (264)
     IF (265) 11 13
     ELSE (266) 13
-    ENUM (267) 42
-    RETURN (268) 36
-    STRUCT (269) 41
-    DO (270) 23
+    ENUM (267) 40
+    RETURN (268) 34
+    STRUCT (269) 39
+    DO (270)
     PRINTF (271)
     SCANF (272)
     FOR (273) 21
     GOTO (274)
-    SIZEOF (275) 73
+    SIZEOF (275) 71
     SWITCH (276)
-    TYPEDEF (277) 39
+    TYPEDEF (277) 37
     UNION (278)
-    WHILE (279) 17 23
+    WHILE (279) 17
     FREE (280)
-    POINTER (281) 78
+    POINTER (281) 76
     SLICE (282)
     SOME (283)
     REDUCE (284)
     FILTER (285)
     MAP (286)
     SORT (287)
-    CLOSE_BRACKET (288) 85 87
-    OPEN_BRACKET (289) 85 87
-    CLOSE_PAREN (290) 11 13 17 21 23 27 68 75
-    OPEN_PAREN (291) 11 13 17 21 23 27 68 75
-    BLOCK_CLOSE (292) 10 27 41 42
-    BLOCK_OPEN (293) 10 27 41 42
-    ADD (294) 49
-    SUB (295) 50 70
-    MUL (296) 51
-    DIV (297) 52
-    BITWISE_AND (298) 54
-    BITWISE_OR (299) 55
-    BITWISE_NOT (300) 56
-    MOD (301) 53
-    LEFT_SHIFT (302) 58
-    RIGHT_SHIFT (303) 59
-    LT (304) 62
-    GT (305) 63
-    LE (306) 64
-    GE (307) 65
-    EQ (308) 60
-    NE (309) 61
-    BITWISE_XOR (310) 57
-    LOGICAL_AND (311) 66
-    LOGICAL_OR (312) 67
-    LOGICAL_NOT (313) 69
+    CLOSE_BRACKET (288) 83 85
+    OPEN_BRACKET (289) 83 85
+    CLOSE_PAREN (290) 11 13 17 21 25 66 73
+    OPEN_PAREN (291) 11 13 17 21 25 66 73
+    BLOCK_CLOSE (292) 10 25 39 40
+    BLOCK_OPEN (293) 10 25 39 40
+    ADD (294) 47
+    SUB (295) 48 68
+    MUL (296) 49
+    DIV (297) 50
+    BITWISE_AND (298) 52
+    BITWISE_OR (299) 53
+    BITWISE_NOT (300) 54
+    MOD (301) 51
+    LEFT_SHIFT (302) 56
+    RIGHT_SHIFT (303) 57
+    LT (304) 60
+    GT (305) 61
+    LE (306) 62
+    GE (307) 63
+    EQ (308) 58
+    NE (309) 59
+    BITWISE_XOR (310) 55
+    LOGICAL_AND (311) 64
+    LOGICAL_OR (312) 65
+    LOGICAL_NOT (313) 67
     COLON (314)
-    SEMI_COLON (315) 7 9 21 23 36 37 38 39 40 43
-    ASSIGN (316) 72
-    COMMA (317) 28 30 45
+    SEMI_COLON (315) 7 9 21 34 35 36 37 38 41
+    ASSIGN (316) 70
+    COMMA (317) 26 28 43
     INVALID (318)
     UMINUS (319)
-    DECIMAL (320) 80
-    STRING (321) 40 81
+    DECIMAL (320) 78
+    STRING (321) 38 79
     DOT (322)
-    IDENTIFIER <string> (323) 25 27 39 41 42 45 46 73 75 77
-    INTEGER <integer> (324) 79 87
-    TRUE <boolean> (325) 83
-    FALSE <boolean> (326) 84
+    IDENTIFIER <string> (323) 23 25 37 39 40 43 44 71 73 75
+    INTEGER <integer> (324) 77 85
+    TRUE <boolean> (325) 81
+    FALSE <boolean> (326) 82
     IFX (327)
     UNARY (328)
 
@@ -236,10 +233,10 @@ Nonterminals, with rules where they appear
         on right: 0
     stmts (76)
         on left: 2 3
-        on right: 1 2 10 27
+        on right: 1 2 10 25
     stmt (77)
         on left: 4 5 6 7 8 9 10
-        on right: 2 11 13 17 21 23
+        on right: 2 11 13 17 21
     conditional (78)
         on left: 11 13
         on right: 4
@@ -250,7 +247,7 @@ Nonterminals, with rules where they appear
         on left: 14
         on right: 11 13
     repetition (81)
-        on left: 17 21 23
+        on left: 17 21
         on right: 5
     $@2 (82)
         on left: 15
@@ -267,66 +264,63 @@ Nonterminals, with rules where they appear
     $@6 (86)
         on left: 20
         on right: 21
-    $@7 (87)
+    repexpr (87)
         on left: 22
-        on right: 23
-    repexpr (88)
-        on left: 24
-        on right: 17 21 23
-    var (89)
+        on right: 17 21
+    var (88)
+        on left: 23
+        on right: 7 26 27 41
+    func (89)
         on left: 25
-        on right: 7 28 29 43
-    func (90)
-        on left: 27
         on right: 6
-    $@8 (91)
-        on left: 26
-        on right: 27
-    typelist (92)
+    $@7 (90)
+        on left: 24
+        on right: 25
+    typelist (91)
+        on left: 26 27
+        on right: 26 30
+    termlist (92)
         on left: 28 29
         on right: 28 32
-    termlist (93)
+    opttypelist (93)
         on left: 30 31
-        on right: 30 34
-    opttypelist (94)
-        on left: 32 33
-        on right: 27
-    opttermlist (95)
-        on left: 34 35
-        on right: 75
-    commands (96)
-        on left: 36 37 38 39 40 41 42
-        on right: 8
-    varlist (97)
-        on left: 43 44
-        on right: 41 43
-    idlist (98)
-        on left: 45 46
-        on right: 42 45
-    optexpr (99)
-        on left: 47 48
-        on right: 21 36
-    expr <exprData> (100)
-        on left: 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73
-        on right: 9 14 24 47 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 72 85
-    term <exprData> (101)
-        on left: 74 75 76
-        on right: 30 31 71
-    attr <string> (102)
-        on left: 77 78
-        on right: 72 76 78
-    const <exprData> (103)
-        on left: 79 80 81 82
-        on right: 74
-    boolean <boolean> (104)
-        on left: 83 84
-        on right: 82
-    exprvector <exprData> (105)
-        on left: 85 86
-        on right: 77
-    constvector <integer> (106)
-        on left: 87 88
         on right: 25
+    opttermlist (94)
+        on left: 32 33
+        on right: 73
+    commands (95)
+        on left: 34 35 36 37 38 39 40
+        on right: 8
+    varlist (96)
+        on left: 41 42
+        on right: 39 41
+    idlist (97)
+        on left: 43 44
+        on right: 40 43
+    optexpr (98)
+        on left: 45 46
+        on right: 21 34
+    expr <exprData> (99)
+        on left: 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71
+        on right: 9 14 22 45 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 70 83
+    term <exprData> (100)
+        on left: 72 73 74
+        on right: 28 29 69
+    attr <string> (101)
+        on left: 75 76
+        on right: 70 74 76
+    const <exprData> (102)
+        on left: 77 78 79 80
+        on right: 72
+    boolean <boolean> (103)
+        on left: 81 82
+        on right: 80
+    exprvector <exprData> (104)
+        on left: 83 84
+        on right: 75
+    constvector <integer> (105)
+        on left: 85 86
+        on right: 23
 
 
 State 0
@@ -358,35 +352,34 @@ State 2
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
     $default  reduce using rule 1 (program)
 
-    stmt         go to state 26
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    stmt         go to state 25
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
 
 
 State 3
@@ -398,23 +391,23 @@ State 3
 
 State 4
 
-   40 commands: INCLUDE . STRING SEMI_COLON
+   38 commands: INCLUDE . STRING SEMI_COLON
 
-    STRING  shift, and go to state 37
+    STRING  shift, and go to state 36
 
 
 State 5
 
-   37 commands: BREAK . SEMI_COLON
+   35 commands: BREAK . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 38
+    SEMI_COLON  shift, and go to state 37
 
 
 State 6
 
-   38 commands: CONTINUE . SEMI_COLON
+   36 commands: CONTINUE . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 39
+    SEMI_COLON  shift, and go to state 38
 
 
 State 7
@@ -422,590 +415,541 @@ State 7
    11 conditional: IF . OPEN_PAREN condexpr CLOSE_PAREN stmt
    13            | IF . OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE $@1 stmt
 
-    OPEN_PAREN  shift, and go to state 40
+    OPEN_PAREN  shift, and go to state 39
 
 
 State 8
 
-   42 commands: ENUM . IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE
+   40 commands: ENUM . IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE
 
-    IDENTIFIER  shift, and go to state 41
+    IDENTIFIER  shift, and go to state 40
 
 
 State 9
 
-   36 commands: RETURN . optexpr SEMI_COLON
+   34 commands: RETURN . optexpr SEMI_COLON
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    $default  reduce using rule 48 (optexpr)
+    $default  reduce using rule 46 (optexpr)
 
-    optexpr  go to state 43
-    expr     go to state 44
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    optexpr  go to state 42
+    expr     go to state 43
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 10
 
-   41 commands: STRUCT . IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE
+   39 commands: STRUCT . IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE
 
-    IDENTIFIER  shift, and go to state 45
+    IDENTIFIER  shift, and go to state 44
 
 
 State 11
 
-   23 repetition: DO . $@7 stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON
+   21 repetition: FOR . OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-    $default  reduce using rule 22 ($@7)
-
-    $@7  go to state 46
+    OPEN_PAREN  shift, and go to state 45
 
 
 State 12
 
-   21 repetition: FOR . OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
+   71 expr: SIZEOF . IDENTIFIER
 
-    OPEN_PAREN  shift, and go to state 47
+    IDENTIFIER  shift, and go to state 46
 
 
 State 13
 
-   73 expr: SIZEOF . IDENTIFIER
+   37 commands: TYPEDEF . IDENTIFIER IDENTIFIER SEMI_COLON
 
-    IDENTIFIER  shift, and go to state 48
+    IDENTIFIER  shift, and go to state 47
 
 
 State 14
-
-   39 commands: TYPEDEF . IDENTIFIER IDENTIFIER SEMI_COLON
-
-    IDENTIFIER  shift, and go to state 49
-
-
-State 15
 
    17 repetition: WHILE . $@2 OPEN_PAREN repexpr CLOSE_PAREN $@3 stmt
 
     $default  reduce using rule 15 ($@2)
 
-    $@2  go to state 50
+    $@2  go to state 48
+
+
+State 15
+
+   66 expr: OPEN_PAREN . expr CLOSE_PAREN
+
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 49
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 16
-
-   68 expr: OPEN_PAREN . expr CLOSE_PAREN
-
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    expr     go to state 51
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 17
 
    10 stmt: BLOCK_OPEN . stmts BLOCK_CLOSE
 
     $default  reduce using rule 3 (stmts)
 
-    stmts  go to state 52
+    stmts  go to state 50
+
+
+State 17
+
+   68 expr: SUB . expr
+
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 51
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 18
 
-   70 expr: SUB . expr
+   67 expr: LOGICAL_NOT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 53
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 52
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 19
 
-   69 expr: LOGICAL_NOT . expr
+   78 const: DECIMAL .
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    expr     go to state 54
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    $default  reduce using rule 78 (const)
 
 
 State 20
 
-   80 const: DECIMAL .
-
-    $default  reduce using rule 80 (const)
-
-
-State 21
-
-   81 const: STRING .
-
-    $default  reduce using rule 81 (const)
-
-
-State 22
-
-   25 var: IDENTIFIER . IDENTIFIER constvector
-   27 func: IDENTIFIER . IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
-   75 term: IDENTIFIER . OPEN_PAREN opttermlist CLOSE_PAREN
-   77 attr: IDENTIFIER . exprvector
-
-    OPEN_BRACKET  shift, and go to state 55
-    OPEN_PAREN    shift, and go to state 56
-    IDENTIFIER    shift, and go to state 57
-
-    $default  reduce using rule 86 (exprvector)
-
-    exprvector  go to state 58
-
-
-State 23
-
-   79 const: INTEGER .
+   79 const: STRING .
 
     $default  reduce using rule 79 (const)
 
 
+State 21
+
+   23 var: IDENTIFIER . IDENTIFIER constvector
+   25 func: IDENTIFIER . IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
+   73 term: IDENTIFIER . OPEN_PAREN opttermlist CLOSE_PAREN
+   75 attr: IDENTIFIER . exprvector
+
+    OPEN_BRACKET  shift, and go to state 53
+    OPEN_PAREN    shift, and go to state 54
+    IDENTIFIER    shift, and go to state 55
+
+    $default  reduce using rule 84 (exprvector)
+
+    exprvector  go to state 56
+
+
+State 22
+
+   77 const: INTEGER .
+
+    $default  reduce using rule 77 (const)
+
+
+State 23
+
+   81 boolean: TRUE .
+
+    $default  reduce using rule 81 (boolean)
+
+
 State 24
 
-   83 boolean: TRUE .
+   82 boolean: FALSE .
 
-    $default  reduce using rule 83 (boolean)
+    $default  reduce using rule 82 (boolean)
 
 
 State 25
-
-   84 boolean: FALSE .
-
-    $default  reduce using rule 84 (boolean)
-
-
-State 26
 
     2 stmts: stmts stmt .
 
     $default  reduce using rule 2 (stmts)
 
 
-State 27
+State 26
 
     4 stmt: conditional .
 
     $default  reduce using rule 4 (stmt)
 
 
-State 28
+State 27
 
     5 stmt: repetition .
 
     $default  reduce using rule 5 (stmt)
 
 
-State 29
+State 28
 
     7 stmt: var . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 59
+    SEMI_COLON  shift, and go to state 57
 
 
-State 30
+State 29
 
     6 stmt: func .
 
     $default  reduce using rule 6 (stmt)
 
 
-State 31
+State 30
 
     8 stmt: commands .
 
     $default  reduce using rule 8 (stmt)
 
 
-State 32
+State 31
 
     9 stmt: expr . SEMI_COLON
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
-    SEMI_COLON   shift, and go to state 79
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
+    SEMI_COLON   shift, and go to state 77
+
+
+State 32
+
+   69 expr: term .
+
+    $default  reduce using rule 69 (expr)
 
 
 State 33
 
-   71 expr: term .
+   70 expr: attr . ASSIGN expr
+   74 term: attr .
+   76 attr: attr . POINTER attr
 
-    $default  reduce using rule 71 (expr)
-
-
-State 34
-
-   72 expr: attr . ASSIGN expr
-   76 term: attr .
-   78 attr: attr . POINTER attr
-
-    POINTER  shift, and go to state 80
-    ASSIGN   shift, and go to state 81
-
-    $default  reduce using rule 76 (term)
-
-
-State 35
-
-   74 term: const .
+    POINTER  shift, and go to state 78
+    ASSIGN   shift, and go to state 79
 
     $default  reduce using rule 74 (term)
 
 
+State 34
+
+   72 term: const .
+
+    $default  reduce using rule 72 (term)
+
+
+State 35
+
+   80 const: boolean .
+
+    $default  reduce using rule 80 (const)
+
+
 State 36
 
-   82 const: boolean .
+   38 commands: INCLUDE STRING . SEMI_COLON
 
-    $default  reduce using rule 82 (const)
+    SEMI_COLON  shift, and go to state 80
 
 
 State 37
 
-   40 commands: INCLUDE STRING . SEMI_COLON
+   35 commands: BREAK SEMI_COLON .
 
-    SEMI_COLON  shift, and go to state 82
+    $default  reduce using rule 35 (commands)
 
 
 State 38
 
-   37 commands: BREAK SEMI_COLON .
+   36 commands: CONTINUE SEMI_COLON .
 
-    $default  reduce using rule 37 (commands)
+    $default  reduce using rule 36 (commands)
 
 
 State 39
 
-   38 commands: CONTINUE SEMI_COLON .
+   11 conditional: IF OPEN_PAREN . condexpr CLOSE_PAREN stmt
+   13            | IF OPEN_PAREN . condexpr CLOSE_PAREN stmt ELSE $@1 stmt
 
-    $default  reduce using rule 38 (commands)
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    condexpr  go to state 81
+    expr      go to state 82
+    term      go to state 32
+    attr      go to state 33
+    const     go to state 34
+    boolean   go to state 35
 
 
 State 40
 
-   11 conditional: IF OPEN_PAREN . condexpr CLOSE_PAREN stmt
-   13            | IF OPEN_PAREN . condexpr CLOSE_PAREN stmt ELSE $@1 stmt
+   40 commands: ENUM IDENTIFIER . BLOCK_OPEN idlist BLOCK_CLOSE
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    condexpr  go to state 83
-    expr      go to state 84
-    term      go to state 33
-    attr      go to state 34
-    const     go to state 35
-    boolean   go to state 36
+    BLOCK_OPEN  shift, and go to state 83
 
 
 State 41
 
-   42 commands: ENUM IDENTIFIER . BLOCK_OPEN idlist BLOCK_CLOSE
+   73 term: IDENTIFIER . OPEN_PAREN opttermlist CLOSE_PAREN
+   75 attr: IDENTIFIER . exprvector
 
-    BLOCK_OPEN  shift, and go to state 85
+    OPEN_BRACKET  shift, and go to state 53
+    OPEN_PAREN    shift, and go to state 54
+
+    $default  reduce using rule 84 (exprvector)
+
+    exprvector  go to state 56
 
 
 State 42
 
-   75 term: IDENTIFIER . OPEN_PAREN opttermlist CLOSE_PAREN
-   77 attr: IDENTIFIER . exprvector
+   34 commands: RETURN optexpr . SEMI_COLON
 
-    OPEN_BRACKET  shift, and go to state 55
-    OPEN_PAREN    shift, and go to state 56
-
-    $default  reduce using rule 86 (exprvector)
-
-    exprvector  go to state 58
+    SEMI_COLON  shift, and go to state 84
 
 
 State 43
 
-   36 commands: RETURN optexpr . SEMI_COLON
+   45 optexpr: expr .
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    SEMI_COLON  shift, and go to state 86
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
+
+    $default  reduce using rule 45 (optexpr)
 
 
 State 44
 
-   47 optexpr: expr .
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   39 commands: STRUCT IDENTIFIER . BLOCK_OPEN varlist BLOCK_CLOSE
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
-
-    $default  reduce using rule 47 (optexpr)
+    BLOCK_OPEN  shift, and go to state 85
 
 
 State 45
 
-   41 commands: STRUCT IDENTIFIER . BLOCK_OPEN varlist BLOCK_CLOSE
+   21 repetition: FOR OPEN_PAREN . optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-    BLOCK_OPEN  shift, and go to state 87
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    $default  reduce using rule 46 (optexpr)
+
+    optexpr  go to state 86
+    expr     go to state 43
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 46
 
-   23 repetition: DO $@7 . stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON
+   71 expr: SIZEOF IDENTIFIER .
 
-    INCLUDE      shift, and go to state 4
-    BREAK        shift, and go to state 5
-    CONTINUE     shift, and go to state 6
-    IF           shift, and go to state 7
-    ENUM         shift, and go to state 8
-    RETURN       shift, and go to state 9
-    STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    stmt         go to state 88
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    $default  reduce using rule 71 (expr)
 
 
 State 47
 
-   21 repetition: FOR OPEN_PAREN . optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
+   37 commands: TYPEDEF IDENTIFIER . IDENTIFIER SEMI_COLON
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    $default  reduce using rule 48 (optexpr)
-
-    optexpr  go to state 89
-    expr     go to state 44
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    IDENTIFIER  shift, and go to state 87
 
 
 State 48
 
-   73 expr: SIZEOF IDENTIFIER .
+   17 repetition: WHILE $@2 . OPEN_PAREN repexpr CLOSE_PAREN $@3 stmt
 
-    $default  reduce using rule 73 (expr)
+    OPEN_PAREN  shift, and go to state 88
 
 
 State 49
 
-   39 commands: TYPEDEF IDENTIFIER . IDENTIFIER SEMI_COLON
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   66     | OPEN_PAREN expr . CLOSE_PAREN
 
-    IDENTIFIER  shift, and go to state 90
+    CLOSE_PAREN  shift, and go to state 89
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
 
 
 State 50
-
-   17 repetition: WHILE $@2 . OPEN_PAREN repexpr CLOSE_PAREN $@3 stmt
-
-    OPEN_PAREN  shift, and go to state 91
-
-
-State 51
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   68     | OPEN_PAREN expr . CLOSE_PAREN
-
-    CLOSE_PAREN  shift, and go to state 92
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
-
-
-State 52
 
     2 stmts: stmts . stmt
    10 stmt: BLOCK_OPEN stmts . BLOCK_CLOSE
@@ -1017,1600 +961,1592 @@ State 52
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_CLOSE  shift, and go to state 93
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_CLOSE  shift, and go to state 90
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 26
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    stmt         go to state 25
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
+
+
+State 51
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   68     | SUB expr .
+
+    $default  reduce using rule 68 (expr)
+
+
+State 52
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   67     | LOGICAL_NOT expr .
+
+    $default  reduce using rule 67 (expr)
 
 
 State 53
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   70     | SUB expr .
+   83 exprvector: OPEN_BRACKET . expr CLOSE_BRACKET
 
-    $default  reduce using rule 70 (expr)
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 91
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 54
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   69     | LOGICAL_NOT expr .
+   73 term: IDENTIFIER OPEN_PAREN . opttermlist CLOSE_PAREN
 
-    $default  reduce using rule 69 (expr)
+    DECIMAL     shift, and go to state 19
+    STRING      shift, and go to state 20
+    IDENTIFIER  shift, and go to state 41
+    INTEGER     shift, and go to state 22
+    TRUE        shift, and go to state 23
+    FALSE       shift, and go to state 24
+
+    $default  reduce using rule 33 (opttermlist)
+
+    termlist     go to state 92
+    opttermlist  go to state 93
+    term         go to state 94
+    attr         go to state 95
+    const        go to state 34
+    boolean      go to state 35
 
 
 State 55
 
-   85 exprvector: OPEN_BRACKET . expr CLOSE_BRACKET
+   23 var: IDENTIFIER IDENTIFIER . constvector
+   25 func: IDENTIFIER IDENTIFIER . $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    OPEN_BRACKET  shift, and go to state 96
 
-    expr     go to state 94
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    SEMI_COLON  reduce using rule 86 (constvector)
+    $default    reduce using rule 24 ($@7)
+
+    $@7          go to state 97
+    constvector  go to state 98
 
 
 State 56
 
-   75 term: IDENTIFIER OPEN_PAREN . opttermlist CLOSE_PAREN
+   75 attr: IDENTIFIER exprvector .
 
-    DECIMAL     shift, and go to state 20
-    STRING      shift, and go to state 21
-    IDENTIFIER  shift, and go to state 42
-    INTEGER     shift, and go to state 23
-    TRUE        shift, and go to state 24
-    FALSE       shift, and go to state 25
-
-    $default  reduce using rule 35 (opttermlist)
-
-    termlist     go to state 95
-    opttermlist  go to state 96
-    term         go to state 97
-    attr         go to state 98
-    const        go to state 35
-    boolean      go to state 36
+    $default  reduce using rule 75 (attr)
 
 
 State 57
-
-   25 var: IDENTIFIER IDENTIFIER . constvector
-   27 func: IDENTIFIER IDENTIFIER . $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
-
-    OPEN_BRACKET  shift, and go to state 99
-
-    SEMI_COLON  reduce using rule 88 (constvector)
-    $default    reduce using rule 26 ($@8)
-
-    $@8          go to state 100
-    constvector  go to state 101
-
-
-State 58
-
-   77 attr: IDENTIFIER exprvector .
-
-    $default  reduce using rule 77 (attr)
-
-
-State 59
 
     7 stmt: var SEMI_COLON .
 
     $default  reduce using rule 7 (stmt)
 
 
+State 58
+
+   47 expr: expr ADD . expr
+
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 99
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
+
+
+State 59
+
+   48 expr: expr SUB . expr
+
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 100
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
+
+
 State 60
 
-   49 expr: expr ADD . expr
+   49 expr: expr MUL . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 102
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 101
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 61
 
-   50 expr: expr SUB . expr
+   50 expr: expr DIV . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 103
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 102
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 62
 
-   51 expr: expr MUL . expr
+   52 expr: expr BITWISE_AND . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 104
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 103
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 63
 
-   52 expr: expr DIV . expr
+   53 expr: expr BITWISE_OR . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 105
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 104
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 64
 
-   54 expr: expr BITWISE_AND . expr
+   54 expr: expr BITWISE_NOT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 106
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 105
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 65
 
-   55 expr: expr BITWISE_OR . expr
+   51 expr: expr MOD . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 107
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 106
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 66
 
-   56 expr: expr BITWISE_NOT . expr
+   56 expr: expr LEFT_SHIFT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 108
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 107
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 67
 
-   53 expr: expr MOD . expr
+   57 expr: expr RIGHT_SHIFT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 109
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 108
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 68
 
-   58 expr: expr LEFT_SHIFT . expr
+   60 expr: expr LT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 110
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 109
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 69
 
-   59 expr: expr RIGHT_SHIFT . expr
+   61 expr: expr GT . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 111
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 110
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 70
 
-   62 expr: expr LT . expr
+   62 expr: expr LE . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 112
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 111
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 71
 
-   63 expr: expr GT . expr
+   63 expr: expr GE . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 113
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 112
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 72
 
-   64 expr: expr LE . expr
+   58 expr: expr EQ . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 114
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 113
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 73
 
-   65 expr: expr GE . expr
+   59 expr: expr NE . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 115
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 114
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 74
 
-   60 expr: expr EQ . expr
+   55 expr: expr BITWISE_XOR . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 116
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 115
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 75
 
-   61 expr: expr NE . expr
+   64 expr: expr LOGICAL_AND . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 117
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 116
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 76
 
-   57 expr: expr BITWISE_XOR . expr
+   65 expr: expr LOGICAL_OR . expr
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    expr     go to state 118
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    expr     go to state 117
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 77
-
-   66 expr: expr LOGICAL_AND . expr
-
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    expr     go to state 119
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 78
-
-   67 expr: expr LOGICAL_OR . expr
-
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    expr     go to state 120
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 79
 
     9 stmt: expr SEMI_COLON .
 
     $default  reduce using rule 9 (stmt)
 
 
+State 78
+
+   76 attr: attr POINTER . attr
+
+    IDENTIFIER  shift, and go to state 118
+
+    attr  go to state 119
+
+
+State 79
+
+   70 expr: attr ASSIGN . expr
+
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    expr     go to state 120
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
+
+
 State 80
 
-   78 attr: attr POINTER . attr
+   38 commands: INCLUDE STRING SEMI_COLON .
 
-    IDENTIFIER  shift, and go to state 121
-
-    attr  go to state 122
+    $default  reduce using rule 38 (commands)
 
 
 State 81
 
-   72 expr: attr ASSIGN . expr
+   11 conditional: IF OPEN_PAREN condexpr . CLOSE_PAREN stmt
+   13            | IF OPEN_PAREN condexpr . CLOSE_PAREN stmt ELSE $@1 stmt
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    expr     go to state 123
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    CLOSE_PAREN  shift, and go to state 121
 
 
 State 82
 
-   40 commands: INCLUDE STRING SEMI_COLON .
-
-    $default  reduce using rule 40 (commands)
-
-
-State 83
-
-   11 conditional: IF OPEN_PAREN condexpr . CLOSE_PAREN stmt
-   13            | IF OPEN_PAREN condexpr . CLOSE_PAREN stmt ELSE $@1 stmt
-
-    CLOSE_PAREN  shift, and go to state 124
-
-
-State 84
-
    14 condexpr: expr .
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
 
     $default  reduce using rule 14 (condexpr)
 
 
+State 83
+
+   40 commands: ENUM IDENTIFIER BLOCK_OPEN . idlist BLOCK_CLOSE
+
+    IDENTIFIER  shift, and go to state 122
+
+    idlist  go to state 123
+
+
+State 84
+
+   34 commands: RETURN optexpr SEMI_COLON .
+
+    $default  reduce using rule 34 (commands)
+
+
 State 85
 
-   42 commands: ENUM IDENTIFIER BLOCK_OPEN . idlist BLOCK_CLOSE
+   39 commands: STRUCT IDENTIFIER BLOCK_OPEN . varlist BLOCK_CLOSE
 
-    IDENTIFIER  shift, and go to state 125
+    $default  reduce using rule 42 (varlist)
 
-    idlist  go to state 126
+    varlist  go to state 124
 
 
 State 86
-
-   36 commands: RETURN optexpr SEMI_COLON .
-
-    $default  reduce using rule 36 (commands)
-
-
-State 87
-
-   41 commands: STRUCT IDENTIFIER BLOCK_OPEN . varlist BLOCK_CLOSE
-
-    $default  reduce using rule 44 (varlist)
-
-    varlist  go to state 127
-
-
-State 88
-
-   23 repetition: DO $@7 stmt . WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON
-
-    WHILE  shift, and go to state 128
-
-
-State 89
 
    21 repetition: FOR OPEN_PAREN optexpr . $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
     $default  reduce using rule 18 ($@4)
 
-    $@4  go to state 129
+    $@4  go to state 125
 
 
-State 90
+State 87
 
-   39 commands: TYPEDEF IDENTIFIER IDENTIFIER . SEMI_COLON
+   37 commands: TYPEDEF IDENTIFIER IDENTIFIER . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 130
+    SEMI_COLON  shift, and go to state 126
 
 
-State 91
+State 88
 
    17 repetition: WHILE $@2 OPEN_PAREN . repexpr CLOSE_PAREN $@3 stmt
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    repexpr  go to state 131
-    expr     go to state 132
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 92
-
-   68 expr: OPEN_PAREN expr CLOSE_PAREN .
-
-    $default  reduce using rule 68 (expr)
+    repexpr  go to state 127
+    expr     go to state 128
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
-State 93
+State 89
+
+   66 expr: OPEN_PAREN expr CLOSE_PAREN .
+
+    $default  reduce using rule 66 (expr)
+
+
+State 90
 
    10 stmt: BLOCK_OPEN stmts BLOCK_CLOSE .
 
     $default  reduce using rule 10 (stmt)
 
 
+State 91
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   83 exprvector: OPEN_BRACKET expr . CLOSE_BRACKET
+
+    CLOSE_BRACKET  shift, and go to state 129
+    ADD            shift, and go to state 58
+    SUB            shift, and go to state 59
+    MUL            shift, and go to state 60
+    DIV            shift, and go to state 61
+    BITWISE_AND    shift, and go to state 62
+    BITWISE_OR     shift, and go to state 63
+    BITWISE_NOT    shift, and go to state 64
+    MOD            shift, and go to state 65
+    LEFT_SHIFT     shift, and go to state 66
+    RIGHT_SHIFT    shift, and go to state 67
+    LT             shift, and go to state 68
+    GT             shift, and go to state 69
+    LE             shift, and go to state 70
+    GE             shift, and go to state 71
+    EQ             shift, and go to state 72
+    NE             shift, and go to state 73
+    BITWISE_XOR    shift, and go to state 74
+    LOGICAL_AND    shift, and go to state 75
+    LOGICAL_OR     shift, and go to state 76
+
+
+State 92
+
+   28 termlist: termlist . COMMA term
+   32 opttermlist: termlist .
+
+    COMMA  shift, and go to state 130
+
+    $default  reduce using rule 32 (opttermlist)
+
+
+State 93
+
+   73 term: IDENTIFIER OPEN_PAREN opttermlist . CLOSE_PAREN
+
+    CLOSE_PAREN  shift, and go to state 131
+
+
 State 94
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   85 exprvector: OPEN_BRACKET expr . CLOSE_BRACKET
+   29 termlist: term .
 
-    CLOSE_BRACKET  shift, and go to state 133
-    ADD            shift, and go to state 60
-    SUB            shift, and go to state 61
-    MUL            shift, and go to state 62
-    DIV            shift, and go to state 63
-    BITWISE_AND    shift, and go to state 64
-    BITWISE_OR     shift, and go to state 65
-    BITWISE_NOT    shift, and go to state 66
-    MOD            shift, and go to state 67
-    LEFT_SHIFT     shift, and go to state 68
-    RIGHT_SHIFT    shift, and go to state 69
-    LT             shift, and go to state 70
-    GT             shift, and go to state 71
-    LE             shift, and go to state 72
-    GE             shift, and go to state 73
-    EQ             shift, and go to state 74
-    NE             shift, and go to state 75
-    BITWISE_XOR    shift, and go to state 76
-    LOGICAL_AND    shift, and go to state 77
-    LOGICAL_OR     shift, and go to state 78
+    $default  reduce using rule 29 (termlist)
 
 
 State 95
 
-   30 termlist: termlist . COMMA term
-   34 opttermlist: termlist .
+   74 term: attr .
+   76 attr: attr . POINTER attr
 
-    COMMA  shift, and go to state 134
+    POINTER  shift, and go to state 78
 
-    $default  reduce using rule 34 (opttermlist)
+    $default  reduce using rule 74 (term)
 
 
 State 96
 
-   75 term: IDENTIFIER OPEN_PAREN opttermlist . CLOSE_PAREN
+   85 constvector: OPEN_BRACKET . INTEGER CLOSE_BRACKET
 
-    CLOSE_PAREN  shift, and go to state 135
+    INTEGER  shift, and go to state 132
 
 
 State 97
 
-   31 termlist: term .
+   25 func: IDENTIFIER IDENTIFIER $@7 . OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
 
-    $default  reduce using rule 31 (termlist)
+    OPEN_PAREN  shift, and go to state 133
 
 
 State 98
 
-   76 term: attr .
-   78 attr: attr . POINTER attr
+   23 var: IDENTIFIER IDENTIFIER constvector .
 
-    POINTER  shift, and go to state 80
-
-    $default  reduce using rule 76 (term)
+    $default  reduce using rule 23 (var)
 
 
 State 99
 
-   87 constvector: OPEN_BRACKET . INTEGER CLOSE_BRACKET
+   47 expr: expr . ADD expr
+   47     | expr ADD expr .
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    INTEGER  shift, and go to state 136
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+
+    $default  reduce using rule 47 (expr)
 
 
 State 100
 
-   27 func: IDENTIFIER IDENTIFIER $@8 . OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   48     | expr SUB expr .
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    OPEN_PAREN  shift, and go to state 137
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+
+    $default  reduce using rule 48 (expr)
 
 
 State 101
 
-   25 var: IDENTIFIER IDENTIFIER constvector .
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   49     | expr MUL expr .
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    $default  reduce using rule 25 (var)
-
-
-State 102
-
-   49 expr: expr . ADD expr
-   49     | expr ADD expr .
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
+    BITWISE_NOT  shift, and go to state 64
 
     $default  reduce using rule 49 (expr)
 
 
-State 103
+State 102
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   50     | expr SUB expr .
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   50     | expr DIV expr .
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
+    BITWISE_NOT  shift, and go to state 64
 
     $default  reduce using rule 50 (expr)
 
 
-State 104
+State 103
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   51     | expr MUL expr .
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   52     | expr BITWISE_AND expr .
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    BITWISE_NOT  shift, and go to state 66
-
-    $default  reduce using rule 51 (expr)
-
-
-State 105
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   52     | expr DIV expr .
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    BITWISE_NOT  shift, and go to state 66
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
 
     $default  reduce using rule 52 (expr)
 
 
-State 106
+State 104
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   54     | expr BITWISE_AND expr .
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   53     | expr BITWISE_OR expr .
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-
-    $default  reduce using rule 54 (expr)
-
-
-State 107
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   55     | expr BITWISE_OR expr .
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-
-    $default  reduce using rule 55 (expr)
-
-
-State 108
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   56     | expr BITWISE_NOT expr .
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    BITWISE_NOT  shift, and go to state 66
-
-    $default  reduce using rule 56 (expr)
-
-
-State 109
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   53     | expr MOD expr .
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    BITWISE_NOT  shift, and go to state 66
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
 
     $default  reduce using rule 53 (expr)
 
 
-State 110
+State 105
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   58     | expr LEFT_SHIFT expr .
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   54     | expr BITWISE_NOT expr .
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
+    BITWISE_NOT  shift, and go to state 64
 
-    $default  reduce using rule 58 (expr)
+    $default  reduce using rule 54 (expr)
 
 
-State 111
+State 106
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   59     | expr RIGHT_SHIFT expr .
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   51     | expr MOD expr .
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
+    BITWISE_NOT  shift, and go to state 64
 
-    $default  reduce using rule 59 (expr)
+    $default  reduce using rule 51 (expr)
 
 
-State 112
+State 107
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   62     | expr LT expr .
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   56     | expr LEFT_SHIFT expr .
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
 
-    $default  reduce using rule 62 (expr)
+    $default  reduce using rule 56 (expr)
 
 
-State 113
+State 108
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   63     | expr GT expr .
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   57     | expr RIGHT_SHIFT expr .
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-
-    $default  reduce using rule 63 (expr)
-
-
-State 114
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   64     | expr LE expr .
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-
-    $default  reduce using rule 64 (expr)
-
-
-State 115
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   65     | expr GE expr .
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-
-    $default  reduce using rule 65 (expr)
-
-
-State 116
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   60     | expr EQ expr .
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-
-    $default  reduce using rule 60 (expr)
-
-
-State 117
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   61     | expr NE expr .
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-
-    $default  reduce using rule 61 (expr)
-
-
-State 118
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   57     | expr BITWISE_XOR expr .
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
 
     $default  reduce using rule 57 (expr)
 
 
+State 109
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   60     | expr LT expr .
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+
+    $default  reduce using rule 60 (expr)
+
+
+State 110
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   61     | expr GT expr .
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+
+    $default  reduce using rule 61 (expr)
+
+
+State 111
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   62     | expr LE expr .
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+
+    $default  reduce using rule 62 (expr)
+
+
+State 112
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   63     | expr GE expr .
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+
+    $default  reduce using rule 63 (expr)
+
+
+State 113
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   58     | expr EQ expr .
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+
+    $default  reduce using rule 58 (expr)
+
+
+State 114
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   59     | expr NE expr .
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+
+    $default  reduce using rule 59 (expr)
+
+
+State 115
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   55     | expr BITWISE_XOR expr .
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+
+    $default  reduce using rule 55 (expr)
+
+
+State 116
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   64     | expr LOGICAL_AND expr .
+   65     | expr . LOGICAL_OR expr
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+
+    $default  reduce using rule 64 (expr)
+
+
+State 117
+
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   65     | expr LOGICAL_OR expr .
+
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+
+    $default  reduce using rule 65 (expr)
+
+
+State 118
+
+   75 attr: IDENTIFIER . exprvector
+
+    OPEN_BRACKET  shift, and go to state 53
+
+    $default  reduce using rule 84 (exprvector)
+
+    exprvector  go to state 56
+
+
 State 119
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   66     | expr LOGICAL_AND expr .
-   67     | expr . LOGICAL_OR expr
+   76 attr: attr . POINTER attr
+   76     | attr POINTER attr .
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-
-    $default  reduce using rule 66 (expr)
+    $default  reduce using rule 76 (attr)
 
 
 State 120
 
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   67     | expr LOGICAL_OR expr .
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
+   70     | attr ASSIGN expr .
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
 
-    $default  reduce using rule 67 (expr)
+    $default  reduce using rule 70 (expr)
 
 
 State 121
-
-   77 attr: IDENTIFIER . exprvector
-
-    OPEN_BRACKET  shift, and go to state 55
-
-    $default  reduce using rule 86 (exprvector)
-
-    exprvector  go to state 58
-
-
-State 122
-
-   78 attr: attr . POINTER attr
-   78     | attr POINTER attr .
-
-    $default  reduce using rule 78 (attr)
-
-
-State 123
-
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
-   72     | attr ASSIGN expr .
-
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
-
-    $default  reduce using rule 72 (expr)
-
-
-State 124
 
    11 conditional: IF OPEN_PAREN condexpr CLOSE_PAREN . stmt
    13            | IF OPEN_PAREN condexpr CLOSE_PAREN . stmt ELSE $@1 stmt
@@ -2622,377 +2558,339 @@ State 124
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 138
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    stmt         go to state 134
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
+
+
+State 122
+
+   43 idlist: IDENTIFIER . COMMA idlist
+   44       | IDENTIFIER .
+
+    COMMA  shift, and go to state 135
+
+    $default  reduce using rule 44 (idlist)
+
+
+State 123
+
+   40 commands: ENUM IDENTIFIER BLOCK_OPEN idlist . BLOCK_CLOSE
+
+    BLOCK_CLOSE  shift, and go to state 136
+
+
+State 124
+
+   39 commands: STRUCT IDENTIFIER BLOCK_OPEN varlist . BLOCK_CLOSE
+   41 varlist: varlist . var SEMI_COLON
+
+    BLOCK_CLOSE  shift, and go to state 137
+    IDENTIFIER   shift, and go to state 138
+
+    var  go to state 139
 
 
 State 125
 
-   45 idlist: IDENTIFIER . COMMA idlist
-   46       | IDENTIFIER .
+   21 repetition: FOR OPEN_PAREN optexpr $@4 . SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-    COMMA  shift, and go to state 139
-
-    $default  reduce using rule 46 (idlist)
+    SEMI_COLON  shift, and go to state 140
 
 
 State 126
 
-   42 commands: ENUM IDENTIFIER BLOCK_OPEN idlist . BLOCK_CLOSE
+   37 commands: TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON .
 
-    BLOCK_CLOSE  shift, and go to state 140
+    $default  reduce using rule 37 (commands)
 
 
 State 127
 
-   41 commands: STRUCT IDENTIFIER BLOCK_OPEN varlist . BLOCK_CLOSE
-   43 varlist: varlist . var SEMI_COLON
+   17 repetition: WHILE $@2 OPEN_PAREN repexpr . CLOSE_PAREN $@3 stmt
 
-    BLOCK_CLOSE  shift, and go to state 141
-    IDENTIFIER   shift, and go to state 142
-
-    var  go to state 143
+    CLOSE_PAREN  shift, and go to state 141
 
 
 State 128
 
-   23 repetition: DO $@7 stmt WHILE . OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON
+   22 repexpr: expr .
+   47 expr: expr . ADD expr
+   48     | expr . SUB expr
+   49     | expr . MUL expr
+   50     | expr . DIV expr
+   51     | expr . MOD expr
+   52     | expr . BITWISE_AND expr
+   53     | expr . BITWISE_OR expr
+   54     | expr . BITWISE_NOT expr
+   55     | expr . BITWISE_XOR expr
+   56     | expr . LEFT_SHIFT expr
+   57     | expr . RIGHT_SHIFT expr
+   58     | expr . EQ expr
+   59     | expr . NE expr
+   60     | expr . LT expr
+   61     | expr . GT expr
+   62     | expr . LE expr
+   63     | expr . GE expr
+   64     | expr . LOGICAL_AND expr
+   65     | expr . LOGICAL_OR expr
 
-    OPEN_PAREN  shift, and go to state 144
+    ADD          shift, and go to state 58
+    SUB          shift, and go to state 59
+    MUL          shift, and go to state 60
+    DIV          shift, and go to state 61
+    BITWISE_AND  shift, and go to state 62
+    BITWISE_OR   shift, and go to state 63
+    BITWISE_NOT  shift, and go to state 64
+    MOD          shift, and go to state 65
+    LEFT_SHIFT   shift, and go to state 66
+    RIGHT_SHIFT  shift, and go to state 67
+    LT           shift, and go to state 68
+    GT           shift, and go to state 69
+    LE           shift, and go to state 70
+    GE           shift, and go to state 71
+    EQ           shift, and go to state 72
+    NE           shift, and go to state 73
+    BITWISE_XOR  shift, and go to state 74
+    LOGICAL_AND  shift, and go to state 75
+    LOGICAL_OR   shift, and go to state 76
+
+    $default  reduce using rule 22 (repexpr)
 
 
 State 129
 
-   21 repetition: FOR OPEN_PAREN optexpr $@4 . SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
+   83 exprvector: OPEN_BRACKET expr CLOSE_BRACKET .
 
-    SEMI_COLON  shift, and go to state 145
+    $default  reduce using rule 83 (exprvector)
 
 
 State 130
 
-   39 commands: TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON .
+   28 termlist: termlist COMMA . term
 
-    $default  reduce using rule 39 (commands)
+    DECIMAL     shift, and go to state 19
+    STRING      shift, and go to state 20
+    IDENTIFIER  shift, and go to state 41
+    INTEGER     shift, and go to state 22
+    TRUE        shift, and go to state 23
+    FALSE       shift, and go to state 24
+
+    term     go to state 142
+    attr     go to state 95
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 131
 
-   17 repetition: WHILE $@2 OPEN_PAREN repexpr . CLOSE_PAREN $@3 stmt
+   73 term: IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN .
 
-    CLOSE_PAREN  shift, and go to state 146
+    $default  reduce using rule 73 (term)
 
 
 State 132
 
-   24 repexpr: expr .
-   49 expr: expr . ADD expr
-   50     | expr . SUB expr
-   51     | expr . MUL expr
-   52     | expr . DIV expr
-   53     | expr . MOD expr
-   54     | expr . BITWISE_AND expr
-   55     | expr . BITWISE_OR expr
-   56     | expr . BITWISE_NOT expr
-   57     | expr . BITWISE_XOR expr
-   58     | expr . LEFT_SHIFT expr
-   59     | expr . RIGHT_SHIFT expr
-   60     | expr . EQ expr
-   61     | expr . NE expr
-   62     | expr . LT expr
-   63     | expr . GT expr
-   64     | expr . LE expr
-   65     | expr . GE expr
-   66     | expr . LOGICAL_AND expr
-   67     | expr . LOGICAL_OR expr
+   85 constvector: OPEN_BRACKET INTEGER . CLOSE_BRACKET
 
-    ADD          shift, and go to state 60
-    SUB          shift, and go to state 61
-    MUL          shift, and go to state 62
-    DIV          shift, and go to state 63
-    BITWISE_AND  shift, and go to state 64
-    BITWISE_OR   shift, and go to state 65
-    BITWISE_NOT  shift, and go to state 66
-    MOD          shift, and go to state 67
-    LEFT_SHIFT   shift, and go to state 68
-    RIGHT_SHIFT  shift, and go to state 69
-    LT           shift, and go to state 70
-    GT           shift, and go to state 71
-    LE           shift, and go to state 72
-    GE           shift, and go to state 73
-    EQ           shift, and go to state 74
-    NE           shift, and go to state 75
-    BITWISE_XOR  shift, and go to state 76
-    LOGICAL_AND  shift, and go to state 77
-    LOGICAL_OR   shift, and go to state 78
-
-    $default  reduce using rule 24 (repexpr)
+    CLOSE_BRACKET  shift, and go to state 143
 
 
 State 133
 
-   85 exprvector: OPEN_BRACKET expr CLOSE_BRACKET .
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN . opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
 
-    $default  reduce using rule 85 (exprvector)
+    IDENTIFIER  shift, and go to state 138
+
+    $default  reduce using rule 31 (opttypelist)
+
+    var          go to state 144
+    typelist     go to state 145
+    opttypelist  go to state 146
 
 
 State 134
 
-   30 termlist: termlist COMMA . term
-
-    DECIMAL     shift, and go to state 20
-    STRING      shift, and go to state 21
-    IDENTIFIER  shift, and go to state 42
-    INTEGER     shift, and go to state 23
-    TRUE        shift, and go to state 24
-    FALSE       shift, and go to state 25
-
-    term     go to state 147
-    attr     go to state 98
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 135
-
-   75 term: IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN .
-
-    $default  reduce using rule 75 (term)
-
-
-State 136
-
-   87 constvector: OPEN_BRACKET INTEGER . CLOSE_BRACKET
-
-    CLOSE_BRACKET  shift, and go to state 148
-
-
-State 137
-
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN . opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
-
-    IDENTIFIER  shift, and go to state 142
-
-    $default  reduce using rule 33 (opttypelist)
-
-    var          go to state 149
-    typelist     go to state 150
-    opttypelist  go to state 151
-
-
-State 138
-
    11 conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt .
    13            | IF OPEN_PAREN condexpr CLOSE_PAREN stmt . ELSE $@1 stmt
 
-    ELSE  shift, and go to state 152
+    ELSE  shift, and go to state 147
 
     $default  reduce using rule 11 (conditional)
 
 
+State 135
+
+   43 idlist: IDENTIFIER COMMA . idlist
+
+    IDENTIFIER  shift, and go to state 122
+
+    idlist  go to state 148
+
+
+State 136
+
+   40 commands: ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE .
+
+    $default  reduce using rule 40 (commands)
+
+
+State 137
+
+   39 commands: STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE .
+
+    $default  reduce using rule 39 (commands)
+
+
+State 138
+
+   23 var: IDENTIFIER . IDENTIFIER constvector
+
+    IDENTIFIER  shift, and go to state 149
+
+
 State 139
 
-   45 idlist: IDENTIFIER COMMA . idlist
+   41 varlist: varlist var . SEMI_COLON
 
-    IDENTIFIER  shift, and go to state 125
-
-    idlist  go to state 153
+    SEMI_COLON  shift, and go to state 150
 
 
 State 140
 
-   42 commands: ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE .
+   21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON . repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-    $default  reduce using rule 42 (commands)
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
+
+    repexpr  go to state 151
+    expr     go to state 128
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
 State 141
-
-   41 commands: STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE .
-
-    $default  reduce using rule 41 (commands)
-
-
-State 142
-
-   25 var: IDENTIFIER . IDENTIFIER constvector
-
-    IDENTIFIER  shift, and go to state 154
-
-
-State 143
-
-   43 varlist: varlist var . SEMI_COLON
-
-    SEMI_COLON  shift, and go to state 155
-
-
-State 144
-
-   23 repetition: DO $@7 stmt WHILE OPEN_PAREN . repexpr CLOSE_PAREN SEMI_COLON
-
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    repexpr  go to state 156
-    expr     go to state 132
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 145
-
-   21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON . repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
-
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
-
-    repexpr  go to state 157
-    expr     go to state 132
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
-
-
-State 146
 
    17 repetition: WHILE $@2 OPEN_PAREN repexpr CLOSE_PAREN . $@3 stmt
 
     $default  reduce using rule 16 ($@3)
 
-    $@3  go to state 158
+    $@3  go to state 152
+
+
+State 142
+
+   28 termlist: termlist COMMA term .
+
+    $default  reduce using rule 28 (termlist)
+
+
+State 143
+
+   85 constvector: OPEN_BRACKET INTEGER CLOSE_BRACKET .
+
+    $default  reduce using rule 85 (constvector)
+
+
+State 144
+
+   27 typelist: var .
+
+    $default  reduce using rule 27 (typelist)
+
+
+State 145
+
+   26 typelist: typelist . COMMA var
+   30 opttypelist: typelist .
+
+    COMMA  shift, and go to state 153
+
+    $default  reduce using rule 30 (opttypelist)
+
+
+State 146
+
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist . CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
+
+    CLOSE_PAREN  shift, and go to state 154
 
 
 State 147
-
-   30 termlist: termlist COMMA term .
-
-    $default  reduce using rule 30 (termlist)
-
-
-State 148
-
-   87 constvector: OPEN_BRACKET INTEGER CLOSE_BRACKET .
-
-    $default  reduce using rule 87 (constvector)
-
-
-State 149
-
-   29 typelist: var .
-
-    $default  reduce using rule 29 (typelist)
-
-
-State 150
-
-   28 typelist: typelist . COMMA var
-   32 opttypelist: typelist .
-
-    COMMA  shift, and go to state 159
-
-    $default  reduce using rule 32 (opttypelist)
-
-
-State 151
-
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist . CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE
-
-    CLOSE_PAREN  shift, and go to state 160
-
-
-State 152
 
    13 conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE . $@1 stmt
 
     $default  reduce using rule 12 ($@1)
 
-    $@1  go to state 161
+    $@1  go to state 155
 
 
-State 153
+State 148
 
-   45 idlist: IDENTIFIER COMMA idlist .
+   43 idlist: IDENTIFIER COMMA idlist .
 
-    $default  reduce using rule 45 (idlist)
-
-
-State 154
-
-   25 var: IDENTIFIER IDENTIFIER . constvector
-
-    OPEN_BRACKET  shift, and go to state 99
-
-    $default  reduce using rule 88 (constvector)
-
-    constvector  go to state 101
+    $default  reduce using rule 43 (idlist)
 
 
-State 155
+State 149
 
-   43 varlist: varlist var SEMI_COLON .
+   23 var: IDENTIFIER IDENTIFIER . constvector
 
-    $default  reduce using rule 43 (varlist)
+    OPEN_BRACKET  shift, and go to state 96
 
+    $default  reduce using rule 86 (constvector)
 
-State 156
-
-   23 repetition: DO $@7 stmt WHILE OPEN_PAREN repexpr . CLOSE_PAREN SEMI_COLON
-
-    CLOSE_PAREN  shift, and go to state 162
+    constvector  go to state 98
 
 
-State 157
+State 150
+
+   41 varlist: varlist var SEMI_COLON .
+
+    $default  reduce using rule 41 (varlist)
+
+
+State 151
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr . SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt
 
-    SEMI_COLON  shift, and go to state 163
+    SEMI_COLON  shift, and go to state 156
 
 
-State 158
+State 152
 
    17 repetition: WHILE $@2 OPEN_PAREN repexpr CLOSE_PAREN $@3 . stmt
 
@@ -3003,52 +2901,51 @@ State 158
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 164
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
-
-
-State 159
-
-   28 typelist: typelist COMMA . var
-
-    IDENTIFIER  shift, and go to state 142
-
-    var  go to state 165
+    stmt         go to state 157
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
 
 
-State 160
+State 153
 
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN . BLOCK_OPEN stmts BLOCK_CLOSE
+   26 typelist: typelist COMMA . var
 
-    BLOCK_OPEN  shift, and go to state 166
+    IDENTIFIER  shift, and go to state 138
+
+    var  go to state 158
 
 
-State 161
+State 154
+
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN . BLOCK_OPEN stmts BLOCK_CLOSE
+
+    BLOCK_OPEN  shift, and go to state 159
+
+
+State 155
 
    13 conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE $@1 . stmt
 
@@ -3059,117 +2956,102 @@ State 161
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 167
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
-
-
-State 162
-
-   23 repetition: DO $@7 stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN . SEMI_COLON
-
-    SEMI_COLON  shift, and go to state 168
+    stmt         go to state 160
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
 
 
-State 163
+State 156
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON . $@5 optexpr CLOSE_PAREN $@6 stmt
 
     $default  reduce using rule 19 ($@5)
 
-    $@5  go to state 169
+    $@5  go to state 161
 
 
-State 164
+State 157
 
    17 repetition: WHILE $@2 OPEN_PAREN repexpr CLOSE_PAREN $@3 stmt .
 
     $default  reduce using rule 17 (repetition)
 
 
-State 165
+State 158
 
-   28 typelist: typelist COMMA var .
+   26 typelist: typelist COMMA var .
 
-    $default  reduce using rule 28 (typelist)
+    $default  reduce using rule 26 (typelist)
 
 
-State 166
+State 159
 
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN . stmts BLOCK_CLOSE
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN . stmts BLOCK_CLOSE
 
     $default  reduce using rule 3 (stmts)
 
-    stmts  go to state 170
+    stmts  go to state 162
 
 
-State 167
+State 160
 
    13 conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE $@1 stmt .
 
     $default  reduce using rule 13 (conditional)
 
 
-State 168
-
-   23 repetition: DO $@7 stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON .
-
-    $default  reduce using rule 23 (repetition)
-
-
-State 169
+State 161
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 . optexpr CLOSE_PAREN $@6 stmt
 
-    SIZEOF       shift, and go to state 13
-    OPEN_PAREN   shift, and go to state 16
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 42
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    SIZEOF       shift, and go to state 12
+    OPEN_PAREN   shift, and go to state 15
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 41
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    $default  reduce using rule 48 (optexpr)
+    $default  reduce using rule 46 (optexpr)
 
-    optexpr  go to state 171
-    expr     go to state 44
-    term     go to state 33
-    attr     go to state 34
-    const    go to state 35
-    boolean  go to state 36
+    optexpr  go to state 163
+    expr     go to state 43
+    term     go to state 32
+    attr     go to state 33
+    const    go to state 34
+    boolean  go to state 35
 
 
-State 170
+State 162
 
     2 stmts: stmts . stmt
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts . BLOCK_CLOSE
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts . BLOCK_CLOSE
 
     INCLUDE      shift, and go to state 4
     BREAK        shift, and go to state 5
@@ -3178,60 +3060,59 @@ State 170
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_CLOSE  shift, and go to state 172
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_CLOSE  shift, and go to state 164
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 26
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    stmt         go to state 25
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
 
 
-State 171
+State 163
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr . CLOSE_PAREN $@6 stmt
 
-    CLOSE_PAREN  shift, and go to state 173
+    CLOSE_PAREN  shift, and go to state 165
 
 
-State 172
+State 164
 
-   27 func: IDENTIFIER IDENTIFIER $@8 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE .
+   25 func: IDENTIFIER IDENTIFIER $@7 OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE .
 
-    $default  reduce using rule 27 (func)
+    $default  reduce using rule 25 (func)
 
 
-State 173
+State 165
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN . $@6 stmt
 
     $default  reduce using rule 20 ($@6)
 
-    $@6  go to state 174
+    $@6  go to state 166
 
 
-State 174
+State 166
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 . stmt
 
@@ -3242,36 +3123,35 @@ State 174
     ENUM         shift, and go to state 8
     RETURN       shift, and go to state 9
     STRUCT       shift, and go to state 10
-    DO           shift, and go to state 11
-    FOR          shift, and go to state 12
-    SIZEOF       shift, and go to state 13
-    TYPEDEF      shift, and go to state 14
-    WHILE        shift, and go to state 15
-    OPEN_PAREN   shift, and go to state 16
-    BLOCK_OPEN   shift, and go to state 17
-    SUB          shift, and go to state 18
-    LOGICAL_NOT  shift, and go to state 19
-    DECIMAL      shift, and go to state 20
-    STRING       shift, and go to state 21
-    IDENTIFIER   shift, and go to state 22
-    INTEGER      shift, and go to state 23
-    TRUE         shift, and go to state 24
-    FALSE        shift, and go to state 25
+    FOR          shift, and go to state 11
+    SIZEOF       shift, and go to state 12
+    TYPEDEF      shift, and go to state 13
+    WHILE        shift, and go to state 14
+    OPEN_PAREN   shift, and go to state 15
+    BLOCK_OPEN   shift, and go to state 16
+    SUB          shift, and go to state 17
+    LOGICAL_NOT  shift, and go to state 18
+    DECIMAL      shift, and go to state 19
+    STRING       shift, and go to state 20
+    IDENTIFIER   shift, and go to state 21
+    INTEGER      shift, and go to state 22
+    TRUE         shift, and go to state 23
+    FALSE        shift, and go to state 24
 
-    stmt         go to state 175
-    conditional  go to state 27
-    repetition   go to state 28
-    var          go to state 29
-    func         go to state 30
-    commands     go to state 31
-    expr         go to state 32
-    term         go to state 33
-    attr         go to state 34
-    const        go to state 35
-    boolean      go to state 36
+    stmt         go to state 167
+    conditional  go to state 26
+    repetition   go to state 27
+    var          go to state 28
+    func         go to state 29
+    commands     go to state 30
+    expr         go to state 31
+    term         go to state 32
+    attr         go to state 33
+    const        go to state 34
+    boolean      go to state 35
 
 
-State 175
+State 167
 
    21 repetition: FOR OPEN_PAREN optexpr $@4 SEMI_COLON repexpr SEMI_COLON $@5 optexpr CLOSE_PAREN $@6 stmt .
 

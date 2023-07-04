@@ -1,8 +1,6 @@
 jib a;
 a=8;
 
-squall (a<10) ⚓️
-    jib c;
-    c = 10;
+weigh_anchor ⚓️
     a = a + 1;
-⚓️;
+⚓️;squall(a < 10);

@@ -142,7 +142,7 @@ repetition: WHILE {handleRepEntry();} OPEN_PAREN repexpr CLOSE_PAREN {handleRepS
 
     | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleRepUpdate();} optexpr CLOSE_PAREN {handleRepGotoEntry();handleRepStmt();} stmt {handleRepGotoUpdate();handleRepExit();}
 
-    | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();}
+    /* | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();} */
     ;
 
 repexpr: expr { handleRepAfterExpr($1); }
@@ -373,6 +373,7 @@ void handleRepExit() {
 
 void handleRepUpdate() {
     riscVCodeRepUpdate(riscv);
+    pseudoCodeRepUpdate(pseudo);
 }
 
 void handleRepStmt() {
@@ -387,6 +388,7 @@ void handleRepGotoEntry() {
 
 void handleRepGotoUpdate() {
     riscVCodeRepGotoUpdate(riscv);
+    pseudoCodeRepGotoUpdate(pseudo);
 }
 
 void handleFunctionCall(char *func) {
