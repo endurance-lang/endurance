@@ -1,0 +1,18 @@
+spyglass (1 < 2) ⚓️
+    jib a;
+    a = 10;
+    spyglass (a == 10) ⚓️
+         /ahoy code to be executed if the condition is true belay/ 
+         jib c;
+         c = 30;
+    ⚓️;
+    parley ⚓️
+         /ahoy code to be executed if the condition is false belay/ 
+         jib d;
+         d = 40;
+    ⚓️;
+⚓️;
+parley ⚓️
+    jib b;
+    b = 20;
+⚓️;

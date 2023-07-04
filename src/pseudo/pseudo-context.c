@@ -13,7 +13,7 @@ PseudoContext *pseudo_ContextNew(FILE* filename,SymbolTable* st){
     PseudoContext *new = (PseudoContext *) malloc(sizeof(PseudoContext));
     new->fileName = filename;
     new->symbolTable = st;
-    new->is = NULL;
+    new->ifs = new->elses = NULL;
     return new;
 }
 
@@ -117,11 +117,36 @@ int pseudoCodeGenVariable(PseudoContext *context,char* var){
     return tempdes;
 }
 
-
-void pseudoCodeAfterElse(PseudoContext *context){
-    // fprintf(context->fileName,"");
+//100 ifFalse expression goto 103
+//101stmt-if
+//102 goto SAIDA
+//103 stmt-else
+//104
+void pseudoCodeIfAfterExpr(PseudoContext *context, int reg){
+    int instr = numinstr++;
+    fprintf(context->fileName,"%d: ifFalse t%d goto ",instr,reg);
+    instStackPush(&context->ifs,ftell(context->fileName));
+    fprintf(context->fileName,"     ");
 }
-void pseudoCodeExit(PseudoContext *context);
+void pseudoCodeIfAfterStmt(PseudoContext *context){
+    int instr = numinstr++;
+    fprintf(context->fileName,"%d: goto ",instr);
+    instStackPush(&context->elses,ftell(context->fileName));
+    fprintf(context->fileName,"     ");
+    int postemp = ftell(context->fileName);
+    int backpos = context->ifs->instr;
+    instStackPop(&context->ifs);
+    fseek(context->fileName,backpos,SEEK_SET);
+    fprintf(context->fileName,"%4d\n",numinstr);
+    fseek(context->fileName,postemp,SEEK_SET);
+}
+void pseudoCodeIfAfterElse(PseudoContext *context){
+    int pos = ftell(context->fileName);
+    fseek(context->fileName,context->elses->instr,SEEK_SET);
+    fprintf(context->fileName,"%4d\n",numinstr);
+    fseek(context->fileName,pos,SEEK_SET);
+}
+
 void pseudoCodeRepEntry(PseudoContext *context);
 void pseudoCodeRepExpr(PseudoContext *context, int reg);
 void pseudoCodeRepExit(PseudoContext *context);

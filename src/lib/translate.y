@@ -342,14 +342,17 @@ ExprData handleAssignExpr(char *id, ExprData e) {
 /* IF - ELSE */
 void handleIfAfterExpr(ExprData e) {
     riscVCodeIfAfterExpr(riscv,e.reg);
+    pseudoCodeIfAfterExpr(pseudo,e.temp);
 }
 
 void handleIfAfterStmt() {
     riscVCodeIfAfterStmt(riscv);
+    pseudoCodeIfAfterStmt(pseudo);
 }
 
 void handleIfAfterElse() {
     riscVCodeIfAfterElse(riscv);
+    pseudoCodeIfAfterElse(pseudo);
 }
 
 /* WHILE - FOR - DO WHILE */
