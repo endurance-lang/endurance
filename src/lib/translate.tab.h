@@ -127,16 +127,21 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 68 "translate.y"
+#line 70 "translate.y"
 
-    char *string;
-    int integer;
-    double decimal;
-    int boolean;
-    ExprData exprData;
-    FuncParamList *paramList;
+    struct {
+        union {
+            char *string;
+            int integer;
+            double decimal;
+            int boolean;
+            ExprData exprData;
+            FuncParamList *paramList;
+        } data;
+        int node_id;
+    } data;
 
-#line 140 "translate.tab.h"
+#line 145 "translate.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

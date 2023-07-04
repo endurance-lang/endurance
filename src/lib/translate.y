@@ -28,6 +28,9 @@ RiscVContext *riscv;
 FILE *fpseudo;
 PseudoContext *pseudo;
 
+FILE *dot;
+int nextLabel = 0;
+
 
 int nextAddress = 0;
 
@@ -64,29 +67,29 @@ ExprData handleInteger(int integer);
 
 %}
 
-
 %union {
-    char *string;
-    int integer;
-    double decimal;
-    int boolean;
-    ExprData exprData;
-    FuncParamList *paramList;
+    struct {
+        union {
+            char *string;
+            int integer;
+            double decimal;
+            int boolean;
+            ExprData exprData;
+            FuncParamList *paramList;
+        } data;
+        int node_id;
+    } data;
 };
 
 %token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
 
 %token DECIMAL STRING DOT
 
-%token <string> IDENTIFIER
-%token <integer> INTEGER
-%token <boolean> TRUE FALSE
+%token <data> IDENTIFIER
+%token <data> INTEGER
+%token <data> TRUE FALSE
 
-%type <integer> constvector
-%type <boolean> boolean
-%type <string> attr
-%type <exprData> expr term const exprvector
-%type <paramList> exprlist optexprlist
+%type <data> constvector boolean attr expr term const exprvector exprlist optexprlist program stmts stmt conditional condexpr repetition repexpr var func typelist opttypelist commands varlist idlist optexpr
 
 %start program
 
@@ -112,17 +115,44 @@ ExprData handleInteger(int integer);
 
 %%
 
-program: stmts {  }
+program: stmts { $$.node_id = nextLabel++; fprintf(dot, "n%d [label=\"program\"]\n", $$.node_id); fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); }
     ;
 
-stmts: stmts stmt                   {  }
-    |                               {  }
+stmts: stmts stmt                   { 
+                                        $$.node_id = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"stmts\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, $1.node_id, $2.node_id); 
+                                    }
+    | /* EPS */                     { 
+                                        $$.node_id = nextLabel++; 
+                                        int eps = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"stmts\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eps); 
+                                    }
     ;
 
-stmt: conditional               {  }
-    | repetition                {  }
-    | func                      {  }
-    | var SEMI_COLON            {  }
+stmt: conditional               { 
+                                    $$.node_id = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id); 
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                }
+    | repetition                { 
+                                    $$.node_id = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id); 
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                }
+    | func                      { 
+                                    $$.node_id = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id); 
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                }
+    | var SEMI_COLON            { 
+                                    $$.node_id = nextLabel++; 
+                                    int semicolon = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id);  
+                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
+                                    fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, $1.node_id, semicolon); }
     | commands                  {  }
     | expr SEMI_COLON           {  }
     | BLOCK_OPEN stmts BLOCK_CLOSE {  }
@@ -132,7 +162,7 @@ conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX { handleIfAfterSt
     /* | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  } */
     ;
 
-condexpr: expr                  { handleIfAfterExpr($1); }
+condexpr: expr                  { handleIfAfterExpr($1.data.exprData); }
     ;
 
 /* caselist: caselist CASE term COLON stmts    {  }
@@ -147,10 +177,10 @@ repetition: WHILE {handleRepEntry();} OPEN_PAREN repexpr CLOSE_PAREN {handleRepS
     /* | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();} */
     ;
 
-repexpr: expr { handleRepAfterExpr($1); }
+repexpr: expr { handleRepAfterExpr($1.data.exprData); }
     ;
 
-var: IDENTIFIER IDENTIFIER constvector { handleVarDeclaration($1, $2, $3); }
+var: IDENTIFIER IDENTIFIER constvector { handleVarDeclaration($1.data.string, $2.data.string, $3.data.integer); }
     ;
 
 func: IDENTIFIER IDENTIFIER {} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {}
@@ -160,16 +190,16 @@ typelist: typelist COMMA var {}
     | var {}
     ;
 
-exprlist: exprlist COMMA expr { functAddParam(&$1, $3.reg, $3.returnType); }
-    | expr { $$ = NULL; functAddParam(&$$, $1.reg, $1.returnType); }
+exprlist: exprlist COMMA expr { functAddParam(&$1.data.paramList, $3.data.exprData.reg, $3.data.exprData.returnType); }
+    | expr { $$.data.paramList = NULL; functAddParam(&$$.data.paramList, $1.data.exprData.reg, $1.data.exprData.returnType); }
     ;
 
 opttypelist: typelist   {  }
     |                   {  }
     ;
 
-optexprlist: exprlist   { $$ = $1; }
-    |                   { $$ = NULL; }
+optexprlist: exprlist   { $$.data.paramList = $1.data.paramList; }
+    |                   { $$.data.paramList = NULL; }
     ;
 
 commands: 
@@ -194,60 +224,60 @@ optexpr: expr                       {  }
     |                               {  }
     ;                           
 
-expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
-    | expr SUB expr { $$ = handleBinaryExpr(SUB, $1, $3); }
-    | expr MUL expr { $$ = handleBinaryExpr(MUL, $1, $3); }
-    | expr DIV expr { $$ = handleBinaryExpr(DIV, $1, $3); }
+expr: expr ADD expr { $$.data.exprData = handleBinaryExpr(ADD, $1.data.exprData, $3.data.exprData); }
+    | expr SUB expr { $$.data.exprData = handleBinaryExpr(SUB, $1.data.exprData, $3.data.exprData); }
+    | expr MUL expr { $$.data.exprData = handleBinaryExpr(MUL, $1.data.exprData, $3.data.exprData); }
+    | expr DIV expr { $$.data.exprData = handleBinaryExpr(DIV, $1.data.exprData, $3.data.exprData); }
     | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_AND expr     { $$ = handleBinaryExpr(BITWISE_AND, $1, $3); }
-    | expr BITWISE_OR expr      { $$ = handleBinaryExpr(BITWISE_OR, $1, $3); }
-    | expr BITWISE_NOT expr     { $$ = handleBinaryExpr(BITWISE_NOT, $1, $3); }
-    | expr BITWISE_XOR expr     { $$ = handleBinaryExpr(BITWISE_XOR, $1, $3); }
-    | expr LEFT_SHIFT expr      { $$ = handleBinaryExpr(LEFT_SHIFT, $1, $3); }
-    | expr RIGHT_SHIFT expr     { $$ = handleBinaryExpr(RIGHT_SHIFT, $1, $3); }
-    | expr EQ expr { $$ = handleBinaryExpr(EQ, $1, $3); }
-    | expr NE expr { $$ = handleBinaryExpr(NE, $1, $3); }
-    | expr LT expr { $$ = handleBinaryExpr(LT, $1, $3); }
-    | expr GT expr { $$ = handleBinaryExpr(GT, $1, $3); }
-    | expr LE expr { $$ = handleBinaryExpr(LE, $1, $3); }
-    | expr GE expr { $$ = handleBinaryExpr(GE, $1, $3); }
-    | expr LOGICAL_AND expr         { $$ = handleBinaryExpr(LOGICAL_AND, $1, $3); }
-    | expr LOGICAL_OR expr          { $$ = handleBinaryExpr(LOGICAL_OR, $1, $3); }
-    | OPEN_PAREN expr CLOSE_PAREN   { $$ = $2; }
-    | LOGICAL_NOT expr %prec UNARY  { $$ = handleUnaryExpr(LOGICAL_NOT, $2); }
-    | SUB expr %prec UNARY          { $$ = handleUnaryExpr(SUB, $2); }
-    | term                          { $$ = $1; }
-    | attr ASSIGN expr              { $$ = handleAssignExpr($1, $3); }
+    | expr BITWISE_AND expr     { $$.data.exprData = handleBinaryExpr(BITWISE_AND, $1.data.exprData, $3.data.exprData); }
+    | expr BITWISE_OR expr      { $$.data.exprData = handleBinaryExpr(BITWISE_OR, $1.data.exprData, $3.data.exprData); }
+    | expr BITWISE_NOT expr     { $$.data.exprData = handleBinaryExpr(BITWISE_NOT, $1.data.exprData, $3.data.exprData); }
+    | expr BITWISE_XOR expr     { $$.data.exprData = handleBinaryExpr(BITWISE_XOR, $1.data.exprData, $3.data.exprData); }
+    | expr LEFT_SHIFT expr      { $$.data.exprData = handleBinaryExpr(LEFT_SHIFT, $1.data.exprData, $3.data.exprData); }
+    | expr RIGHT_SHIFT expr     { $$.data.exprData = handleBinaryExpr(RIGHT_SHIFT, $1.data.exprData, $3.data.exprData); }
+    | expr EQ expr { $$.data.exprData = handleBinaryExpr(EQ, $1.data.exprData, $3.data.exprData); }
+    | expr NE expr { $$.data.exprData = handleBinaryExpr(NE, $1.data.exprData, $3.data.exprData); }
+    | expr LT expr { $$.data.exprData = handleBinaryExpr(LT, $1.data.exprData, $3.data.exprData); }
+    | expr GT expr { $$.data.exprData = handleBinaryExpr(GT, $1.data.exprData, $3.data.exprData); }
+    | expr LE expr { $$.data.exprData = handleBinaryExpr(LE, $1.data.exprData, $3.data.exprData); }
+    | expr GE expr { $$.data.exprData = handleBinaryExpr(GE, $1.data.exprData, $3.data.exprData); }
+    | expr LOGICAL_AND expr         { $$.data.exprData = handleBinaryExpr(LOGICAL_AND, $1.data.exprData, $3.data.exprData); }
+    | expr LOGICAL_OR expr          { $$.data.exprData = handleBinaryExpr(LOGICAL_OR, $1.data.exprData, $3.data.exprData); }
+    | OPEN_PAREN expr CLOSE_PAREN   { $$.data.exprData = $2.data.exprData; }
+    | LOGICAL_NOT expr %prec UNARY  { $$.data.exprData = handleUnaryExpr(LOGICAL_NOT, $2.data.exprData); }
+    | SUB expr %prec UNARY          { $$.data.exprData = handleUnaryExpr(SUB, $2.data.exprData); }
+    | term                          { $$.data.exprData = $1.data.exprData; }
+    | attr ASSIGN expr              { $$.data.exprData = handleAssignExpr($1.data.string, $3.data.exprData); }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
 
 
-term: const { $$ = $1; }
-    | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { $$ = handleFunctionCall($1, $3); }
-    | attr { $$ = handleAttr($1); }
+term: const { $$.data.exprData = $1.data.exprData; }
+    | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { $$.data.exprData = handleFunctionCall($1.data.string, $3.data.paramList); }
+    | attr { $$.data.exprData = handleAttr($1.data.string); }
     ;
 
-attr: IDENTIFIER exprvector     { $$ = $1; }
-    | attr POINTER attr         { $$ = mergeStrPointers($1, $3); }
+attr: IDENTIFIER exprvector     { $$.data.string = $1.data.string; }
+    | attr POINTER attr         { $$.data.string = mergeStrPointers($1.data.string, $3.data.string); }
     ;
 
-const: INTEGER          { $$ = handleInteger($1); }
-    | DECIMAL           { $$.returnType = strdup("ship"); $$.reg = 0;  }
+const: INTEGER          { $$.data.exprData = handleInteger($1.data.integer); }
+    | DECIMAL           { $$.data.exprData.returnType = strdup("ship"); $$.data.exprData.reg = 0;  }
     | STRING            { /* chama codeGen() e retorna o Temporary */  }
     | boolean           { /* chama codeGen() e retorna o Temporary */  }
 
-boolean: TRUE                   { $$ = $1; }
-    | FALSE                     { $$ = $1; }
+boolean: TRUE                   { $$.data.boolean = $1.data.boolean; }
+    | FALSE                     { $$.data.boolean = $1.data.boolean; }
     ;
 
 exprvector:
-    OPEN_BRACKET expr CLOSE_BRACKET { $$ = $2; }
+    OPEN_BRACKET expr CLOSE_BRACKET { $$.data.exprData = $2.data.exprData; }
     | /* EPS */                     {  }
     ;
 
 constvector: 
-    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$ = $2; }
-    | /* EPS */                     { $$ = 1; }
+    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$.data.integer = $2.data.integer; }
+    | /* EPS */                     { $$.data.integer = 1; }
     ; 
 
 %%
@@ -449,9 +479,12 @@ void onExit() {
     riscVSaveRegisters(riscv);
     riscVCodeExitProgram(riscv);
 
+    fprintf(dot,"}\n");
+
     fclose(gen);
     fclose(prod);
     fclose(friscv);
+    fclose(dot);
     symbolTableDelete(st);
 }
 
@@ -475,6 +508,9 @@ void onStart() {
     fpseudo = fopen("./output/temp.txt","w");
     pseudo = pseudo_ContextNew(fpseudo,st);
 
+
+    dot = fopen("./output/tree.dot", "w");
+    fprintf(dot, "strict graph {\n");
 
     symbolTableCreateBlock(st);
     

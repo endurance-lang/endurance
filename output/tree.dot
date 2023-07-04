@@ -1,0 +1,7 @@
+strict graph {
+n0 [label="stmts"]
+n1 [label="&#x03B5;"]
+n0 -- n1
+n2 [label="program"]
+n2 -- n0
+}

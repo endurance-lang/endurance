@@ -37,9 +37,4 @@ ecall
 
 # main code here
 main:
-jal x1, scanf
-add x8, x11, x0
-jal x1, scanf
-addi x5, x0, 0
-sw x8, 0(x5)
 j programExit

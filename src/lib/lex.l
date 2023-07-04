@@ -26,7 +26,7 @@ identifier                  [A-Za-z_][A-Za-z0-9_]*
 \/ahoy.*belay\/             {  }
 
 inport                      { return INCLUDE; }
-oggin                       { yylval.string = strdup(yytext); return IDENTIFIER; }
+oggin                       { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 anchor                      { return BREAK; }
 trade                       { return CASE; }
 rigging                     { return CONST; }
@@ -38,17 +38,17 @@ crew                        { return ENUM; }
 land_ho                     { return RETURN; }
 chest                       { return STRUCT; }
 
-jib                         { yylval.string = strdup(yytext); return IDENTIFIER; }
-boat                        { yylval.string = strdup(yytext); return IDENTIFIER; }
-ship                        { yylval.string = strdup(yytext); return IDENTIFIER; }
-addled                      { yylval.string = strdup(yytext); return IDENTIFIER; }
-aye                         { yylval.boolean = 1; return TRUE; }
-arr                         { yylval.boolean = 0; return FALSE; }
-sailor                      { yylval.string = strdup(yytext); return IDENTIFIER; }
+jib                         { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+boat                        { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+ship                        { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+addled                      { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+aye                         { yylval.data.data.boolean = 1; return TRUE; }
+arr                         { yylval.data.data.boolean = 0; return FALSE; }
+sailor                      { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 
 weigh_anchor                { return DO; }
-parrot                      { yylval.string = strdup(yytext); return IDENTIFIER; }
-plunder                     { yylval.string = strdup(yytext); return IDENTIFIER; }
+parrot                      { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+plunder                     { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 voyage                      { return FOR; }
 compass                     { return GOTO; }
 rummage                     { return SIZEOF; }
@@ -56,15 +56,15 @@ sweet                       { return SWITCH; }
 charter                     { return TYPEDEF; }
 treasure                    { return UNION; }
 squall                      { return WHILE; }
-swab                        { yylval.string = strdup(yytext); return IDENTIFIER; }
+swab                        { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 harpoon                     { return POINTER; }
 
-gully                       { yylval.string = strdup(yytext); return IDENTIFIER; }
-hoard                       { yylval.string = strdup(yytext); return IDENTIFIER; }
-booty                       { yylval.string = strdup(yytext); return IDENTIFIER; }
-net                         { yylval.string = strdup(yytext); return IDENTIFIER; }
-chart                       { yylval.string = strdup(yytext); return IDENTIFIER; }
-plunderhaul                 { yylval.string = strdup(yytext); return IDENTIFIER; }
+gully                       { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+hoard                       { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+booty                       { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+net                         { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+chart                       { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
+plunderhaul                 { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 
 "]"                         { return CLOSE_BRACKET; }
 "["                         { return OPEN_BRACKET; }
@@ -99,9 +99,9 @@ plunderhaul                 { yylval.string = strdup(yytext); return IDENTIFIER;
 ","                         { return COMMA; }
 
 {ws}                        { line += (*yytext == '\n'); }
-{integer}                   { yylval.integer = atoi(yytext); return INTEGER; }
-{decimal}                   { yylval.decimal = atof(yytext); return DECIMAL; }
-{word}                      { yylval.string = strdup(yytext); return STRING; }
-{identifier}                { yylval.string = strdup(yytext); return IDENTIFIER; }
+{integer}                   { yylval.data.data.integer = atoi(yytext); return INTEGER; }
+{decimal}                   { yylval.data.data.decimal = atof(yytext); return DECIMAL; }
+{word}                      { yylval.data.data.string = strdup(yytext); return STRING; }
+{identifier}                { yylval.data.data.string = strdup(yytext); return IDENTIFIER; }
 .                           { printf("Token não reconhecido. LEXEMA: %s\n", yytext); return INVALID; }
 %%
