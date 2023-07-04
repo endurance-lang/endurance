@@ -1,0 +1,4 @@
+jib a;
+a = plunder();
+
+parrot(); 

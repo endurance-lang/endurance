@@ -134,8 +134,9 @@ union YYSTYPE
     double decimal;
     int boolean;
     ExprData exprData;
+    FuncParamList *paramList;
 
-#line 139 "translate.tab.h"
+#line 140 "translate.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

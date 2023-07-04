@@ -1,0 +1,15 @@
+jib a;
+jib b;
+
+a = plunder ();
+c = plunder ();
+
+jib i;
+b = 1;
+voyage (i = 0; i < a; i = i + 1) ⚓️
+    b = b * 2;
+⚓️;
+
+parrot(a);
+parrot(c);
+parrot(b);

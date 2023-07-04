@@ -14,6 +14,13 @@ RiscVContext *riscV_ContextNew(FILE* filename, SymbolTable* st){
     new->symbolTable = st;
     new->rm = rManagerCreate();
     new->if_else = new->if_exit = new->rep_entry = new->rep_exit = new->rep_stmt, new->rep_update = NULL;
+    
+    FILE *base = fopen("src/risc-v/riscv-base.s", "r");
+    if(!base) exit(1);
+    char c;
+    while((c = fgetc(base)) != EOF) fprintf(filename, "%c", c);
+    fclose(base);
+
     return new;
 }
 
@@ -253,4 +260,8 @@ void riscVSaveRegisters(RiscVContext *context) {
     
     //free all reg
     rManagerFreeAllRegisters(context->rm);
+}
+
+void riscVCodeExitProgram(RiscVContext *context) {
+    fprintf(context->fileName, "j programExit\n");
 }

@@ -37,5 +37,6 @@ void riscVCodeRepUpdate(RiscVContext *context);
 void riscVCodeRepStmt(RiscVContext *context);
 void riscVCodeRepGotoEntry(RiscVContext *context);
 void riscVCodeRepGotoUpdate(RiscVContext *context);
+void riscVCodeExitProgram(RiscVContext *context);
 
 #endif

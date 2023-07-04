@@ -58,7 +58,7 @@ void handleRepExit();
 void handleRepGotoEntry();
 void handleRepGotoUpdate();
 
-void handleFunctionCall();
+ExprData handleFunctionCall(char *id, FuncParamList *params);
 
 ExprData handleInteger(int integer);
 
@@ -71,6 +71,7 @@ ExprData handleInteger(int integer);
     double decimal;
     int boolean;
     ExprData exprData;
+    FuncParamList *paramList;
 };
 
 %token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
@@ -85,6 +86,7 @@ ExprData handleInteger(int integer);
 %type <boolean> boolean
 %type <string> attr
 %type <exprData> expr term const exprvector
+%type <paramList> exprlist optexprlist
 
 %start program
 
@@ -158,16 +160,16 @@ typelist: typelist COMMA var {}
     | var {}
     ;
 
-termlist: termlist COMMA term {}
-    | term {  }
+exprlist: exprlist COMMA expr { functAddParam(&$1, $3.reg, $3.returnType); }
+    | expr { $$ = NULL; functAddParam(&$$, $1.reg, $1.returnType); }
     ;
 
 opttypelist: typelist   {  }
     |                   {  }
     ;
 
-opttermlist: termlist   {  }
-    |                   {  }
+optexprlist: exprlist   { $$ = $1; }
+    |                   { $$ = NULL; }
     ;
 
 commands: 
@@ -221,7 +223,7 @@ expr: expr ADD expr { $$ = handleBinaryExpr(ADD, $1, $3); }
 
 
 term: const { $$ = $1; }
-    | IDENTIFIER OPEN_PAREN opttermlist CLOSE_PAREN { handleFunctionCall($1); }
+    | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { $$ = handleFunctionCall($1, $3); }
     | attr { $$ = handleAttr($1); }
     ;
 
@@ -330,6 +332,8 @@ ExprData handleUnaryExpr(int opcode, ExprData e) {
 ExprData handleAssignExpr(char *id, ExprData e) {
     Symbol *sym = symbolTableFind(st, id);
 
+    if(!sym) reportAndExit("Identificador \"%s\" nao declarado.", id);
+
     if(strcmp(sym->data.variable.type, e.returnType)) reportAndExit("Impossivel atribuir um valor do tipo \"%s\" para uma variavel do tipo \"%s\".", e.returnType, sym->data.variable.type);
 
     ExprData ret;
@@ -381,13 +385,36 @@ void handleRepGotoUpdate() {
     riscVCodeRepGotoUpdate(riscv);
 }
 
-void handleFunctionCall(char *func) {
-    if(!strcmp(func, "parrot")) {
-        fprintf(friscv, "li a0, 1\n");
-        fprintf(friscv, "li a1, 42\n");
-        fprintf(friscv, "ecall\n");
-        return;
+ExprData handleFunctionCall(char *id, FuncParamList *params) {
+    ExprData ret;
+    ret.reg = 0;
+    ret.temp = 0;
+
+    if(!strcmp(id, "parrot")) {
+        if(functParamListSize(&params) != 1) {
+            reportAndExit("parrot requer 1 parametro.");
+        }
+
+        FuncParam p = functGetParam(&params, 0);
+
+        fprintf(friscv, "mv a1, x%d\n", p.reg);
+        fprintf(friscv, "jal x1, printf\n");
+        ret.returnType = strdup("void");
+        return ret;
     }
+
+    if(!strcmp(id, "plunder")) {
+        if(functParamListSize(&params) != 0) {
+            reportAndExit("plunder nao aceita parametros.");
+        }
+
+        fprintf(friscv, "jal x1, scanf\n");
+        ret.reg = 11;
+        ret.returnType = strdup("jib");
+        return ret;
+    }
+
+    return ret;
 }
 ExprData handleInteger(int integer){
     ExprData ret;
@@ -410,6 +437,7 @@ void reportAndExit(const char *s, ...) {
 
 void onExit() {
     riscVSaveRegisters(riscv);
+    riscVCodeExitProgram(riscv);
 
     fclose(gen);
     fclose(prod);
