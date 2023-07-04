@@ -10,7 +10,7 @@ struct pseudoContext
 {
     SymbolTable* symbolTable;
     FILE* fileName;
-    InstructionStack *ifs, *elses;
+    InstructionStack *ifs, *elses, *repentry, *repexit, *repstmt, *repupdate;
 };
 
 
@@ -24,11 +24,12 @@ void pseudoCodeIfAfterExpr(PseudoContext *context, int reg);
 void pseudoCodeIfAfterStmt(PseudoContext *context);
 void pseudoCodeIfAfterElse(PseudoContext *context);
 void pseudoCodeRepEntry(PseudoContext *context);
-void pseudoCodeRepExpr(PseudoContext *context, int reg);
+void pseudoCodeRepAfterExpr(PseudoContext *context, int reg);
 void pseudoCodeRepExit(PseudoContext *context);
-void pseudoCodeForStmtUpdate(PseudoContext *context);
-void pseudoCodeForEntryStmt(PseudoContext *context);
-void pseudoCodeForUpdateExit(PseudoContext *context);
+void pseudoCodeRepUpdate(PseudoContext *context);
+void pseudoCodeRepStmt(PseudoContext *context);
+void pseudoCodeRepGotoEntry(PseudoContext *context);
+void pseudoCodeRepGotoUpdate(PseudoContext *context);
 
 
 #endif

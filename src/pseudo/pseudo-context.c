@@ -13,7 +13,7 @@ PseudoContext *pseudo_ContextNew(FILE* filename,SymbolTable* st){
     PseudoContext *new = (PseudoContext *) malloc(sizeof(PseudoContext));
     new->fileName = filename;
     new->symbolTable = st;
-    new->ifs = new->elses = NULL;
+    new->ifs = new->elses = new->repentry = new->repexit = new->repstmt = new->repupdate = NULL;
     return new;
 }
 
@@ -143,14 +143,44 @@ void pseudoCodeIfAfterStmt(PseudoContext *context){
 void pseudoCodeIfAfterElse(PseudoContext *context){
     int pos = ftell(context->fileName);
     fseek(context->fileName,context->elses->instr,SEEK_SET);
+    instStackPop(&context->elses);
     fprintf(context->fileName,"%4d\n",numinstr);
     fseek(context->fileName,pos,SEEK_SET);
 }
-
-void pseudoCodeRepEntry(PseudoContext *context);
-void pseudoCodeRepExpr(PseudoContext *context, int reg);
-void pseudoCodeRepExit(PseudoContext *context);
-void pseudoCodeForStmtUpdate(PseudoContext *context);
-void pseudoCodeForEntryStmt(PseudoContext *context);
-void pseudoCodeForUpdateExit(PseudoContext *context);
+//99 calc expression
+//100 ifFalse expression goto 103
+//101 stmt
+//102 goto 99
+//103
+void pseudoCodeRepEntry(PseudoContext *context){
+    instStackPush(&context->repentry,numinstr);
+}
+void pseudoCodeRepAfterExpr(PseudoContext *context, int reg){
+    int instr = numinstr++;
+    fprintf(context->fileName,"%d: ifFalse t%d goto ", instr,reg);
+    instStackPush(&context->repexit,ftell(context->fileName));
+    fprintf(context->fileName,"     ");
+    fprintf(context->fileName,"%d: goto ",numinstr++);
+    int pos = ftell(context->fileName);
+    instStackPush(&context->repstmt,pos);
+    fprintf(context->fileName,"     ");
+}
+void pseudoCodeRepStmt(PseudoContext *context){
+    fseek(context->fileName,context->repstmt->instr,SEEK_SET);
+    instStackPop(&context->repstmt);
+    fprintf(context->fileName,"%4d\n",numinstr);
+    fseek(context->fileName,0,SEEK_END);
+}
+void pseudoCodeRepGotoEntry(PseudoContext *context){
+    fprintf(context->fileName,"%d: goto %4d\n",numinstr++,context->repentry->instr);
+    instStackPop(&context->repentry);
+}
+void pseudoCodeRepExit(PseudoContext *context){
+    fseek(context->fileName,context->repexit->instr,SEEK_SET);
+    fprintf(context->fileName,"%4d\n",numinstr);
+    instStackPop(&context->repexit);
+    fseek(context->fileName,0,SEEK_END);
+}
+void pseudoCodeRepUpdate(PseudoContext *context);
+void pseudoCodeRepGotoUpdate(PseudoContext *context);
 

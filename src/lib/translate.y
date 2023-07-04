@@ -358,14 +358,17 @@ void handleIfAfterElse() {
 /* WHILE - FOR - DO WHILE */
 void handleRepEntry() {
     riscVCodeRepEntry(riscv);
+    pseudoCodeRepEntry(pseudo);
 }
 
 void handleRepAfterExpr(ExprData e) {
     riscVCodeRepAfterExpr(riscv, e.reg);
+    pseudoCodeRepAfterExpr(pseudo, e.temp);
 }
 
 void handleRepExit() {
     riscVCodeRepExit(riscv);
+    pseudoCodeRepExit(pseudo);
 }
 
 void handleRepUpdate() {
@@ -374,10 +377,12 @@ void handleRepUpdate() {
 
 void handleRepStmt() {
     riscVCodeRepStmt(riscv);
+    pseudoCodeRepStmt(pseudo);
 }
 
 void handleRepGotoEntry() {
     riscVCodeRepGotoEntry(riscv);
+    pseudoCodeRepGotoEntry(pseudo);
 }
 
 void handleRepGotoUpdate() {
