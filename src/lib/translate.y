@@ -144,7 +144,7 @@ repetition: WHILE {handleRepEntry();} OPEN_PAREN repexpr CLOSE_PAREN {handleRepS
 
     | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleRepUpdate();} optexpr CLOSE_PAREN {handleRepGotoEntry();handleRepStmt();} stmt {handleRepGotoUpdate();handleRepExit();}
 
-    | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();}
+    /* | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();} */
     ;
 
 repexpr: expr { handleRepAfterExpr($1); }
@@ -346,43 +346,53 @@ ExprData handleAssignExpr(char *id, ExprData e) {
 /* IF - ELSE */
 void handleIfAfterExpr(ExprData e) {
     riscVCodeIfAfterExpr(riscv,e.reg);
+    pseudoCodeIfAfterExpr(pseudo,e.temp);
 }
 
 void handleIfAfterStmt() {
     riscVCodeIfAfterStmt(riscv);
+    pseudoCodeIfAfterStmt(pseudo);
 }
 
 void handleIfAfterElse() {
     riscVCodeIfAfterElse(riscv);
+    pseudoCodeIfAfterElse(pseudo);
 }
 
 /* WHILE - FOR - DO WHILE */
 void handleRepEntry() {
     riscVCodeRepEntry(riscv);
+    pseudoCodeRepEntry(pseudo);
 }
 
 void handleRepAfterExpr(ExprData e) {
     riscVCodeRepAfterExpr(riscv, e.reg);
+    pseudoCodeRepAfterExpr(pseudo, e.temp);
 }
 
 void handleRepExit() {
     riscVCodeRepExit(riscv);
+    pseudoCodeRepExit(pseudo);
 }
 
 void handleRepUpdate() {
     riscVCodeRepUpdate(riscv);
+    pseudoCodeRepUpdate(pseudo);
 }
 
 void handleRepStmt() {
     riscVCodeRepStmt(riscv);
+    pseudoCodeRepStmt(pseudo);
 }
 
 void handleRepGotoEntry() {
     riscVCodeRepGotoEntry(riscv);
+    pseudoCodeRepGotoEntry(pseudo);
 }
 
 void handleRepGotoUpdate() {
     riscVCodeRepGotoUpdate(riscv);
+    pseudoCodeRepGotoUpdate(pseudo);
 }
 
 ExprData handleFunctionCall(char *id, FuncParamList *params) {

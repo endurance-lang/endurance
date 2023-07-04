@@ -10,7 +10,7 @@ struct pseudoContext
 {
     SymbolTable* symbolTable;
     FILE* fileName;
-    InstructionStack *is;
+    InstructionStack *ifs, *elses, *repentry, *repexit, *repstmt, *repupdate;
 };
 
 
@@ -20,15 +20,16 @@ int pseudoCodeGenInteger(PseudoContext *context, int num);
 int pseudoCodeGenBinaryOperator(PseudoContext *context, int op, int reg1, int reg2);
 int  pseudoCodeGenUnaryOperator(PseudoContext *context, int op, int reg1);
 int pseudoCodeGenVariable(PseudoContext *context,char* var);
-void pseudoSaveRegisters(PseudoContext *context);
-void pseudoCodeAfterElse(PseudoContext *context);
-void pseudoCodeExit(PseudoContext *context);
+void pseudoCodeIfAfterExpr(PseudoContext *context, int reg);
+void pseudoCodeIfAfterStmt(PseudoContext *context);
+void pseudoCodeIfAfterElse(PseudoContext *context);
 void pseudoCodeRepEntry(PseudoContext *context);
-void pseudoCodeRepExpr(PseudoContext *context, int reg);
+void pseudoCodeRepAfterExpr(PseudoContext *context, int reg);
 void pseudoCodeRepExit(PseudoContext *context);
-void pseudoCodeForStmtUpdate(PseudoContext *context);
-void pseudoCodeForEntryStmt(PseudoContext *context);
-void pseudoCodeForUpdateExit(PseudoContext *context);
+void pseudoCodeRepUpdate(PseudoContext *context);
+void pseudoCodeRepStmt(PseudoContext *context);
+void pseudoCodeRepGotoEntry(PseudoContext *context);
+void pseudoCodeRepGotoUpdate(PseudoContext *context);
 
 
 #endif
