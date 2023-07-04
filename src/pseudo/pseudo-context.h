@@ -10,7 +10,7 @@ struct pseudoContext
 {
     SymbolTable* symbolTable;
     FILE* fileName;
-    //LabelStack *if_else, *if_exit, *rep_entry, *rep_exit, *for_stmt, *for_update;
+    InstructionStack *is;
 };
 
 
@@ -21,8 +21,7 @@ int pseudoCodeGenBinaryOperator(PseudoContext *context, int op, int reg1, int re
 int  pseudoCodeGenUnaryOperator(PseudoContext *context, int op, int reg1);
 int pseudoCodeGenVariable(PseudoContext *context,char* var);
 void pseudoSaveRegisters(PseudoContext *context);
-void pseudoCodeExpr(PseudoContext *context, int reg);
-void pseudoCodeElse(PseudoContext *context);
+void pseudoCodeAfterElse(PseudoContext *context);
 void pseudoCodeExit(PseudoContext *context);
 void pseudoCodeRepEntry(PseudoContext *context);
 void pseudoCodeRepExpr(PseudoContext *context, int reg);

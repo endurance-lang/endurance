@@ -5,6 +5,7 @@
 #include "../symbol-table/symbolTable.h"
 #include "../utils/print-source-code.h"
 #include "../risc-v/riscV-context.h"
+#include "../pseudo/pseudo-context.h"
 #include "types.h"
 #include <stdarg.h>
 #include <assert.h>
@@ -23,6 +24,10 @@ FILE *prod, *gen;
 
 FILE *friscv;
 RiscVContext *riscv;
+
+FILE *fpseudo;
+PseudoContext *pseudo;
+
 
 int nextAddress = 0;
 
@@ -54,6 +59,8 @@ void handleRepGotoEntry();
 void handleRepGotoUpdate();
 
 void handleFunctionCall();
+
+ExprData handleInteger(int integer);
 
 %}
 
@@ -222,7 +229,7 @@ attr: IDENTIFIER exprvector     { $$ = $1; }
     | attr POINTER attr         { $$ = mergeStrPointers($1, $3); }
     ;
 
-const: INTEGER          { $$.returnType = strdup("jib"); $$.reg = riscVCodeGenInteger(riscv, $1); }
+const: INTEGER          { $$ = handleInteger($1); }
     | DECIMAL           { $$.returnType = strdup("ship"); $$.reg = 0;  }
     | STRING            { /* chama codeGen() e retorna o Temporary */  }
     | boolean           { /* chama codeGen() e retorna o Temporary */  }
@@ -283,6 +290,7 @@ ExprData handleAttr(char *id) {
     ExprData ret;
     ret.returnType = sym_id->data.variable.type;
     ret.reg = riscVCodeGenVariable(riscv, id);
+    ret.temp = pseudoCodeGenVariable(pseudo, id);
     return ret;
 }
 
@@ -306,6 +314,7 @@ ExprData handleBinaryExpr(int opcode, ExprData e1, ExprData e2) {
     ret.returnType = e1.returnType;
 
     ret.reg = riscVCodeGenBinaryOperator(riscv, opcode, e1.reg, e2.reg);
+    ret.temp = pseudoCodeGenBinaryOperator(pseudo,opcode,e1.temp, e2.temp);
 
     return ret;
 }
@@ -314,6 +323,7 @@ ExprData handleUnaryExpr(int opcode, ExprData e) {
     ExprData ret;
     ret.returnType = e.returnType;
     ret.reg = riscVCodeGenUnaryOperator(riscv, opcode, e.reg);
+    ret.temp = pseudoCodeGenUnaryOperator(pseudo, opcode, e.temp);
     return ret;
 }
 
@@ -325,6 +335,8 @@ ExprData handleAssignExpr(char *id, ExprData e) {
     ExprData ret;
     ret.returnType = e.returnType;
     ret.reg = riscVCodeGenAssign(riscv, id, e.reg);
+    ret.temp = pseudoCodeGenAssign(pseudo,id,e.temp);
+    return ret;
 }
 
 /* IF - ELSE */
@@ -377,6 +389,13 @@ void handleFunctionCall(char *func) {
         return;
     }
 }
+ExprData handleInteger(int integer){
+    ExprData ret;
+    ret.returnType = strdup("jib"); 
+    ret.reg = riscVCodeGenInteger(riscv, integer);
+    ret.temp = pseudoCodeGenInteger(pseudo, integer);
+    return ret;
+}
 
 void reportAndExit(const char *s, ...) {
     char msg[100];
@@ -415,6 +434,8 @@ void onStart() {
     friscv = fopen("./output/riscv.s", "w");
     riscv = riscV_ContextNew(friscv, st);
 
+    fpseudo = fopen("./output/temp.txt","w");
+    pseudo = pseudo_ContextNew(fpseudo,st);
 
 
     symbolTableCreateBlock(st);

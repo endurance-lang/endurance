@@ -4,6 +4,7 @@
 typedef struct {
     int reg;
     char *returnType;
+    int temp;
 } ExprData;
 
 #endif
