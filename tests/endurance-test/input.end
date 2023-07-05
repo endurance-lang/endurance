@@ -1,0 +1,48 @@
+boat nav;
+
+jib square(jib x) ⚓️
+    land_ho x * x;
+⚓️;
+
+jib oggin() ⚓️
+    addled a;
+    a = aye;
+
+    sweet  (a) ⚓️
+        trade aye:
+            /ahoy belay/
+            parrot("its true");
+            anchor;
+        trade arr:
+            /ahoy belay/
+            parrot("its false");
+            anchor;
+        pirate:
+            /ahoy what else could it be? belay/
+    ⚓️;
+
+    /ahoy  belay/
+    spyglass (square(21) < 401) ⚓️
+        parrot("hello");
+    ⚓️;
+    parley ⚓️
+        parrot("moto");
+    ⚓️;
+
+    ship s;
+
+    s = 0.1 / 8 + 7 * 4 - 1;
+
+    jib i;
+    voyage(i=0; i<square(s); i += 1) ⚓️
+        s -= 0.01;
+    ⚓️;
+
+    parrot("valor de s = adivinha\n");
+
+    weigh_anchor ⚓️
+        parrot("do while\n");
+        boat a;
+    ⚓️; squall(a); 
+    
+⚓️;

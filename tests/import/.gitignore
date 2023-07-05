@@ -1,0 +1,6 @@
+y.tab.c
+y.tab.h
+*.output
+main
+preprocess
+lex.yy.c

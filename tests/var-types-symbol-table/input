@@ -1,0 +1,10 @@
+int var_int;
+var_int = 10;
+
+double var_double;
+var_double = 1.1;
+
+{
+    int var_int;
+    int new_var_int;
+}

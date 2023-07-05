@@ -1,0 +1,13 @@
+jib a;
+
+spyglass (a > 0) ⚓️
+    boat a;
+
+    squall(a < 15) ⚓️
+        a = 1;
+
+        boat a;
+    ⚓️;
+
+    ship a;
+⚓️;

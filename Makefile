@@ -1,5 +1,5 @@
 OBJFILES = $(patsubst %.c, %.o, src/lib/lex.l)
-TARGET   = lex-xd
+TARGET   = ../../build/lex-endurance
 
 all: build
 build: $(TARGET)
@@ -7,7 +7,8 @@ build: $(TARGET)
 $(TARGET): $(OBJFILES)
 	cd ./src/lib && \
 	flex -o lex.yy.c lex.l && \
-	gcc lex.yy.c -o ../../build/a.out
+	bison -d -o translate.tab.c translate.y && \
+	gcc translate.tab.c lex.yy.c ../utils/print-source-code.c ../symbol-table/symbol.c ../symbol-table/symbolTable.c -o ../../build/a.out
 
 test-first:
 	./build/a.out < resources/first.end
@@ -18,5 +19,11 @@ test-second:
 test-third:
 	./build/a.out < resources/third.end
 
-test-fourth:
-	./build/a.out < resources/fourth.end
+test-input:
+	./build/a.out < resources/input.end
+
+test-error:
+	./build/a.out < resources/error.end
+
+run:
+	./build/a.out < $(FILE)

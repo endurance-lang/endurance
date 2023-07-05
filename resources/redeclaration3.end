@@ -1,0 +1,7 @@
+addled f(jib x) ⚓️
+    land_ho x + 1;
+⚓️;
+
+addled f(ship b) {
+    land_ho b-1;
+}
