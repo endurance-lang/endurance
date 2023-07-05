@@ -1019,7 +1019,7 @@ term: const {
 
                     fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $1.data.string);
                     fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
-                    fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                    fprintf(dot, "n%d [label=\"term\"]\n", $$.node_id);
                     fprintf(dot, "n%d [label=\")\"]\n", close_paren);
 
                     fprintf(dot, "{rank=same; n%d n%d n%d n%d;}\n", identifier, open_paren, $3.node_id, close_paren);
@@ -1034,7 +1034,7 @@ term: const {
                 
                 $$.node_id = nextLabel++;
 
-                fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
+                fprintf(dot, "n%d [label=\"term\"]\n", $$.node_id);
                 fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
 
             }
@@ -1061,7 +1061,7 @@ attr: IDENTIFIER exprvector     {
                                     int pointer = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
-                                    fprintf(dot, "n%d [label=\"*\"]\n", pointer);
+                                    fprintf(dot, "n%d [label=\"->\"]\n", pointer);
 
                                     fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, pointer, $3.node_id);
 
@@ -1171,9 +1171,9 @@ constvector:
                                             $$.node_id = nextLabel++; 
                                             int close_bracket = nextLabel++;
                                             
-                                            fprintf(dot, "n%d [label=\"{\"]\n", open_bracket);
+                                            fprintf(dot, "n%d [label=\"[\"]\n", open_bracket);
                                             fprintf(dot, "n%d [label=\"constvector\"]\n", $$.node_id);
-                                            fprintf(dot, "n%d [label=\"}\"]\n", close_bracket);
+                                            fprintf(dot, "n%d [label=\"]\"]\n", close_bracket);
                                             fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, open_bracket, integer, close_bracket);
                                             
                                         }
