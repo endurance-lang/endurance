@@ -471,7 +471,6 @@ commands:
                                 fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                 fprintf(dot, "n%d [label=\"RETURN\"]\n", return_);
                                 fprintf(dot, "n%d [label=\";\"]\n", semicolon);
-                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
 
                                 fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", return_, $2.node_id, semicolon);
 
@@ -484,9 +483,9 @@ commands:
                                 int semicolon = nextLabel++;
                                 $$.node_id = nextLabel++;
 
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                 fprintf(dot, "n%d [label=\"BREAK\"]\n", break_);
                                 fprintf(dot, "n%d [label=\";\"]\n", semicolon);
-                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
 
                                 fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", break_, semicolon, $$.node_id);
                                 
@@ -498,9 +497,9 @@ commands:
                                 int semicolon = nextLabel++;
                                 $$.node_id = nextLabel++;
 
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                 fprintf(dot, "n%d [label=\"CONTINUE\"]\n", continue_);
                                 fprintf(dot, "n%d [label=\";\"]\n", semicolon);
-                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
 
                                 fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", continue_, semicolon, $$.node_id);
                                 
@@ -513,13 +512,11 @@ commands:
                                                     int semicolon = nextLabel++;
                                                     $$.node_id = nextLabel++;
 
-                                                    fprintf(dot, "n%d [label=\"TYPEDEF\"]\n", typedef_);
-                                                    fprintf(dot, "n%d [label=\"ID1\"]\n", identifier_1);
-                                                    fprintf(dot, "n%d [label=\"ID2\"]\n", identifier_2);
-                                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon);
                                                     fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
-
-                                                    fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d; }\n", typedef_, identifier_1, identifier_2, semicolon, $$.node_id);
+                                                    fprintf(dot, "n%d [label=\"TYPEDEF\"]\n", typedef_);
+                                                    fprintf(dot, "n%d [label=\"%s\"]\n", identifier_1, $2.data.string);
+                                                    fprintf(dot, "n%d [label=\"%s\"]\n", identifier_2, $3.data.string);
+                                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon);
 
                                                     fprintf(dot, "n%d -- {n%d n%d n%d n%d}\n", $$.node_id, typedef_, identifier_1, identifier_2, semicolon);
                                                }
@@ -536,18 +533,25 @@ commands:
                                     fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, include_, string_, semicolon);
                                 }
     | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE { 
+                                                        $$.node_id = nextLabel++;
                                                         int struct_ = nextLabel++;
                                                         int identifier = nextLabel++;
                                                         int block_open = nextLabel++;
-                                                        $$.node_id = nextLabel++;
                                                         int block_close = nextLabel++;
 
                                                         fprintf(dot, "n%d [label=\"STRUCT\"]\n", struct_);
-                                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
+                                                        fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $2.data.string);
                                                         fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
                                                         fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                                         fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
-                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d n%d}\n", $$.node_id, struct_, identifier, block_open, $4.node_id, block_close);
+                                                        
+                                                        fprintf(dot, "{rank=same; n%d n%d n%d n%d n%d;}\n", struct_, identifier, block_open, $4.node_id, block_close);
+                                                        
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, struct_);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, block_open);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $4.node_id);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, block_close);
                                                        }
     | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE { 
                                                         int enum_ = nextLabel++;
@@ -556,12 +560,19 @@ commands:
                                                         $$.node_id = nextLabel++;
                                                         int block_close = nextLabel++;
 
+                                                        fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                                         fprintf(dot, "n%d [label=\"ENUM\"]\n", enum_);
                                                         fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
                                                         fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
-                                                        fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
                                                         fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
-                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d n%d}\n", $$.node_id, enum_, identifier, block_open, $4.node_id, block_close);
+
+                                                        fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d; }\n", enum_, identifier, block_open, $4.node_id, block_close);
+                                                            
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, enum_);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, block_open);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $4.node_id);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, block_close);
                                                     }
     ;
 
@@ -581,20 +592,21 @@ varlist: varlist var SEMI_COLON     {
                                     }
     ;
 
-idlist: IDENTIFIER COMMA idlist     { 
+idlist: idlist COMMA IDENTIFIER     { 
+                                        $$.node_id = nextLabel++;
                                         int identifier = nextLabel++;
                                         int comma = nextLabel++;
-                                        $$.node_id = nextLabel++;
-                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
-                                        fprintf(dot, "n%d [label=\",\"]\n", comma);
                                         fprintf(dot, "n%d [label=\"idlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $3.data.string);
+                                        fprintf(dot, "n%d [label=\",\"]\n", comma);
+
                                         fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, identifier, comma, $3.node_id);
                                     }
     | IDENTIFIER                    { 
                                         int identifier = nextLabel++;
                                         $$.node_id = nextLabel++;
-                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
                                         fprintf(dot, "n%d [label=\"idlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $1.data.string);
                                         fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier);
                                     }
     ;
@@ -621,8 +633,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"+\"]\n", add);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, add, $3.node_id);
+                        
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, add, $3.node_id);
 
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, add);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                     }
     | expr SUB expr { 
                         $$.data.exprData = handleBinaryExpr(SUB, $1.data.exprData, $3.data.exprData); 
@@ -632,7 +648,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"-\"]\n", sub);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, sub, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, sub, $3.node_id);
+                        
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, sub);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                     }
     | expr MUL expr { 
@@ -643,7 +664,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"*\"]\n", mul);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, mul, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, mul, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, mul);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                     }
     | expr DIV expr { 
@@ -654,7 +680,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"/\"]\n", div);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, div, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, div, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, div);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                         
                     }
     | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ 
@@ -663,51 +694,75 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"%%\"]\n", mod);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, mod, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, mod, $3.node_id);
+                        
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, mod);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                     }
     | expr BITWISE_AND expr     { 
                                     $$.data.exprData = handleBinaryExpr(BITWISE_AND, $1.data.exprData, $3.data.exprData); 
 
                                     $$.node_id = nextLabel++;
-                                    int and = nextLabel++;
+                                    int and_ = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                    fprintf(dot, "n%d [label=\"&\"]\n", and);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, and, $3.node_id);
+                                    fprintf(dot, "n%d [label=\"&\"]\n", and_);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, and_, $3.node_id);
+                        
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, and_);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                                 }
     | expr BITWISE_OR expr      { 
                                     $$.data.exprData = handleBinaryExpr(BITWISE_OR, $1.data.exprData, $3.data.exprData); 
 
                                     $$.node_id = nextLabel++;
-                                    int or = nextLabel++;
+                                    int or_ = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                    fprintf(dot, "n%d [label=\"|\"]\n", or);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, or, $3.node_id);
+                                    fprintf(dot, "n%d [label=\"|\"]\n", or_);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, or_, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, or_);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                                 }
     | expr BITWISE_NOT expr     { 
                                     $$.data.exprData = handleBinaryExpr(BITWISE_NOT, $1.data.exprData, $3.data.exprData); 
 
                                     $$.node_id = nextLabel++;
-                                    int not = nextLabel++;
+                                    int not_ = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                    fprintf(dot, "n%d [label=\"~\"]\n", not);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, not, $3.node_id);
+                                    fprintf(dot, "n%d [label=\"~\"]\n", not_);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, not_, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, not_);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                     
                                 }
     | expr BITWISE_XOR expr     { 
                                     $$.data.exprData = handleBinaryExpr(BITWISE_XOR, $1.data.exprData, $3.data.exprData); 
                                     
                                     $$.node_id = nextLabel++;
-                                    int xor = nextLabel++;
+                                    int xor_ = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                    fprintf(dot, "n%d [label=\"^\"]\n", xor);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, xor, $3.node_id);
-                                    
+                                    fprintf(dot, "n%d [label=\"^\"]\n", xor_);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, xor_, $3.node_id);
+                        
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, xor_);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                 }
     | expr LEFT_SHIFT expr      { 
                                     $$.data.exprData = handleBinaryExpr(LEFT_SHIFT, $1.data.exprData, $3.data.exprData); 
@@ -717,7 +772,12 @@ expr: expr ADD expr {
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                                     fprintf(dot, "n%d [label=\"<<\"]\n", lshift);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, lshift, $3.node_id);
+                                    
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, lshift, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, lshift);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                                 }
     | expr RIGHT_SHIFT expr     { 
@@ -728,7 +788,12 @@ expr: expr ADD expr {
 
                                     fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                                     fprintf(dot, "n%d [label=\">>\"]\n", rshift);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, rshift, $3.node_id);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, rshift, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, rshift);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                                 }
     | expr EQ expr  { 
@@ -739,7 +804,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"==\"]\n", eq);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, eq, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, eq, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eq);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                     }
     | expr NE expr  { 
@@ -750,7 +820,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"!=\"]\n", ne);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, ne, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, ne, $3.node_id);
+                        
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, ne);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                         
                     }
     | expr LT expr  { 
@@ -761,7 +836,12 @@ expr: expr ADD expr {
 
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"<\"]\n", lt);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, lt, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, lt, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, lt);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
         
 
                     }
@@ -773,7 +853,12 @@ expr: expr ADD expr {
                         
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\">\"]\n", gt);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, gt, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, gt, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, gt);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                     }
     | expr LE expr  { 
@@ -784,7 +869,12 @@ expr: expr ADD expr {
                         
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\"<=\"]\n", le);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, le, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, le, $3.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, le);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                         
                     }
     | expr GE expr  { 
@@ -795,29 +885,43 @@ expr: expr ADD expr {
                         
                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                         fprintf(dot, "n%d [label=\">=\"]\n", ge);
-                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, ge, $3.node_id);
+
+                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, ge, $3.node_id);
+                        
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, ge);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
 
                     }
     | expr LOGICAL_AND expr         { 
                                         $$.data.exprData = handleBinaryExpr(LOGICAL_AND, $1.data.exprData, $3.data.exprData); 
 
                                         $$.node_id = nextLabel++;
-                                        int and = nextLabel++;
+                                        int and_ = nextLabel++;
                                         
                                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                        fprintf(dot, "n%d [label=\"&&\"]\n", and);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, and, $3.node_id);
+                                        fprintf(dot, "n%d [label=\"&&\"]\n", and_);
 
+                                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, and_, $3.node_id);
+                        
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, and_);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                     }
     | expr LOGICAL_OR expr          { 
                                         $$.data.exprData = handleBinaryExpr(LOGICAL_OR, $1.data.exprData, $3.data.exprData); 
 
                                         $$.node_id = nextLabel++;
-                                        int or = nextLabel++;
+                                        int or_ = nextLabel++;
 
                                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                        fprintf(dot, "n%d [label=\"||\"]\n", or);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, or, $3.node_id);
+                                        fprintf(dot, "n%d [label=\"||\"]\n", or_);
+
+                                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, or_, $3.node_id);
+
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, or_);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                         
                                     }
     | OPEN_PAREN expr CLOSE_PAREN   { 
@@ -827,22 +931,30 @@ expr: expr ADD expr {
                                         int paren = nextLabel++;
                                         int close_paren = nextLabel++;
 
-                                        fprintf(dot, "n%d [label=\"(\"]\n", paren);
                                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"(\"]\n", paren);
                                         fprintf(dot, "n%d [label=\")\"]\n", close_paren);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, paren, $2.node_id, close_paren);
 
+                                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", paren, $2.node_id, close_paren);
+
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, paren);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
                                     }
+                                    
     | LOGICAL_NOT expr %prec UNARY  { 
                                         $$.data.exprData = handleUnaryExpr(LOGICAL_NOT, $2.data.exprData); 
 
                                         int not = nextLabel++;
                                         $$.node_id = nextLabel++;
-                                        int unary = nextLabel++;
                                         fprintf(dot, "n%d [label=\"!\"]\n", not);
                                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                        fprintf(dot, "n%d [label=\"UNARY\"]\n", unary);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, not, $2.node_id, unary);
+    
+
+                                        fprintf(dot, "{rank=same; n%d n%d;}\n", not, $2.node_id);
+                        
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, not);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
                                         
                                     }
     | SUB expr %prec UNARY          { 
@@ -853,7 +965,11 @@ expr: expr ADD expr {
                                         
                                         fprintf(dot, "n%d [label=\"-\"]\n", sub);
                                         fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
-                                        fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, sub, $2.node_id);
+
+                                        fprintf(dot, "{rank=same; n%d n%d;}\n", sub, $2.node_id);
+                        
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, sub);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
                                         
                                     }
     | term                          { 
@@ -861,7 +977,7 @@ expr: expr ADD expr {
 
                                         $$.node_id = nextLabel++;
                                         
-                                        fprintf(dot, "n%d [label=\"term\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
                                         fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
                                         
                                     }
@@ -873,8 +989,12 @@ expr: expr ADD expr {
 
                                         fprintf(dot, "n%d [label=\"=\"]\n", assign_);
                                         fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, assign_, $3.node_id);
 
+                                        fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, assign_, $3.node_id);
+
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, assign_);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                     }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
@@ -885,25 +1005,30 @@ term: const {
 
                 $$.node_id = nextLabel++;
                 
-                fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                fprintf(dot, "n%d [label=\"term\"]\n", $$.node_id);
                 fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
                 
             }
     | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { 
-                                                        $$.data.exprData = handleFunctionCall($1.data.string, $3.data.paramList); 
+                    $$.data.exprData = handleFunctionCall($1.data.string, $3.data.paramList); 
 
-                                                        int identifier = nextLabel++;
-                                                        int open_paren = nextLabel++;
-                                                        $$.node_id = nextLabel++;
-                                                        int close_paren = nextLabel++;
+                    $$.node_id = nextLabel++;
+                    int identifier = nextLabel++;
+                    int open_paren = nextLabel++;
+                    int close_paren = nextLabel++;
 
-                                                        fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $1.data.string);
-                                                        fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
-                                                        fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
-                                                        fprintf(dot, "n%d [label=\")\"]\n", close_paren);
-                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d}\n", $$.node_id, identifier, open_paren, $1.node_id, close_paren);
+                    fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $1.data.string);
+                    fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
+                    fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                    fprintf(dot, "n%d [label=\")\"]\n", close_paren);
 
-                                                    }
+                    fprintf(dot, "{rank=same; n%d n%d n%d n%d;}\n", identifier, open_paren, $3.node_id, close_paren);
+
+                    fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier);
+                    fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                    fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                }
     | attr  { 
                 $$.data.exprData = handleAttr($1.data.string); 
                 
@@ -918,23 +1043,31 @@ term: const {
 attr: IDENTIFIER exprvector     { 
                                     $$.data.string = $1.data.string; 
 
-                                    int exprvector = nextLabel++;
                                     $$.node_id = nextLabel++;
+                                    int id = nextLabel++;
 
-                                    fprintf(dot, "n%d [label=\"%s\"]\n", $$.node_id, $1.data.string);
-                                    fprintf(dot, "n%d [label=\"attr\"]\n", exprvector);
-                                    fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, exprvector, $2.node_id);
+                                    fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"%s\"]\n", id, $1.data.string);
 
+                                    fprintf(dot, "{rank=same; n%d n%d;}\n", id, $2.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
                                 }
     | attr POINTER attr         { 
                                     $$.data.string = mergeStrPointers($1.data.string, $3.data.string); 
 
-                                    int pointer = nextLabel++;
                                     $$.node_id = nextLabel++;
+                                    int pointer = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
                                     fprintf(dot, "n%d [label=\"*\"]\n", pointer);
-                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, pointer, $3.node_id);
+
+                                    fprintf(dot, "{rank=same; n%d n%d n%d;}\n", $1.node_id, pointer, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, pointer);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                 }
     ;
 
@@ -1012,8 +1145,12 @@ exprvector:
                                         fprintf(dot, "n%d [label=\"{\"]\n", open_bracket);
                                         fprintf(dot, "n%d [label=\"exprvector\"]\n", $$.node_id);
                                         fprintf(dot, "n%d [label=\"}\"]\n", close_bracket);
-                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, open_bracket, $2.node_id, close_bracket);   
 
+                                        fprintf(dot, "{ rank=same; n%d n%d n%d;}\n", open_bracket, $$.node_id, close_bracket);
+                                        
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, open_bracket);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, close_bracket);
                                     }
     | /* EPS */                     {  
 
