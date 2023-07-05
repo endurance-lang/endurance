@@ -251,7 +251,9 @@ void riscVSaveRegisters(RiscVContext *context) {
         char *varToFree = rManagerGetVar(context->rm,i);
         if (varToFree != NULL){
             int tempReg = rManagerGetRegTemp(context->rm);
-            Symbol *sym =  symbolTableFind(context->symbolTable, varToFree);
+            // printf("Here"); fflush(stdout);
+            Symbol *sym = symbolTableFind(context->symbolTable, varToFree);
+            if(!sym) continue;
             fprintf(context->fileName, "addi x%d, x0, %d\n", tempReg, sym->data.variable.address);
             fprintf(context->fileName, "sw x%d, 0(x%d)\n", i, tempReg);
 

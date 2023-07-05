@@ -3533,6 +3533,7 @@ void onExit() {
 }
 
 void onStart() {
+    st = symbolTableNew();
     char sourceCode[1000000];
     size_t bytesRead = fread(sourceCode, sizeof(char), sizeof(sourceCode) - 1, stdin);
     sourceCode[bytesRead] = '\0';
@@ -3544,7 +3545,6 @@ void onStart() {
     prod = fopen("./build/producoes.output", "w");
     gen = fopen("./build/code.output", "w");
 
-    st = symbolTableNew();
 
     friscv = fopen("./output/riscv.s", "w");
     riscv = riscV_ContextNew(friscv, st);
@@ -3557,6 +3557,7 @@ void onStart() {
     fprintf(dot, "strict graph {\n");
     fprintf(dot, "node [ordering=out]\n");
 
+
     blockOpen();
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
@@ -3567,7 +3568,7 @@ void onStart() {
     symbolTableInsert(st, symbolTypeNew("sailor", 4));
 
     symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
-    symbolTableInsert(st, symbolFunctionNew("plunder", "void"));
+    /* symbolTableInsert(st, symbolFunctionNew("plunder", "void")); */
 }
 
 void yyerror(const char *s) {
