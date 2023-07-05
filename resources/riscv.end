@@ -1,6 +1,0 @@
-jib i;
-jib a;
-a = 0;
-voyage(i = 0; i <= 10; i = i + 1) ⚓️
-    a = a + i;
-⚓️;

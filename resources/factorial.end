@@ -1,0 +1,11 @@
+jib n;
+n = plunder();
+
+jib i;
+jib f;
+f = 1;
+voyage (i = 2; i < n; i = i + 1) ⚓️
+    f = f * i;
+⚓️;
+
+parrot(f);

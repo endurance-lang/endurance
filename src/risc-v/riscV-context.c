@@ -117,12 +117,13 @@ int  riscVCodeGenBinaryOperator(RiscVContext *context, int op, int reg1, int reg
     
     case LE: {
         fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg2, reg1);
-        fprintf(context->fileName, "not x%d, x%d\n", regdes, regdes);
+        fprintf(context->fileName, "seqz x%d, x%d\n", regdes, regdes);
         break;
     }
     case GE: {
         fprintf(context->fileName, "slt x%d, x%d, x%d\n", regdes, reg1, reg2);
-        fprintf(context->fileName, "not x%d, x%d\n", regdes, regdes);
+        fprintf(context->fileName, "seqz x%d, x%d\n", regdes, regdes);
+        break;
     }
     default:
         printf("riscV-context.h  emit -> Impossivel fazer %d no risc-V\n",op);

@@ -2835,7 +2835,7 @@ yyreduce:
 
                     fprintf(dot, "n%d [label=\"%s\"]\n", identifier, (yyvsp[-3].data).data.string);
                     fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
-                    fprintf(dot, "n%d [label=\"const\"]\n", (yyval.data).node_id);
+                    fprintf(dot, "n%d [label=\"term\"]\n", (yyval.data).node_id);
                     fprintf(dot, "n%d [label=\")\"]\n", close_paren);
 
                     fprintf(dot, "{rank=same; n%d n%d n%d n%d;}\n", identifier, open_paren, (yyvsp[-1].data).node_id, close_paren);
@@ -2855,7 +2855,7 @@ yyreduce:
                 
                 (yyval.data).node_id = nextLabel++;
 
-                fprintf(dot, "n%d [label=\"attr\"]\n", (yyval.data).node_id);
+                fprintf(dot, "n%d [label=\"term\"]\n", (yyval.data).node_id);
                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
             }
@@ -2890,7 +2890,7 @@ yyreduce:
                                     int pointer = nextLabel++;
 
                                     fprintf(dot, "n%d [label=\"attr\"]\n", (yyval.data).node_id);
-                                    fprintf(dot, "n%d [label=\"*\"]\n", pointer);
+                                    fprintf(dot, "n%d [label=\"->\"]\n", pointer);
 
                                     fprintf(dot, "{rank=same; n%d n%d n%d;}\n", (yyvsp[-2].data).node_id, pointer, (yyvsp[0].data).node_id);
 
@@ -3036,9 +3036,9 @@ yyreduce:
                                             (yyval.data).node_id = nextLabel++; 
                                             int close_bracket = nextLabel++;
                                             
-                                            fprintf(dot, "n%d [label=\"{\"]\n", open_bracket);
+                                            fprintf(dot, "n%d [label=\"[\"]\n", open_bracket);
                                             fprintf(dot, "n%d [label=\"constvector\"]\n", (yyval.data).node_id);
-                                            fprintf(dot, "n%d [label=\"}\"]\n", close_bracket);
+                                            fprintf(dot, "n%d [label=\"]\"]\n", close_bracket);
                                             fprintf(dot, "n%d -- {n%d n%d n%d}\n", (yyval.data).node_id, open_bracket, integer, close_bracket);
                                             
                                         }
@@ -3320,7 +3320,7 @@ void handleVarDeclaration(char *type, char *id, int size) {
     symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize));
     nextAddress += allocSize;
 
-    printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
+    /* printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize); */
 }
 
 ExprData handleAttr(char *id) {
@@ -3530,6 +3530,10 @@ void onStart() {
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
     symbolTableInsert(st, symbolTypeNew("void", 4));
+    symbolTableInsert(st, symbolTypeNew("boat", 4));
+    symbolTableInsert(st, symbolTypeNew("ship", 4));
+    symbolTableInsert(st, symbolTypeNew("addled", 4));
+    symbolTableInsert(st, symbolTypeNew("sailor", 4));
     symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
 }
 

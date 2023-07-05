@@ -1,0 +1,16 @@
+jib n;
+n = plunder();
+
+jib l; jib r; jib m;
+l = 0; r = 2000;
+squall (l < r) ⚓️
+    m = (l + r) / 2;
+    spyglass (m * m >= n) ⚓️
+        r = m;
+    ⚓️;
+    parley ⚓️
+        l = m + 1;
+    ⚓️;
+⚓️;
+
+parrot(m);

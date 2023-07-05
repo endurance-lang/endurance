@@ -1,5 +1,2 @@
-jib f(jib x) ⚓️
-    land_ho x - 1;
-⚓️;
-
-parrot(ff(5));
+jib a; 
+a = 10 - b + f(x);

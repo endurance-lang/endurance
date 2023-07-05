@@ -1215,7 +1215,7 @@ void handleVarDeclaration(char *type, char *id, int size) {
     symbolTableInsert(st, symbolVariableNew(id, type, nextAddress, allocSize));
     nextAddress += allocSize;
 
-    printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize);
+    /* printf("variable %s of type %s with %d bytes added.\n", id, type, allocSize); */
 }
 
 ExprData handleAttr(char *id) {
@@ -1425,6 +1425,10 @@ void onStart() {
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
     symbolTableInsert(st, symbolTypeNew("void", 4));
+    symbolTableInsert(st, symbolTypeNew("boat", 4));
+    symbolTableInsert(st, symbolTypeNew("ship", 4));
+    symbolTableInsert(st, symbolTypeNew("addled", 4));
+    symbolTableInsert(st, symbolTypeNew("sailor", 4));
     symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
 }
 
