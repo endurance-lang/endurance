@@ -1,0 +1,13 @@
+⚓️
+    jib a;
+    a = 14;
+
+    spyglass (a > 15) ⚓️
+        /ahoy code to be executed if the condition is true belay/ 
+        parrot(1);
+    ⚓️;
+    parley ⚓️
+         /ahoy code to be executed if the condition is false belay/ 
+        parrot(0);
+    ⚓️;
+⚓️;

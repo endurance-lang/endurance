@@ -38,3 +38,9 @@ test-error:
 
 run:
 	./build/a.out < $(FILE)
+
+test-graphviz:
+	./build/a.out < resources/array.end
+
+graphviz-image:
+	dot -Tpng ./output/tree.dot -o ./output/tree.png

@@ -29,8 +29,7 @@ FILE *fpseudo;
 PseudoContext *pseudo;
 
 FILE *dot;
-int nextLabel = 0;
-
+int nextLabel = 1;
 
 int nextAddress = 0;
 
@@ -81,9 +80,9 @@ ExprData handleInteger(int integer);
     } data;
 };
 
-%token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS
+%token INCLUDE MAIN BREAK CASE CONST CONTINUE DEFAULT IF ELSE ENUM RETURN STRUCT DO PRINTF SCANF FOR GOTO SIZEOF SWITCH TYPEDEF UNION WHILE FREE POINTER SLICE SOME REDUCE FILTER MAP SORT CLOSE_BRACKET OPEN_BRACKET CLOSE_PAREN OPEN_PAREN BLOCK_CLOSE BLOCK_OPEN ADD SUB MUL DIV BITWISE_AND BITWISE_OR BITWISE_NOT MOD LEFT_SHIFT RIGHT_SHIFT LT GT LE GE EQ NE BITWISE_XOR LOGICAL_AND LOGICAL_OR LOGICAL_NOT COLON SEMI_COLON ASSIGN COMMA INVALID UMINUS DOT
 
-%token DECIMAL STRING DOT
+%token <data> DECIMAL STRING
 
 %token <data> IDENTIFIER
 %token <data> INTEGER
@@ -115,7 +114,11 @@ ExprData handleInteger(int integer);
 
 %%
 
-program: stmts { $$.node_id = nextLabel++; fprintf(dot, "n%d [label=\"program\"]\n", $$.node_id); fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); }
+program: stmts                      { 
+                                        $$.node_id = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"program\"]\n", $$.node_id); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); 
+                                    }
     ;
 
 stmts: stmts stmt                   { 
@@ -153,16 +156,94 @@ stmt: conditional               {
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id);  
                                     fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
                                     fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, $1.node_id, semicolon); }
-    | commands                  {  }
-    | expr SEMI_COLON           {  }
-    | BLOCK_OPEN stmts BLOCK_CLOSE {  }
+    | commands                  { 
+                                    $$.node_id = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id); 
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                }
+    | expr SEMI_COLON           { 
+                                    $$.node_id = nextLabel++; 
+                                    int semicolon = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id);  
+                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
+                                    fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, $1.node_id, semicolon);
+                                }
+    | BLOCK_OPEN stmts BLOCK_CLOSE      { 
+                                            int block_open = nextLabel++;
+                                            $$.node_id = nextLabel++;
+                                            int block_close = nextLabel++;
+                                               
+                                            fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
+                                            fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id);
+                                            fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
+                                            
+                                            fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", block_open, $2.node_id, block_close);
+                                            
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, block_open);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, block_close);
 
-conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX { handleIfAfterStmt(); handleIfAfterElse(); }
-    | IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE { handleIfAfterStmt(); } stmt { handleIfAfterElse(); }
+                                        }
+
+conditional: IF OPEN_PAREN condexpr CLOSE_PAREN stmt %prec IFX {
+                                                                    handleIfAfterStmt(); 
+                                                                    handleIfAfterElse();
+
+                                                                    $$.node_id = nextLabel++;
+                                                                    int if_cond = nextLabel++; 
+                                                                    int open_paren = nextLabel++;
+                                                                    int close_paren = nextLabel++;
+                                                                    
+                                                                    fprintf(dot, "n%d [label=\"conditional\"]\n", $$.node_id);
+                                                                    fprintf(dot, "n%d [label=\"IF\"]\n", if_cond);  
+                                                                    fprintf(dot, "n%d [label=\"(\"]\n", open_paren);  
+                                                                    fprintf(dot, "n%d [label=\")\"]\n", close_paren);   
+
+                                                                    fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d; }\n", if_cond, open_paren, $3.node_id, close_paren, $5.node_id);
+                                                                    
+                                                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, if_cond);
+                                                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                                                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                                                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                                                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $5.node_id);
+                                                                }
+    | IF OPEN_PAREN condexpr CLOSE_PAREN stmt ELSE { 
+                                                        handleIfAfterStmt();
+                                                   } stmt { 
+                                                        handleIfAfterElse(); 
+                                                        $$.node_id = nextLabel++;
+                                                        int if_cond = nextLabel++; 
+                                                        int open_paren = nextLabel++;
+                                                        int close_paren = nextLabel++;
+                                                        int else_cond = nextLabel++;
+                                                        
+                                                        fprintf(dot, "n%d [label=\"conditional\"]\n", $$.node_id);
+                                                        fprintf(dot, "n%d [label=\"IF\"]\n", if_cond);  
+                                                        fprintf(dot, "n%d [label=\"(\"]\n", open_paren);  
+                                                        fprintf(dot, "n%d [label=\")\"]\n", close_paren);   
+                                                        fprintf(dot, "n%d [label=\"ELSE\"]\n", else_cond);   
+
+                                                        fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d n%d n%d; }\n", if_cond, open_paren, $3.node_id, close_paren, $5.node_id, else_cond, $8.node_id);
+                                                        
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, if_cond);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $5.node_id);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, else_cond);
+                                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $8.node_id);
+                                                   }
     /* | SWITCH OPEN_PAREN expr CLOSE_PAREN BLOCK_OPEN caselist BLOCK_CLOSE {  } */
     ;
 
-condexpr: expr                  { handleIfAfterExpr($1.data.exprData); }
+condexpr: expr                  { 
+                                    handleIfAfterExpr($1.data.exprData); 
+
+                                    $$.node_id = nextLabel++; 
+                                    fprintf(dot, "n%d [label=\"condexpr\"]\n", $$.node_id); 
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+
+                                }
     ;
 
 /* caselist: caselist CASE term COLON stmts    {  }
@@ -170,114 +251,804 @@ condexpr: expr                  { handleIfAfterExpr($1.data.exprData); }
     |                                       {  }
     ; */
 
-repetition: WHILE {handleRepEntry();} OPEN_PAREN repexpr CLOSE_PAREN {handleRepStmt();} stmt {handleRepGotoEntry();handleRepExit();}
+repetition: WHILE   {
+                        handleRepEntry();
+                    } 
+                    OPEN_PAREN repexpr CLOSE_PAREN  {
+                        handleRepStmt();
+                    } stmt {
+                        handleRepGotoEntry();
+                        handleRepExit();
 
-    | FOR OPEN_PAREN optexpr {handleRepEntry();} SEMI_COLON repexpr SEMI_COLON {handleRepUpdate();} optexpr CLOSE_PAREN {handleRepGotoEntry();handleRepStmt();} stmt {handleRepGotoUpdate();handleRepExit();}
+                        $$.node_id = nextLabel++;
+                        int while_loop = nextLabel++;
+                        int open_paren = nextLabel++;
+                        int close_paren = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"WHILE\"]\n", while_loop); 
+                        fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
+                        fprintf(dot, "n%d [label=\"repetition\"]\n", $$.node_id); 
+                        fprintf(dot, "n%d [label=\")\"]\n", close_paren);
+                        
+                        fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d; }\n", while_loop, open_paren, $4.node_id ,close_paren,$7.node_id);
+
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, while_loop);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $4.node_id);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $7.node_id);
+                    }
+
+    | FOR OPEN_PAREN optexpr    {
+                                    handleRepEntry();
+                                } 
+                                SEMI_COLON repexpr SEMI_COLON 
+                                {
+                                    handleRepUpdate();
+                                } 
+                                optexpr CLOSE_PAREN 
+                                {
+                                    handleRepGotoEntry();
+                                    handleRepStmt();
+                                } 
+                                stmt {
+                                    handleRepGotoUpdate();
+                                    handleRepExit();
+
+                                    $$.node_id = nextLabel++;
+                                    int for_loop = nextLabel++;
+                                    int open_paren = nextLabel++;
+                                    int semicolon_1 = nextLabel++;
+                                    int semicolon_2 = nextLabel++;
+                                    int close_paren = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"repetition\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"FOR\"]\n", for_loop);
+                                    fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
+                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon_1);
+                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon_2);
+                                    fprintf(dot, "n%d [label=\")\"]\n", close_paren);
+
+                                    fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d n%d n%d n%d n%d; }\n", for_loop, open_paren, $3.node_id, semicolon_1, $6.node_id, semicolon_2, $9.node_id, close_paren, $12.node_id);
+                                    
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, for_loop);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, semicolon_1);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $6.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, semicolon_2);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $9.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $12.node_id);
+                                }
 
     /* | DO {handleRepEntry();handleRepStmt();} stmt WHILE OPEN_PAREN repexpr CLOSE_PAREN SEMI_COLON {handleRepExit();} */
     ;
 
-repexpr: expr { handleRepAfterExpr($1.data.exprData); }
+repexpr: expr   { 
+                    handleRepAfterExpr($1.data.exprData);
+                    $$.node_id = nextLabel++; 
+                    fprintf(dot, "n%d [label=\"repexpr\"]\n", $$.node_id); 
+                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                }
     ;
 
-var: IDENTIFIER IDENTIFIER constvector { handleVarDeclaration($1.data.string, $2.data.string, $3.data.integer); }
+var: IDENTIFIER IDENTIFIER constvector  { 
+                                            handleVarDeclaration($1.data.string, $2.data.string, $3.data.integer);
+
+                                            $$.node_id = nextLabel++;
+                                            int identifier_1 = nextLabel++;
+                                            int identifier_2 = nextLabel++;
+
+                                            fprintf(dot, "n%d [label=\"var\"]\n", $$.node_id);
+                                            fprintf(dot, "n%d [label=\"%s\"]\n", identifier_1, $1.data.string);
+                                            fprintf(dot, "n%d [label=\"%s\"]\n", identifier_2, $2.data.string);
+
+                                            fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", identifier_1, identifier_2, $3.node_id);
+
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier_1);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier_2);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                                        }
     ;
 
-func: IDENTIFIER IDENTIFIER {} OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE {}
+func: IDENTIFIER IDENTIFIER OPEN_PAREN opttypelist CLOSE_PAREN BLOCK_OPEN stmts BLOCK_CLOSE 
+                                        {
+                                            $$.node_id = nextLabel++;
+                                            int identifier_1 = nextLabel++;
+                                            int identifier_2 = nextLabel++;
+                                            int open_paren = nextLabel++;
+                                            int close_paren = nextLabel++;
+                                            int block_open = nextLabel++;
+                                            int block_close = nextLabel++;
+
+                                            fprintf(dot, "n%d [label=\"func\"]\n", $$.node_id);
+                                            fprintf(dot, "n%d [label=\"%s\"]\n", identifier_1, $1.data.string);
+                                            fprintf(dot, "n%d [label=\"%s\"]\n", identifier_2, $2.data.string);
+                                            fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
+                                            fprintf(dot, "n%d [label=\")\"]\n", close_paren);
+                                            fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
+                                            fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
+
+                                            fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d n%d n%d n%d ; }\n", identifier_1, identifier_2, open_paren, $4.node_id, close_paren, block_open, $7.node_id, block_close);
+
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier_1);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier_2);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, open_paren);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $4.node_id);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, close_paren);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, block_open);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $7.node_id);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, block_close);
+
+                                        }
     ;
 
-typelist: typelist COMMA var {}
-    | var {}
+typelist: typelist COMMA var {
+                                $$.node_id = nextLabel++; 
+                                int comma = nextLabel++;
+                                fprintf(dot, "n%d [label=\"typelist\"]\n", $$.node_id);
+                                fprintf(dot, "n%d [label=\",\"]\n", comma); 
+
+                                fprintf(dot, "{ rank=same; n%d n%d n%d;}\n", $1.node_id, comma, $3.node_id);
+
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, comma);
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                             }
+    | var {
+            $$.node_id = nextLabel++; 
+            fprintf(dot, "n%d [label=\"typelist\"]\n", $$.node_id); 
+            fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); 
+          }
     ;
 
-exprlist: exprlist COMMA expr { functAddParam(&$1.data.paramList, $3.data.exprData.reg, $3.data.exprData.returnType); }
-    | expr { $$.data.paramList = NULL; functAddParam(&$$.data.paramList, $1.data.exprData.reg, $1.data.exprData.returnType); }
+exprlist: exprlist COMMA expr   { 
+                                    functAddParam(&$1.data.paramList, $3.data.exprData.reg, $3.data.exprData.returnType);
+                                    
+                                    $$.node_id = nextLabel++;
+                                    int comma = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\",\"]\n", comma);
+                                    fprintf(dot, "n%d [label=\"exprlist\"]\n", $$.node_id);
+
+                                    fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", $1.node_id, comma, $3.node_id);
+
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, comma);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
+                                }
+    | expr  { 
+                $$.data.paramList = NULL; 
+                functAddParam(&$$.data.paramList, $1.data.exprData.reg, $1.data.exprData.returnType); 
+
+                $$.node_id = nextLabel++;
+                fprintf(dot, "n%d [label=\"exprlist\"]\n", $$.node_id);
+                fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                
+            }
     ;
 
-opttypelist: typelist   {  }
-    |                   {  }
+opttypelist: typelist   { 
+                            $$.node_id = nextLabel++;
+                            fprintf(dot, "n%d [label=\"opttypelist\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); 
+                        }
+    |                   {
+                            $$.node_id = nextLabel++; 
+                            int eps = nextLabel++; 
+                            fprintf(dot, "n%d [label=\"opttypelist\"]\n", $$.node_id);
+                            fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, eps);
+                        }
     ;
 
-optexprlist: exprlist   { $$.data.paramList = $1.data.paramList; }
-    |                   { $$.data.paramList = NULL; }
+optexprlist: exprlist   { 
+                            $$.data.paramList = $1.data.paramList; 
+                            
+                            $$.node_id = nextLabel++;
+                            fprintf(dot, "n%d [label=\"optexprlist\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                            
+                        }
+    |                   { 
+                            $$.data.paramList = NULL; 
+                            
+                            $$.node_id = nextLabel++; 
+                            int eps = nextLabel++; 
+                            fprintf(dot, "n%d [label=\"optexprlist\"]\n", $$.node_id);
+                            fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, eps); 
+                        }
     ;
 
 commands: 
-    RETURN optexpr SEMI_COLON {}
-    | BREAK SEMI_COLON {}
-    | CONTINUE SEMI_COLON {}
-    | TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON {}
-    | INCLUDE STRING SEMI_COLON {}
-    | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE { }
-    | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE { }
+    RETURN optexpr SEMI_COLON {
+                                int return_ = nextLabel++;
+                                $$.node_id = nextLabel++;
+                                int semicolon = nextLabel++;
+                                
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+                                fprintf(dot, "n%d [label=\"RETURN\"]\n", return_);
+                                fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+
+                                fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", return_, $2.node_id, semicolon);
+
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, return_);
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
+                                fprintf(dot, "n%d -- n%d\n", $$.node_id, semicolon);
+                                }
+    | BREAK SEMI_COLON {
+                                int break_ = nextLabel++;
+                                int semicolon = nextLabel++;
+                                $$.node_id = nextLabel++;
+
+                                fprintf(dot, "n%d [label=\"BREAK\"]\n", break_);
+                                fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+
+                                fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", break_, semicolon, $$.node_id);
+                                
+                                fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, break_, semicolon);
+                                
+                        }
+    | CONTINUE SEMI_COLON {
+                                int continue_ = nextLabel++;
+                                int semicolon = nextLabel++;
+                                $$.node_id = nextLabel++;
+
+                                fprintf(dot, "n%d [label=\"CONTINUE\"]\n", continue_);
+                                fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+
+                                fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", continue_, semicolon, $$.node_id);
+                                
+                                fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, continue_, semicolon);
+                          }
+    | TYPEDEF IDENTIFIER IDENTIFIER SEMI_COLON {
+                                                    int typedef_ = nextLabel++;
+                                                    int identifier_1 = nextLabel++;
+                                                    int identifier_2 = nextLabel++;
+                                                    int semicolon = nextLabel++;
+                                                    $$.node_id = nextLabel++;
+
+                                                    fprintf(dot, "n%d [label=\"TYPEDEF\"]\n", typedef_);
+                                                    fprintf(dot, "n%d [label=\"ID1\"]\n", identifier_1);
+                                                    fprintf(dot, "n%d [label=\"ID2\"]\n", identifier_2);
+                                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                                    fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+
+                                                    fprintf(dot, "{ rank=same; n%d n%d n%d n%d n%d; }\n", typedef_, identifier_1, identifier_2, semicolon, $$.node_id);
+
+                                                    fprintf(dot, "n%d -- {n%d n%d n%d n%d}\n", $$.node_id, typedef_, identifier_1, identifier_2, semicolon);
+                                               }
+    | INCLUDE STRING SEMI_COLON {
+                                    int include_ = nextLabel++;
+                                    int string_ = nextLabel++;
+                                    int semicolon = nextLabel++;
+                                    $$.node_id = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"INCLUDE\"]\n", include_);
+                                    fprintf(dot, "n%d [label=\"%s\"]\n", string_,$2.data.string);
+                                    fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                    fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, include_, string_, semicolon);
+                                }
+    | STRUCT IDENTIFIER BLOCK_OPEN varlist BLOCK_CLOSE { 
+                                                        int struct_ = nextLabel++;
+                                                        int identifier = nextLabel++;
+                                                        int block_open = nextLabel++;
+                                                        $$.node_id = nextLabel++;
+                                                        int block_close = nextLabel++;
+
+                                                        fprintf(dot, "n%d [label=\"STRUCT\"]\n", struct_);
+                                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
+                                                        fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
+                                                        fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+                                                        fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
+                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d n%d}\n", $$.node_id, struct_, identifier, block_open, $4.node_id, block_close);
+                                                       }
+    | ENUM IDENTIFIER BLOCK_OPEN idlist BLOCK_CLOSE { 
+                                                        int enum_ = nextLabel++;
+                                                        int identifier = nextLabel++;
+                                                        int block_open = nextLabel++;
+                                                        $$.node_id = nextLabel++;
+                                                        int block_close = nextLabel++;
+
+                                                        fprintf(dot, "n%d [label=\"ENUM\"]\n", enum_);
+                                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
+                                                        fprintf(dot, "n%d [label=\"&#9875;\"]\n", block_open);
+                                                        fprintf(dot, "n%d [label=\"commands\"]\n", $$.node_id);
+                                                        fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
+                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d n%d}\n", $$.node_id, enum_, identifier, block_open, $4.node_id, block_close);
+                                                    }
     ;
 
-varlist: varlist var SEMI_COLON     {  }
-    |                               {  }
+varlist: varlist var SEMI_COLON     { 
+                                        $$.node_id = nextLabel++;
+                                        int semicolon = nextLabel++;
+                                        fprintf(dot, "n%d [label=\"varlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\";\"]\n", semicolon);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, $2.node_id, semicolon);
+                                    }
+    |                               {
+                                        $$.node_id = nextLabel++; 
+                                        int eps = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"varlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eps); 
+                                    }
     ;
 
-idlist: IDENTIFIER COMMA idlist     {  }
-    | IDENTIFIER                    {  }
+idlist: IDENTIFIER COMMA idlist     { 
+                                        int identifier = nextLabel++;
+                                        int comma = nextLabel++;
+                                        $$.node_id = nextLabel++;
+                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
+                                        fprintf(dot, "n%d [label=\",\"]\n", comma);
+                                        fprintf(dot, "n%d [label=\"idlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, identifier, comma, $3.node_id);
+                                    }
+    | IDENTIFIER                    { 
+                                        int identifier = nextLabel++;
+                                        $$.node_id = nextLabel++;
+                                        fprintf(dot, "n%d [label=\"ID\"]\n", identifier);
+                                        fprintf(dot, "n%d [label=\"idlist\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, identifier);
+                                    }
     ;
 
-optexpr: expr                       {  }
-    |                               {  }
+optexpr: expr                       { 
+                                        $$.node_id = nextLabel++;
+                                        fprintf(dot, "n%d [label=\"optexpr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                    }
+    |                               { 
+                                        $$.node_id = nextLabel++; 
+                                        int eps = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"optexpr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eps);
+                                    }
     ;                           
 
-expr: expr ADD expr { $$.data.exprData = handleBinaryExpr(ADD, $1.data.exprData, $3.data.exprData); }
-    | expr SUB expr { $$.data.exprData = handleBinaryExpr(SUB, $1.data.exprData, $3.data.exprData); }
-    | expr MUL expr { $$.data.exprData = handleBinaryExpr(MUL, $1.data.exprData, $3.data.exprData); }
-    | expr DIV expr { $$.data.exprData = handleBinaryExpr(DIV, $1.data.exprData, $3.data.exprData); }
-    | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ }
-    | expr BITWISE_AND expr     { $$.data.exprData = handleBinaryExpr(BITWISE_AND, $1.data.exprData, $3.data.exprData); }
-    | expr BITWISE_OR expr      { $$.data.exprData = handleBinaryExpr(BITWISE_OR, $1.data.exprData, $3.data.exprData); }
-    | expr BITWISE_NOT expr     { $$.data.exprData = handleBinaryExpr(BITWISE_NOT, $1.data.exprData, $3.data.exprData); }
-    | expr BITWISE_XOR expr     { $$.data.exprData = handleBinaryExpr(BITWISE_XOR, $1.data.exprData, $3.data.exprData); }
-    | expr LEFT_SHIFT expr      { $$.data.exprData = handleBinaryExpr(LEFT_SHIFT, $1.data.exprData, $3.data.exprData); }
-    | expr RIGHT_SHIFT expr     { $$.data.exprData = handleBinaryExpr(RIGHT_SHIFT, $1.data.exprData, $3.data.exprData); }
-    | expr EQ expr { $$.data.exprData = handleBinaryExpr(EQ, $1.data.exprData, $3.data.exprData); }
-    | expr NE expr { $$.data.exprData = handleBinaryExpr(NE, $1.data.exprData, $3.data.exprData); }
-    | expr LT expr { $$.data.exprData = handleBinaryExpr(LT, $1.data.exprData, $3.data.exprData); }
-    | expr GT expr { $$.data.exprData = handleBinaryExpr(GT, $1.data.exprData, $3.data.exprData); }
-    | expr LE expr { $$.data.exprData = handleBinaryExpr(LE, $1.data.exprData, $3.data.exprData); }
-    | expr GE expr { $$.data.exprData = handleBinaryExpr(GE, $1.data.exprData, $3.data.exprData); }
-    | expr LOGICAL_AND expr         { $$.data.exprData = handleBinaryExpr(LOGICAL_AND, $1.data.exprData, $3.data.exprData); }
-    | expr LOGICAL_OR expr          { $$.data.exprData = handleBinaryExpr(LOGICAL_OR, $1.data.exprData, $3.data.exprData); }
-    | OPEN_PAREN expr CLOSE_PAREN   { $$.data.exprData = $2.data.exprData; }
-    | LOGICAL_NOT expr %prec UNARY  { $$.data.exprData = handleUnaryExpr(LOGICAL_NOT, $2.data.exprData); }
-    | SUB expr %prec UNARY          { $$.data.exprData = handleUnaryExpr(SUB, $2.data.exprData); }
-    | term                          { $$.data.exprData = $1.data.exprData; }
-    | attr ASSIGN expr              { $$.data.exprData = handleAssignExpr($1.data.string, $3.data.exprData); }
+expr: expr ADD expr { 
+                        $$.data.exprData = handleBinaryExpr(ADD, $1.data.exprData, $3.data.exprData);
+
+                        $$.node_id = nextLabel++;
+                        int add = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"+\"]\n", add);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, add, $3.node_id);
+
+                    }
+    | expr SUB expr { 
+                        $$.data.exprData = handleBinaryExpr(SUB, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int sub = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"-\"]\n", sub);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, sub, $3.node_id);
+
+                    }
+    | expr MUL expr { 
+                        $$.data.exprData = handleBinaryExpr(MUL, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int mul = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"*\"]\n", mul);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, mul, $3.node_id);
+
+                    }
+    | expr DIV expr { 
+                        $$.data.exprData = handleBinaryExpr(DIV, $1.data.exprData, $3.data.exprData);
+                        
+                        $$.node_id = nextLabel++;
+                        int div = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"/\"]\n", div);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, div, $3.node_id);
+                        
+                    }
+    | expr MOD expr { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ 
+                        $$.node_id = nextLabel++;
+                        int mod = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"%%\"]\n", mod);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, mod, $3.node_id);
+                    }
+    | expr BITWISE_AND expr     { 
+                                    $$.data.exprData = handleBinaryExpr(BITWISE_AND, $1.data.exprData, $3.data.exprData); 
+
+                                    $$.node_id = nextLabel++;
+                                    int and = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"&\"]\n", and);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, and, $3.node_id);
+
+                                }
+    | expr BITWISE_OR expr      { 
+                                    $$.data.exprData = handleBinaryExpr(BITWISE_OR, $1.data.exprData, $3.data.exprData); 
+
+                                    $$.node_id = nextLabel++;
+                                    int or = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"|\"]\n", or);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, or, $3.node_id);
+
+                                }
+    | expr BITWISE_NOT expr     { 
+                                    $$.data.exprData = handleBinaryExpr(BITWISE_NOT, $1.data.exprData, $3.data.exprData); 
+
+                                    $$.node_id = nextLabel++;
+                                    int not = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"~\"]\n", not);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, not, $3.node_id);
+                                    
+                                }
+    | expr BITWISE_XOR expr     { 
+                                    $$.data.exprData = handleBinaryExpr(BITWISE_XOR, $1.data.exprData, $3.data.exprData); 
+                                    
+                                    $$.node_id = nextLabel++;
+                                    int xor = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"^\"]\n", xor);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, xor, $3.node_id);
+                                    
+                                }
+    | expr LEFT_SHIFT expr      { 
+                                    $$.data.exprData = handleBinaryExpr(LEFT_SHIFT, $1.data.exprData, $3.data.exprData); 
+
+                                    $$.node_id = nextLabel++;
+                                    int lshift = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"<<\"]\n", lshift);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, lshift, $3.node_id);
+
+                                }
+    | expr RIGHT_SHIFT expr     { 
+                                    $$.data.exprData = handleBinaryExpr(RIGHT_SHIFT, $1.data.exprData, $3.data.exprData); 
+
+                                    $$.node_id = nextLabel++;
+                                    int rshift = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\">>\"]\n", rshift);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, rshift, $3.node_id);
+
+                                }
+    | expr EQ expr  { 
+                        $$.data.exprData = handleBinaryExpr(EQ, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int eq = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"==\"]\n", eq);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, eq, $3.node_id);
+
+                    }
+    | expr NE expr  { 
+                        $$.data.exprData = handleBinaryExpr(NE, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int ne = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"!=\"]\n", ne);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, ne, $3.node_id);
+                        
+                    }
+    | expr LT expr  { 
+                        $$.data.exprData = handleBinaryExpr(LT, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int lt = nextLabel++;
+
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"<\"]\n", lt);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, lt, $3.node_id);
+        
+
+                    }
+    | expr GT expr  { 
+                        $$.data.exprData = handleBinaryExpr(GT, $1.data.exprData, $3.data.exprData); 
+
+                        $$.node_id = nextLabel++;
+                        int gt = nextLabel++;
+                        
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\">\"]\n", gt);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, gt, $3.node_id);
+
+                    }
+    | expr LE expr  { 
+                        $$.data.exprData = handleBinaryExpr(LE, $1.data.exprData, $3.data.exprData); 
+                        
+                        $$.node_id = nextLabel++;
+                        int le = nextLabel++;
+                        
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\"<=\"]\n", le);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, le, $3.node_id);
+                        
+                    }
+    | expr GE expr  { 
+                        $$.data.exprData = handleBinaryExpr(GE, $1.data.exprData, $3.data.exprData); 
+                        
+                        $$.node_id = nextLabel++;
+                        int ge = nextLabel++;
+                        
+                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                        fprintf(dot, "n%d [label=\">=\"]\n", ge);
+                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, ge, $3.node_id);
+
+                    }
+    | expr LOGICAL_AND expr         { 
+                                        $$.data.exprData = handleBinaryExpr(LOGICAL_AND, $1.data.exprData, $3.data.exprData); 
+
+                                        $$.node_id = nextLabel++;
+                                        int and = nextLabel++;
+                                        
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&&\"]\n", and);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, and, $3.node_id);
+
+                                    }
+    | expr LOGICAL_OR expr          { 
+                                        $$.data.exprData = handleBinaryExpr(LOGICAL_OR, $1.data.exprData, $3.data.exprData); 
+
+                                        $$.node_id = nextLabel++;
+                                        int or = nextLabel++;
+
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"||\"]\n", or);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, or, $3.node_id);
+                                        
+                                    }
+    | OPEN_PAREN expr CLOSE_PAREN   { 
+                                        $$.data.exprData = $2.data.exprData; 
+
+                                        $$.node_id = nextLabel++;
+                                        int paren = nextLabel++;
+                                        int close_paren = nextLabel++;
+
+                                        fprintf(dot, "n%d [label=\"(\"]\n", paren);
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\")\"]\n", close_paren);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, paren, $2.node_id, close_paren);
+
+                                    }
+    | LOGICAL_NOT expr %prec UNARY  { 
+                                        $$.data.exprData = handleUnaryExpr(LOGICAL_NOT, $2.data.exprData); 
+
+                                        int not = nextLabel++;
+                                        $$.node_id = nextLabel++;
+                                        int unary = nextLabel++;
+                                        fprintf(dot, "n%d [label=\"!\"]\n", not);
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"UNARY\"]\n", unary);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, not, $2.node_id, unary);
+                                        
+                                    }
+    | SUB expr %prec UNARY          { 
+                                        $$.data.exprData = handleUnaryExpr(SUB, $2.data.exprData); 
+                                        
+                                        $$.node_id = nextLabel++;
+                                        int sub = nextLabel++;
+                                        
+                                        fprintf(dot, "n%d [label=\"-\"]\n", sub);
+                                        fprintf(dot, "n%d [label=\"expr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, sub, $2.node_id);
+                                        
+                                    }
+    | term                          { 
+                                        $$.data.exprData = $1.data.exprData; 
+
+                                        $$.node_id = nextLabel++;
+                                        
+                                        fprintf(dot, "n%d [label=\"term\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                                        
+                                    }
+    | attr ASSIGN expr              { 
+                                        $$.data.exprData = handleAssignExpr($1.data.string, $3.data.exprData); 
+
+                                        $$.node_id = nextLabel++;
+                                        int assign_ = nextLabel++;
+
+                                        fprintf(dot, "n%d [label=\"=\"]\n", assign_);
+                                        fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, assign_, $3.node_id);
+
+                                    }
     | SIZEOF IDENTIFIER             { /* return symbol table size of identifier */ }
     ;
 
 
-term: const { $$.data.exprData = $1.data.exprData; }
-    | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { $$.data.exprData = handleFunctionCall($1.data.string, $3.data.paramList); }
-    | attr { $$.data.exprData = handleAttr($1.data.string); }
+term: const { 
+                $$.data.exprData = $1.data.exprData; 
+
+                $$.node_id = nextLabel++;
+                
+                fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                
+            }
+    | IDENTIFIER OPEN_PAREN optexprlist CLOSE_PAREN { 
+                                                        $$.data.exprData = handleFunctionCall($1.data.string, $3.data.paramList); 
+
+                                                        int identifier = nextLabel++;
+                                                        int open_paren = nextLabel++;
+                                                        $$.node_id = nextLabel++;
+                                                        int close_paren = nextLabel++;
+
+                                                        fprintf(dot, "n%d [label=\"%s\"]\n", identifier, $1.data.string);
+                                                        fprintf(dot, "n%d [label=\"(\"]\n", open_paren);
+                                                        fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                                                        fprintf(dot, "n%d [label=\")\"]\n", close_paren);
+                                                        fprintf(dot, "n%d -- {n%d n%d n%d n%d}\n", $$.node_id, identifier, open_paren, $1.node_id, close_paren);
+
+                                                    }
+    | attr  { 
+                $$.data.exprData = handleAttr($1.data.string); 
+                
+                $$.node_id = nextLabel++;
+
+                fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
+                fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+
+            }
     ;
 
-attr: IDENTIFIER exprvector     { $$.data.string = $1.data.string; }
-    | attr POINTER attr         { $$.data.string = mergeStrPointers($1.data.string, $3.data.string); }
+attr: IDENTIFIER exprvector     { 
+                                    $$.data.string = $1.data.string; 
+
+                                    int exprvector = nextLabel++;
+                                    $$.node_id = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"%s\"]\n", $$.node_id, $1.data.string);
+                                    fprintf(dot, "n%d [label=\"attr\"]\n", exprvector);
+                                    fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, exprvector, $2.node_id);
+
+                                }
+    | attr POINTER attr         { 
+                                    $$.data.string = mergeStrPointers($1.data.string, $3.data.string); 
+
+                                    int pointer = nextLabel++;
+                                    $$.node_id = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"attr\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d [label=\"*\"]\n", pointer);
+                                    fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, $1.node_id, pointer, $3.node_id);
+                                }
     ;
 
-const: INTEGER          { $$.data.exprData = handleInteger($1.data.integer); }
-    | DECIMAL           { $$.data.exprData.returnType = strdup("ship"); $$.data.exprData.reg = 0;  }
-    | STRING            { /* chama codeGen() e retorna o Temporary */  }
-    | boolean           { /* chama codeGen() e retorna o Temporary */  }
+const: INTEGER          { 
+                            $$.data.exprData = handleInteger($1.data.integer); 
 
-boolean: TRUE                   { $$.data.boolean = $1.data.boolean; }
-    | FALSE                     { $$.data.boolean = $1.data.boolean; }
+                            int integer = nextLabel++;
+                            $$.node_id = nextLabel++;
+
+                            fprintf(dot, "n%d [label=\"%d\"]\n", integer, $1.data.integer);
+                            fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, integer);
+                        }
+    | DECIMAL           { 
+                            $$.data.exprData.returnType = strdup("ship"); 
+                            $$.data.exprData.reg = 0;  
+
+                            int decimal = nextLabel++;
+                            $$.node_id = nextLabel++;
+
+                            fprintf(dot, "n%d [label=\"%lf\"]\n", decimal, $1.data.decimal);
+                            fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, decimal);   
+                        }
+    | STRING            { 
+                            /* chama codeGen() e retorna o Temporary */
+                            int string = nextLabel++;
+                            $$.node_id = nextLabel++;
+
+                            fprintf(dot, "n%d [label=\"%s\"]\n", string, $1.data.string);
+                            fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, string);
+                        }
+    | boolean           {
+                            /* chama codeGen() e retorna o Temporary */
+                            $$.node_id = nextLabel++;
+                            
+                            fprintf(dot, "n%d [label=\"const\"]\n", $$.node_id);
+                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id);
+                            
+                        }
+
+boolean: TRUE                   { 
+                                    $$.data.boolean = $1.data.boolean; 
+
+                                    $$.node_id = nextLabel++;
+                                    int true = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"true\"]\n", true);
+                                    fprintf(dot, "n%d [label=\"boolean\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, true);
+
+                                }
+    | FALSE                     { 
+                                    $$.data.boolean = $1.data.boolean; 
+
+                                    $$.node_id = nextLabel++;
+                                    int false = nextLabel++;
+
+                                    fprintf(dot, "n%d [label=\"false\"]\n", false);
+                                    fprintf(dot, "n%d [label=\"boolean\"]\n", $$.node_id);
+                                    fprintf(dot, "n%d -- n%d\n", $$.node_id, false);
+
+                                }
     ;
 
 exprvector:
-    OPEN_BRACKET expr CLOSE_BRACKET { $$.data.exprData = $2.data.exprData; }
-    | /* EPS */                     {  }
+    OPEN_BRACKET expr CLOSE_BRACKET { 
+                                        $$.data.exprData = $2.data.exprData;
+
+                                        int open_bracket = nextLabel++;
+                                        $$.node_id = nextLabel++;
+                                        int close_bracket = nextLabel++;
+
+                                        fprintf(dot, "n%d [label=\"{\"]\n", open_bracket);
+                                        fprintf(dot, "n%d [label=\"exprvector\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"}\"]\n", close_bracket);
+                                        fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, open_bracket, $2.node_id, close_bracket);   
+
+                                    }
+    | /* EPS */                     {  
+
+                                        $$.node_id = nextLabel++; 
+                                        int eps = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"exprvector\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eps); 
+                                    }
     ;
 
 constvector: 
-    OPEN_BRACKET INTEGER CLOSE_BRACKET { $$.data.integer = $2.data.integer; }
-    | /* EPS */                     { $$.data.integer = 1; }
+    OPEN_BRACKET INTEGER CLOSE_BRACKET  { 
+                                            $$.data.integer = $2.data.integer; 
+
+                                            int open_bracket = nextLabel++;
+                                            int integer = nextLabel++;
+                                            $$.node_id = nextLabel++; 
+                                            int close_bracket = nextLabel++;
+                                            
+                                            fprintf(dot, "n%d [label=\"{\"]\n", open_bracket);
+                                            fprintf(dot, "n%d [label=\"constvector\"]\n", $$.node_id);
+                                            fprintf(dot, "n%d [label=\"}\"]\n", close_bracket);
+                                            fprintf(dot, "n%d -- {n%d n%d n%d}\n", $$.node_id, open_bracket, integer, close_bracket);
+                                            
+                                        }
+    | /* EPS */                     { 
+                                        $$.data.integer = 1;
+                                        
+                                        $$.node_id = nextLabel++; 
+                                        int eps = nextLabel++; 
+                                        fprintf(dot, "n%d [label=\"constvector\"]\n", $$.node_id);
+                                        fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
+                                        fprintf(dot, "n%d -- n%d\n", $$.node_id, eps); 
+                                    }
     ; 
 
 %%
@@ -511,12 +1282,9 @@ void onStart() {
 
     dot = fopen("./output/tree.dot", "w");
     fprintf(dot, "strict graph {\n");
+    fprintf(dot, "node [ordering=out]\n");
 
     symbolTableCreateBlock(st);
-    
-    // jib a;
-    // symbol {a, variavel, jib, 4, 0}
-    
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
     symbolTableInsert(st, symbolTypeNew("void", 4));

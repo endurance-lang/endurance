@@ -37,4 +37,21 @@ ecall
 
 # main code here
 main:
+addi x5, x0, 14
+add x8, x5, x0
+addi x6, x0, 15
+# handle operation 305
+slt x7, x6, x8
+beq x0, x7, label_1
+addi x28, x0, 1
+mv a1, x28
+jal x1, printf
+beq x0, x0, label_2
+label_1:
+addi x29, x0, 0
+mv a1, x29
+jal x1, printf
+label_2:
+addi x30, x0, 0
+sw x8, 0(x30)
 j programExit
