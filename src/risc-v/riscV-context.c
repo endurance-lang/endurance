@@ -137,7 +137,7 @@ int  riscVCodeGenUnaryOperator(RiscVContext *context, int op, int reg1){
     switch (op)
     {
     case LOGICAL_NOT:
-        fprintf(context->fileName,"xori x%d, x%d, 1\n", regdes, reg1);
+        fprintf(context->fileName,"xori x%d, x%d, -1\n", regdes, reg1);
         break;
     case SUB:
         fprintf(context->fileName,"sub x%d, x0, x%d\n",regdes,reg1);

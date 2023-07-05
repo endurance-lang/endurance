@@ -19,17 +19,17 @@ test-second:
 test-third:
 	./build/endurance < resources/third.end
 
-test-input:
-	./build/endurance < resources/input.end
+test-lex-error:
+	./build/endurance < resources/lex-error.end
 
-test-error:
-	./build/endurance < resources/error.end
+test-syn-error:
+	./build/endurance < resources/syn-error.end
+
+test-sem-error:
+	./build/endurance < resources/sem-error.end
 
 run:
 	./build/endurance < $(FILE)
-
-test-graphviz:
-	./build/endurance < resources/graphviz.end
 
 graphviz-image:
 	dot -Tpng ./output/tree.dot -o ./output/tree.png

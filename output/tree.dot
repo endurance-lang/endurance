@@ -18,136 +18,105 @@ n9 [label=";"]
 n8 -- {n5 n9}
 n10 [label="stmts"]
 n10 -- {n1 n8}
-n11 [label="exprvector"]
+n11 [label="constvector"]
 n12 [label="&#x03B5;"]
 n11 -- n12
-n13 [label="attr"]
-n14 [label="a"]
-{rank=same; n14 n11;}
+n13 [label="var"]
+n14 [label="boat"]
+n15 [label="x"]
+{ rank=same; n14 n15 n11; }
 n13 -- n14
+n13 -- n15
 n13 -- n11
-<<<<<<< HEAD
-n15 [label="8"]
-=======
-n15 [label="10"]
->>>>>>> ac39d6660788dc8411e49a58a53b0dc41d16d31e
-n16 [label="const"]
-n16 -- n15
-n17 [label="term"]
-n17 -- n16
-n18 [label="expr"]
-n18 -- n17
-n20 [label="="]
-n19 [label="attr"]
-{rank=same; n13 n20 n18;}
-n19 -- n13
+n16 [label="stmt"]
+n17 [label=";"]
+n16 -- {n13 n17}
+n18 [label="stmts"]
+n18 -- {n10 n16}
+n19 [label="stmts"]
+n20 [label="&#x03B5;"]
 n19 -- n20
-n19 -- n18
-n21 [label="stmt"]
-n22 [label=";"]
-n21 -- {n19 n22}
-n23 [label="stmts"]
-n23 -- {n10 n21}
-<<<<<<< HEAD
-n24 [label="exprvector"]
-n25 [label="&#x03B5;"]
-n24 -- n25
-n26 [label="attr"]
-n27 [label="a"]
-{rank=same; n27 n24;}
-n26 -- n27
-n26 -- n24
-n28 [label="term"]
-n28 -- n26
-n29 [label="expr"]
-n29 -- n28
-n30 [label="10"]
-n31 [label="const"]
-n31 -- n30
-n32 [label="term"]
-n32 -- n31
-n33 [label="expr"]
-n33 -- n32
-n34 [label="expr"]
-n35 [label="<"]
-{rank=same; n29 n35 n33;}
-n34 -- n29
-n34 -- n35
-n34 -- n33
-n36 [label="repexpr"]
-n36 -- n34
-n37 [label="stmts"]
-n38 [label="&#x03B5;"]
-n37 -- n38
-n39 [label="exprvector"]
+n21 [label="constvector"]
+n22 [label="&#x03B5;"]
+n21 -- n22
+n23 [label="var"]
+n24 [label="sailor"]
+n25 [label="a"]
+{ rank=same; n24 n25 n21; }
+n23 -- n24
+n23 -- n25
+n23 -- n21
+n26 [label="stmt"]
+n27 [label=";"]
+n26 -- {n23 n27}
+n28 [label="stmts"]
+n28 -- {n19 n26}
+n29 [label="stmts"]
+n30 [label="&#x03B5;"]
+n29 -- n30
+n31 [label="constvector"]
+n32 [label="&#x03B5;"]
+n31 -- n32
+n33 [label="var"]
+n34 [label="boat"]
+n35 [label="z"]
+{ rank=same; n34 n35 n31; }
+n33 -- n34
+n33 -- n35
+n33 -- n31
+n36 [label="stmt"]
+n37 [label=";"]
+n36 -- {n33 n37}
+n38 [label="stmts"]
+n38 -- {n29 n36}
+n39 [label="constvector"]
 n40 [label="&#x03B5;"]
 n39 -- n40
-n41 [label="attr"]
-n42 [label="a"]
-{rank=same; n42 n39;}
+n41 [label="var"]
+n42 [label="sailor"]
+n43 [label="y"]
+{ rank=same; n42 n43 n39; }
 n41 -- n42
+n41 -- n43
 n41 -- n39
-n43 [label="exprvector"]
-n44 [label="&#x03B5;"]
-n43 -- n44
-n45 [label="attr"]
-n46 [label="a"]
-{rank=same; n46 n43;}
-n45 -- n46
-n45 -- n43
-n47 [label="term"]
-n47 -- n45
-n48 [label="expr"]
-n48 -- n47
-n49 [label="1"]
-n50 [label="const"]
-n50 -- n49
-n51 [label="term"]
-n51 -- n50
-n52 [label="expr"]
-n52 -- n51
-n53 [label="expr"]
-n54 [label="+"]
-{rank=same; n48 n54 n52;}
-n53 -- n48
-n53 -- n54
-n53 -- n52
-n56 [label="="]
-n55 [label="attr"]
-{rank=same; n41 n56 n53;}
-n55 -- n41
-n55 -- n56
-n55 -- n53
-n57 [label="stmt"]
-n58 [label=";"]
-n57 -- {n55 n58}
-n59 [label="stmts"]
-n59 -- {n37 n57}
-n60 [label="&#9875;"]
-n61 [label="stmt"]
-n62 [label="&#9875;;"]
-{ rank=same; n60 n59 n62; }
-n61 -- n60
-n61 -- n59
-n61 -- n62
-n64 [label="WHILE"]
-n65 [label="("]
-n63 [label="repetition"]
-n66 [label=")"]
-{ rank=same; n64 n65 n36 n66 n61; }
-n63 -- n64
-n63 -- n65
-n63 -- n36
-n63 -- n66
-n63 -- n61
-n67 [label="stmt"]
-n67 -- n63
-n68 [label="stmts"]
-n68 -- {n23 n67}
-n69 [label="program"]
-n69 -- n68
-=======
-n24 [label="program"]
-n24 -- n23
->>>>>>> ac39d6660788dc8411e49a58a53b0dc41d16d31e
+n44 [label="stmt"]
+n45 [label=";"]
+n44 -- {n41 n45}
+n46 [label="stmts"]
+n46 -- {n38 n44}
+n47 [label="constvector"]
+n48 [label="&#x03B5;"]
+n47 -- n48
+n49 [label="var"]
+n50 [label="jib"]
+n51 [label="x"]
+{ rank=same; n50 n51 n47; }
+n49 -- n50
+n49 -- n51
+n49 -- n47
+n52 [label="stmt"]
+n53 [label=";"]
+n52 -- {n49 n53}
+n54 [label="stmts"]
+n54 -- {n46 n52}
+n55 [label="&#9875;"]
+n56 [label="stmt"]
+n57 [label="&#9875;;"]
+{ rank=same; n55 n54 n57; }
+n56 -- n55
+n56 -- n54
+n56 -- n57
+n58 [label="stmts"]
+n58 -- {n28 n56}
+n59 [label="&#9875;"]
+n60 [label="stmt"]
+n61 [label="&#9875;;"]
+{ rank=same; n59 n58 n61; }
+n60 -- n59
+n60 -- n58
+n60 -- n61
+n62 [label="stmts"]
+n62 -- {n18 n60}
+n63 [label="program"]
+n63 -- n62
 }

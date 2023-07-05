@@ -115,6 +115,8 @@ ExprData handleInteger(int integer);
 %%
 
 program: stmts                      { 
+                                        symbolTableShow(st, stdout);
+                                        printf("Programa sintaticamente correto\n");
                                         $$.node_id = nextLabel++; 
                                         fprintf(dot, "n%d [label=\"program\"]\n", $$.node_id); 
                                         fprintf(dot, "n%d -- n%d\n", $$.node_id, $1.node_id); 
@@ -168,7 +170,8 @@ stmt: conditional               {
                                     fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
                                     fprintf(dot, "n%d -- {n%d n%d}\n", $$.node_id, $1.node_id, semicolon);
                                 }
-    | BLOCK_OPEN stmts BLOCK_CLOSE      { 
+    | {blockOpen();} BLOCK_OPEN stmts BLOCK_CLOSE      { 
+                                            blockClose();
                                             int block_open = nextLabel++;
                                             $$.node_id = nextLabel++;
                                             int block_close = nextLabel++;
@@ -177,10 +180,10 @@ stmt: conditional               {
                                             fprintf(dot, "n%d [label=\"stmt\"]\n", $$.node_id);
                                             fprintf(dot, "n%d [label=\"&#9875;;\"]\n", block_close);
                                             
-                                            fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", block_open, $2.node_id, block_close);
+                                            fprintf(dot, "{ rank=same; n%d n%d n%d; }\n", block_open, $3.node_id, block_close);
                                             
                                             fprintf(dot, "n%d -- n%d\n", $$.node_id, block_open);
-                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $2.node_id);
+                                            fprintf(dot, "n%d -- n%d\n", $$.node_id, $3.node_id);
                                             fprintf(dot, "n%d -- n%d\n", $$.node_id, block_close);
 
                                         }
@@ -1372,6 +1375,15 @@ ExprData handleInteger(int integer){
     return ret;
 }
 
+void blockOpen() {
+    symbolTableCreateBlock(st);
+}
+
+void blockClose() {
+    symbolTableShow(st, stdout);
+    symbolTableDeleteBlock(st);
+}
+
 void reportAndExit(const char *s, ...) {
     char msg[100];
     va_list args;
@@ -1393,6 +1405,7 @@ void onExit() {
     fclose(prod);
     fclose(friscv);
     fclose(dot);
+
     symbolTableDelete(st);
 }
 
@@ -1421,7 +1434,7 @@ void onStart() {
     fprintf(dot, "strict graph {\n");
     fprintf(dot, "node [ordering=out]\n");
 
-    symbolTableCreateBlock(st);
+    blockOpen();
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
     symbolTableInsert(st, symbolTypeNew("void", 4));
@@ -1429,12 +1442,9 @@ void onStart() {
     symbolTableInsert(st, symbolTypeNew("ship", 4));
     symbolTableInsert(st, symbolTypeNew("addled", 4));
     symbolTableInsert(st, symbolTypeNew("sailor", 4));
-    symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
-}
 
-void executeProgram() {
-    symbolTableShow(st, stdout);
-    printf("Programa sintaticamente correto\n");
+    symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
+    symbolTableInsert(st, symbolFunctionNew("plunder", "void"));
 }
 
 void yyerror(const char *s) {

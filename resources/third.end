@@ -1,12 +1,16 @@
-jib oggin() ⚓️
-    /ahoy parrot("Caravel") belay/ 
+jib n;
+n = plunder();
 
-    sailor endurance;
-    endurance = "a";
-
-    spyglass(endurance != "b") ⚓️
-        parrot("Blackbeard");
-    ⚓️; parley ⚓️
-        parrot("Davy Jones");
+jib l; jib r; jib m;
+l = 0; r = 2000;
+squall (l < r) ⚓️
+    m = (l + r) / 2;
+    spyglass (m * m >= n) ⚓️
+        r = m;
+    ⚓️;
+    parley ⚓️
+        l = m + 1;
     ⚓️;
 ⚓️;
+
+parrot(m);

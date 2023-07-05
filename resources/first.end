@@ -1,14 +1,9 @@
 jib oggin() ⚓️
     addled black_beard;
-    black_beard = aye;
-    sweet  (black_beard) ⚓️
-        trade aye:
-            /ahoy  belay/
-            anchor;
-        trade arr:
-            /ahoy  belay/
-            anchor;
-        pirate:
-           /ahoy  belay/
+    spyglass (black_beard) ⚓️
+         /ahoy code to be executed if the condition is true belay/ 
+    ⚓️;
+    parley ⚓️
+         /ahoy code to be executed if the condition is false belay/ 
     ⚓️;
 ⚓️;

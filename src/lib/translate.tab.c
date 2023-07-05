@@ -593,16 +593,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   413
+#define YYLAST   473
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  74
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  31
+#define YYNNTS  32
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  86
+#define YYNRULES  87
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  166
+#define YYNSTATES  167
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   328
@@ -656,15 +656,15 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   117,   117,   124,   129,   138,   143,   148,   153,   159,
-     164,   171,   188,   210,   210,   239,   254,   257,   254,   282,
-     286,   290,   282,   328,   336,   355,   387,   399,   406,   421,
-     432,   437,   446,   454,   466,   481,   495,   508,   523,   535,
-     556,   579,   586,   595,   605,   614,   619,   628,   643,   659,
-     675,   691,   704,   720,   736,   752,   767,   783,   799,   815,
-     831,   848,   864,   880,   896,   911,   927,   945,   960,   975,
-     984,   999,  1003,  1012,  1032,  1043,  1057,  1074,  1084,  1095,
-    1104,  1113,  1124,  1138,  1155,  1166,  1180
+       0,   117,   117,   126,   131,   140,   145,   150,   155,   161,
+     166,   173,   173,   191,   213,   213,   242,   257,   260,   257,
+     285,   289,   293,   285,   331,   339,   358,   390,   402,   409,
+     424,   435,   440,   449,   457,   469,   484,   498,   511,   526,
+     538,   559,   582,   589,   598,   608,   617,   622,   631,   646,
+     662,   678,   694,   707,   723,   739,   755,   770,   786,   802,
+     818,   834,   851,   867,   883,   899,   914,   930,   948,   963,
+     978,   987,  1002,  1006,  1015,  1035,  1046,  1060,  1077,  1087,
+    1098,  1107,  1116,  1127,  1141,  1158,  1169,  1183
 };
 #endif
 
@@ -684,8 +684,8 @@ static const char *const yytname[] =
   "LOGICAL_AND", "LOGICAL_OR", "LOGICAL_NOT", "COLON", "SEMI_COLON",
   "ASSIGN", "COMMA", "INVALID", "UMINUS", "DOT", "DECIMAL", "STRING",
   "IDENTIFIER", "INTEGER", "TRUE", "FALSE", "IFX", "UNARY", "$accept",
-  "program", "stmts", "stmt", "conditional", "$@1", "condexpr",
-  "repetition", "$@2", "$@3", "$@4", "$@5", "$@6", "repexpr", "var",
+  "program", "stmts", "stmt", "$@1", "conditional", "$@2", "condexpr",
+  "repetition", "$@3", "$@4", "$@5", "$@6", "$@7", "repexpr", "var",
   "func", "typelist", "exprlist", "opttypelist", "optexprlist", "commands",
   "varlist", "idlist", "optexpr", "expr", "term", "attr", "const",
   "boolean", "exprvector", "constvector", YY_NULLPTR
@@ -708,12 +708,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-118)
+#define YYPACT_NINF (-82)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-1)
+#define YYTABLE_NINF (-12)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -722,23 +722,23 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    -118,     5,   155,  -118,   -55,   -45,   -42,   -12,   -51,   130,
-     -34,   -11,   -31,   -28,  -118,   130,  -118,   130,   130,  -118,
-    -118,   -20,  -118,  -118,  -118,  -118,  -118,  -118,   -18,  -118,
-    -118,   236,  -118,   -22,  -118,  -118,   -17,  -118,  -118,   130,
-      35,   -23,     8,   258,    36,   130,  -118,     9,    45,   217,
-      75,  -118,  -118,   130,   130,    -3,  -118,  -118,   130,   130,
-     130,   130,   130,   130,   130,   130,   130,   130,   130,   130,
-     130,   130,   130,   130,   130,   130,   130,  -118,    14,   130,
-    -118,    49,   258,    18,  -118,  -118,  -118,    31,   130,  -118,
-    -118,   194,    28,    57,   258,    25,    37,  -118,    30,    30,
-      51,    51,   345,   312,    51,    51,    61,    61,   -19,   -19,
-     -19,   -19,   361,   361,   329,   295,   277,    64,  -118,   258,
-     155,  -118,   -30,   -27,    44,  -118,    73,   258,  -118,   130,
-    -118,    76,    42,  -118,    52,    81,   107,  -118,    54,  -118,
-      63,   130,  -118,   258,  -118,    91,    37,    89,  -118,  -118,
-    -118,    71,   155,  -118,  -118,   155,  -118,  -118,   116,  -118,
-     130,  -118,   100,  -118,   155,  -118
+     -82,     5,    68,   -82,   -57,   -49,   -47,   -20,   -53,   190,
+     -46,    -5,   -45,   -31,   -82,   190,   190,   190,   -82,   -82,
+     -22,   -82,   -82,   -82,   -82,     3,   -82,   -82,   -12,   -82,
+     -82,   296,   -82,   -23,   -82,   -82,     8,   -82,   -82,   190,
+       9,     6,    14,   318,    39,   190,   -82,    19,    53,   277,
+     -82,   -82,   190,   190,    49,   -82,   -82,   -82,   190,   190,
+     190,   190,   190,   190,   190,   190,   190,   190,   190,   190,
+     190,   190,   190,   190,   190,   190,   190,   -82,    23,   190,
+     -82,    62,   318,    30,   -82,   -82,   -82,    42,   190,   -82,
+     254,    41,    70,   318,    38,    43,   -82,   137,   -13,   -13,
+      64,    64,   405,   372,    64,    64,    54,    54,   -21,   -21,
+     -21,   -21,   421,   421,   389,   355,   337,    76,   -82,   318,
+     215,   -82,   -28,   -33,    52,   -82,    78,   318,   -82,   190,
+     -82,    81,    47,   -82,    56,    84,   -82,   105,   -82,    55,
+     -82,    61,   190,   -82,   318,   -82,    88,    43,    86,   -82,
+     -82,   -82,    65,   215,   -82,   -82,   215,   -82,   -82,   176,
+     -82,   190,   -82,    92,   -82,   215,   -82
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -746,71 +746,77 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       4,     0,     2,     1,     0,     0,     0,     0,     0,    46,
-       0,     0,     0,     0,    16,     0,     4,     0,     0,    78,
-      79,    84,    77,    81,    82,     3,     5,     6,     0,     7,
-       9,     0,    69,    74,    72,    80,     0,    35,    36,     0,
-       0,    84,     0,    45,     0,    46,    71,     0,     0,     0,
-       0,    68,    67,     0,    33,    86,    75,     8,     0,     0,
+       4,     0,     2,     1,     0,     0,     0,     0,     0,    47,
+       0,     0,     0,     0,    17,     0,     0,     0,    79,    80,
+      85,    78,    82,    83,     3,     0,     5,     6,     0,     7,
+       9,     0,    70,    75,    73,    81,     0,    36,    37,     0,
+       0,    85,     0,    46,     0,    47,    72,     0,     0,     0,
+      69,    68,     0,    34,    87,    76,     4,     8,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,    10,     0,     0,
-      38,     0,    15,     0,    34,    42,    19,     0,     0,    66,
-      11,     0,    32,     0,    29,     0,    31,    24,    47,    48,
-      49,    50,    52,    53,    54,    51,    56,    57,    60,    61,
-      62,    63,    58,    59,    55,    64,    65,    84,    76,    70,
-       0,    44,     0,     0,     0,    37,     0,    23,    83,     0,
-      73,     0,     0,    27,    30,     0,    12,    40,     0,    39,
-       0,     0,    17,    28,    85,    86,     0,     0,    13,    43,
-      41,     0,     0,    26,     4,     0,    20,    18,     0,    14,
-      46,    25,     0,    21,     0,    22
+      39,     0,    16,     0,    35,    43,    20,     0,     0,    67,
+       0,    33,     0,    30,     0,    32,    25,    11,    48,    49,
+      50,    51,    53,    54,    55,    52,    57,    58,    61,    62,
+      63,    64,    59,    60,    56,    65,    66,    85,    77,    71,
+      11,    45,     0,     0,     0,    38,     0,    24,    84,     0,
+      74,     0,     0,    28,    31,     0,    12,    13,    41,     0,
+      40,     0,     0,    18,    29,    86,    87,     0,     0,    14,
+      44,    42,     0,    11,    27,     4,    11,    21,    19,    11,
+      15,    47,    26,     0,    22,    11,    23
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -118,  -118,   -15,  -117,  -118,  -118,  -118,  -118,  -118,  -118,
-    -118,  -118,  -118,    -4,   -77,  -118,  -118,  -118,  -118,  -118,
-    -118,  -118,  -118,   -43,    -9,  -118,    69,  -118,  -118,  -118,
-    -118
+     -82,   -82,   -54,   -81,   -82,   -82,   -82,   -82,   -82,   -82,
+     -82,   -82,   -82,   -82,   -14,   -78,   -82,   -82,   -82,   -82,
+     -82,   -82,   -82,   -82,   -44,    -9,   -82,    51,   -82,   -82,
+     -82,   -82
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int16 yydefgoto[] =
 {
-      -1,     1,     2,    25,    26,   155,    81,    27,    48,   152,
-     124,   160,   164,   126,    28,    29,   134,    92,   135,    93,
-      30,   123,   122,    42,    31,    32,    33,    34,    35,    56,
-      97
+      -1,     1,     2,    24,    25,    26,   156,    81,    27,    48,
+     153,   124,   161,   165,   126,    28,    29,   134,    91,   135,
+      92,    30,   123,   122,    42,    31,    32,    33,    34,    35,
+      55,    96
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
      positive, shift that token.  If negative, reduce the rule whose
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_uint8 yytable[] =
+static const yytype_int16 yytable[] =
 {
-      43,    50,    86,   136,    78,     3,    49,   137,    51,    52,
-     139,    53,    36,    54,    53,    37,    54,    40,    38,   133,
-      58,    59,    60,    61,    39,    45,    64,    65,    66,    67,
-      82,    95,   138,    96,    44,   157,    43,    46,   159,    79,
-      47,   132,    57,    80,    91,    94,   140,   165,    55,    98,
+      43,    86,    97,    78,   140,     3,    49,    50,    51,   138,
+      36,    37,    52,    38,    53,    40,    39,   133,    58,    59,
+      60,    61,    44,    46,    64,    65,    66,    67,    60,    61,
+      82,    45,    64,    65,   139,   132,    43,    47,    79,   137,
+      52,    56,    53,    90,    93,   141,    54,    83,    57,    98,
       99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
-     109,   110,   111,   112,   113,   114,   115,   116,    84,   153,
-     119,    60,    61,    83,    85,    64,    65,    87,     4,   127,
-       5,    88,   117,     6,   120,     7,   121,     8,     9,    10,
-     129,   125,   130,    11,   131,    12,    64,    13,    53,    14,
-      58,    59,    60,    61,   141,   132,    64,    65,   142,   144,
-     145,    15,    90,    16,   146,    17,   147,   162,   148,     4,
-     143,     5,   149,   150,     6,    95,     7,   154,     8,     9,
-      10,   156,   127,    18,    11,   163,    12,   151,    13,   158,
-      14,    19,    20,    21,    22,    23,    24,   118,     0,     0,
-      12,    43,    15,   161,    16,     0,    17,     0,     4,     0,
+     109,   110,   111,   112,   113,   114,   115,   116,    80,   154,
+     119,     4,   158,     5,    84,   160,     6,    85,     7,   127,
+       8,     9,    10,    94,   166,    95,    11,    87,    12,    88,
+      13,   117,    14,    58,    59,    60,    61,   120,   121,    64,
+      65,   159,   125,   129,    15,   130,   -11,   131,    16,    64,
+      52,   132,   142,   143,   145,   146,   149,   163,   147,   148,
+     144,   151,    94,   150,   155,   157,    17,   164,   152,   118,
+       0,     0,     0,   127,    18,    19,    20,    21,    22,    23,
+       4,     0,     5,     0,     0,     6,     0,     7,     0,     8,
+       9,    10,    43,     0,     0,    11,     0,    12,     0,    13,
+       0,    14,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    15,   136,     0,     0,    16,     0,     4,
+       0,     5,     0,     0,     6,     0,     7,     0,     8,     9,
+      10,     0,     0,     0,    11,    17,    12,     0,    13,     0,
+      14,     0,     0,    18,    19,    20,    21,    22,    23,     0,
+      12,     0,    15,   162,     0,     0,    16,     0,     4,     0,
        5,     0,     0,     6,     0,     7,    15,     8,     9,    10,
-      17,     0,     0,    11,    18,    12,     0,    13,     0,    14,
-       0,     0,    19,    20,    21,    22,    23,    24,    18,     0,
-       0,    15,     0,    16,     0,    17,    19,    20,    41,    22,
-      23,    24,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,    18,     0,     0,     0,     0,     0,     0,
-       0,    19,    20,    21,    22,    23,    24,   128,     0,     0,
+      16,     0,     0,    11,    17,    12,     0,    13,     0,    14,
+       0,     0,    18,    19,    20,    21,    22,    23,    17,     0,
+       0,    15,     0,     0,     0,    16,    18,    19,    41,    21,
+      22,    23,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    17,     0,     0,     0,     0,     0,     0,
+       0,    18,    19,    20,    21,    22,    23,   128,     0,     0,
        0,     0,     0,    58,    59,    60,    61,    62,    63,    64,
       65,    66,    67,    68,    69,    70,    71,    72,    73,    74,
       75,    76,    89,     0,     0,     0,    58,    59,    60,    61,
@@ -834,26 +840,32 @@ static const yytype_uint8 yytable[] =
 
 static const yytype_int16 yycheck[] =
 {
-       9,    16,    45,   120,    26,     0,    15,    37,    17,    18,
-      37,    34,    67,    36,    34,    60,    36,    68,    60,    96,
-      39,    40,    41,    42,    36,    36,    45,    46,    47,    48,
-      39,    34,    62,    36,    68,   152,    45,    68,   155,    61,
-      68,    68,    60,    60,    53,    54,   123,   164,    68,    58,
+       9,    45,    56,    26,    37,     0,    15,    16,    17,    37,
+      67,    60,    34,    60,    36,    68,    36,    95,    39,    40,
+      41,    42,    68,    68,    45,    46,    47,    48,    41,    42,
+      39,    36,    45,    46,    62,    68,    45,    68,    61,   120,
+      34,    38,    36,    52,    53,   123,    68,    38,    60,    58,
       59,    60,    61,    62,    63,    64,    65,    66,    67,    68,
-      69,    70,    71,    72,    73,    74,    75,    76,    60,   146,
-      79,    41,    42,    38,    38,    45,    46,    68,     3,    88,
-       5,    36,    68,     8,    35,    10,    68,    12,    13,    14,
-      62,    60,    35,    18,    69,    20,    45,    22,    34,    24,
-      39,    40,    41,    42,    60,    68,    45,    46,    35,    33,
-      68,    36,    37,    38,    62,    40,    35,   160,    11,     3,
-     129,     5,    68,    60,     8,    34,    10,    38,    12,    13,
-      14,    60,   141,    58,    18,    35,    20,   141,    22,   154,
-      24,    66,    67,    68,    69,    70,    71,    78,    -1,    -1,
-      20,   160,    36,    37,    38,    -1,    40,    -1,     3,    -1,
+      69,    70,    71,    72,    73,    74,    75,    76,    60,   147,
+      79,     3,   153,     5,    60,   156,     8,    38,    10,    88,
+      12,    13,    14,    34,   165,    36,    18,    68,    20,    36,
+      22,    68,    24,    39,    40,    41,    42,    35,    68,    45,
+      46,   155,    60,    62,    36,    35,    38,    69,    40,    45,
+      34,    68,    60,    35,    33,    68,    11,   161,    62,    35,
+     129,    60,    34,    68,    38,    60,    58,    35,   142,    78,
+      -1,    -1,    -1,   142,    66,    67,    68,    69,    70,    71,
+       3,    -1,     5,    -1,    -1,     8,    -1,    10,    -1,    12,
+      13,    14,   161,    -1,    -1,    18,    -1,    20,    -1,    22,
+      -1,    24,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    36,    37,    -1,    -1,    40,    -1,     3,
+      -1,     5,    -1,    -1,     8,    -1,    10,    -1,    12,    13,
+      14,    -1,    -1,    -1,    18,    58,    20,    -1,    22,    -1,
+      24,    -1,    -1,    66,    67,    68,    69,    70,    71,    -1,
+      20,    -1,    36,    37,    -1,    -1,    40,    -1,     3,    -1,
        5,    -1,    -1,     8,    -1,    10,    36,    12,    13,    14,
       40,    -1,    -1,    18,    58,    20,    -1,    22,    -1,    24,
       -1,    -1,    66,    67,    68,    69,    70,    71,    58,    -1,
-      -1,    36,    -1,    38,    -1,    40,    66,    67,    68,    69,
+      -1,    36,    -1,    -1,    -1,    40,    66,    67,    68,    69,
       70,    71,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    -1,    -1,    58,    -1,    -1,    -1,    -1,    -1,    -1,
       -1,    66,    67,    68,    69,    70,    71,    33,    -1,    -1,
@@ -883,50 +895,50 @@ static const yytype_int16 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,    75,    76,     0,     3,     5,     8,    10,    12,    13,
-      14,    18,    20,    22,    24,    36,    38,    40,    58,    66,
-      67,    68,    69,    70,    71,    77,    78,    81,    88,    89,
-      94,    98,    99,   100,   101,   102,    67,    60,    60,    36,
-      68,    68,    97,    98,    68,    36,    68,    68,    82,    98,
-      76,    98,    98,    34,    36,    68,   103,    60,    39,    40,
+      14,    18,    20,    22,    24,    36,    40,    58,    66,    67,
+      68,    69,    70,    71,    77,    78,    79,    82,    89,    90,
+      95,    99,   100,   101,   102,   103,    67,    60,    60,    36,
+      68,    68,    98,    99,    68,    36,    68,    68,    83,    99,
+      99,    99,    34,    36,    68,   104,    38,    60,    39,    40,
       41,    42,    43,    44,    45,    46,    47,    48,    49,    50,
       51,    52,    53,    54,    55,    56,    57,    60,    26,    61,
-      60,    80,    98,    38,    60,    38,    97,    68,    36,    35,
-      37,    98,    91,    93,    98,    34,    36,   104,    98,    98,
-      98,    98,    98,    98,    98,    98,    98,    98,    98,    98,
-      98,    98,    98,    98,    98,    98,    98,    68,   100,    98,
-      35,    68,    96,    95,    84,    60,    87,    98,    33,    62,
-      35,    69,    68,    88,    90,    92,    77,    37,    62,    37,
-      88,    60,    35,    98,    33,    68,    62,    35,    11,    68,
-      60,    87,    83,    88,    38,    79,    60,    77,    76,    77,
-      85,    37,    97,    35,    86,    77
+      60,    81,    99,    38,    60,    38,    98,    68,    36,    35,
+      99,    92,    94,    99,    34,    36,   105,    76,    99,    99,
+      99,    99,    99,    99,    99,    99,    99,    99,    99,    99,
+      99,    99,    99,    99,    99,    99,    99,    68,   101,    99,
+      35,    68,    97,    96,    85,    60,    88,    99,    33,    62,
+      35,    69,    68,    89,    91,    93,    37,    77,    37,    62,
+      37,    89,    60,    35,    99,    33,    68,    62,    35,    11,
+      68,    60,    88,    84,    89,    38,    80,    60,    77,    76,
+      77,    86,    37,    98,    35,    87,    77
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    74,    75,    76,    76,    77,    77,    77,    77,    77,
-      77,    77,    78,    79,    78,    80,    82,    83,    81,    84,
-      85,    86,    81,    87,    88,    89,    90,    90,    91,    91,
-      92,    92,    93,    93,    94,    94,    94,    94,    94,    94,
-      94,    95,    95,    96,    96,    97,    97,    98,    98,    98,
-      98,    98,    98,    98,    98,    98,    98,    98,    98,    98,
-      98,    98,    98,    98,    98,    98,    98,    98,    98,    98,
-      98,    98,    99,    99,    99,   100,   100,   101,   101,   101,
-     101,   102,   102,   103,   103,   104,   104
+      77,    78,    77,    79,    80,    79,    81,    83,    84,    82,
+      85,    86,    87,    82,    88,    89,    90,    91,    91,    92,
+      92,    93,    93,    94,    94,    95,    95,    95,    95,    95,
+      95,    95,    96,    96,    97,    97,    98,    98,    99,    99,
+      99,    99,    99,    99,    99,    99,    99,    99,    99,    99,
+      99,    99,    99,    99,    99,    99,    99,    99,    99,    99,
+      99,    99,    99,   100,   100,   100,   101,   101,   102,   102,
+     102,   102,   103,   103,   104,   104,   105,   105
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     2,     0,     1,     1,     1,     2,     1,
-       2,     3,     5,     0,     8,     1,     0,     0,     7,     0,
-       0,     0,    12,     1,     3,     8,     3,     1,     3,     1,
-       1,     0,     1,     0,     3,     2,     2,     4,     3,     5,
-       5,     3,     0,     3,     1,     1,     0,     3,     3,     3,
+       2,     0,     4,     5,     0,     8,     1,     0,     0,     7,
+       0,     0,     0,    12,     1,     3,     8,     3,     1,     3,
+       1,     1,     0,     1,     0,     3,     2,     2,     4,     3,
+       5,     5,     3,     0,     3,     1,     1,     0,     3,     3,
        3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
-       3,     3,     3,     3,     3,     3,     3,     2,     2,     1,
-       3,     2,     1,     4,     1,     2,     3,     1,     1,     1,
-       1,     1,     1,     3,     0,     3,     0
+       3,     3,     3,     3,     3,     3,     3,     3,     2,     2,
+       1,     3,     2,     1,     4,     1,     2,     3,     1,     1,
+       1,     1,     1,     1,     3,     0,     3,     0
 };
 
 
@@ -1624,25 +1636,27 @@ yyreduce:
   case 2:
 #line 117 "translate.y"
                                     { 
+                                        symbolTableShow(st, stdout);
+                                        printf("Programa sintaticamente correto\n");
                                         (yyval.data).node_id = nextLabel++; 
                                         fprintf(dot, "n%d [label=\"program\"]\n", (yyval.data).node_id); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id); 
                                     }
-#line 1632 "translate.tab.c"
+#line 1646 "translate.tab.c"
     break;
 
   case 3:
-#line 124 "translate.y"
+#line 126 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++; 
                                         fprintf(dot, "n%d [label=\"stmts\"]\n", (yyval.data).node_id);
                                         fprintf(dot, "n%d -- {n%d n%d}\n", (yyval.data).node_id, (yyvsp[-1].data).node_id, (yyvsp[0].data).node_id); 
                                     }
-#line 1642 "translate.tab.c"
+#line 1656 "translate.tab.c"
     break;
 
   case 4:
-#line 129 "translate.y"
+#line 131 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++; 
                                         int eps = nextLabel++; 
@@ -1650,62 +1664,62 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps); 
                                     }
-#line 1654 "translate.tab.c"
+#line 1668 "translate.tab.c"
     break;
 
   case 5:
-#line 138 "translate.y"
+#line 140 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", (yyval.data).node_id); 
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 1664 "translate.tab.c"
+#line 1678 "translate.tab.c"
     break;
 
   case 6:
-#line 143 "translate.y"
+#line 145 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", (yyval.data).node_id); 
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 1674 "translate.tab.c"
+#line 1688 "translate.tab.c"
     break;
 
   case 7:
-#line 148 "translate.y"
+#line 150 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", (yyval.data).node_id); 
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 1684 "translate.tab.c"
+#line 1698 "translate.tab.c"
     break;
 
   case 8:
-#line 153 "translate.y"
+#line 155 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     int semicolon = nextLabel++; 
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", (yyval.data).node_id);  
                                     fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
                                     fprintf(dot, "n%d -- {n%d n%d}\n", (yyval.data).node_id, (yyvsp[-1].data).node_id, semicolon); }
-#line 1695 "translate.tab.c"
+#line 1709 "translate.tab.c"
     break;
 
   case 9:
-#line 159 "translate.y"
+#line 161 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     fprintf(dot, "n%d [label=\"stmt\"]\n", (yyval.data).node_id); 
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 1705 "translate.tab.c"
+#line 1719 "translate.tab.c"
     break;
 
   case 10:
-#line 164 "translate.y"
+#line 166 "translate.y"
                                 { 
                                     (yyval.data).node_id = nextLabel++; 
                                     int semicolon = nextLabel++; 
@@ -1713,12 +1727,19 @@ yyreduce:
                                     fprintf(dot, "n%d [label=\";\"]\n", semicolon); 
                                     fprintf(dot, "n%d -- {n%d n%d}\n", (yyval.data).node_id, (yyvsp[-1].data).node_id, semicolon);
                                 }
-#line 1717 "translate.tab.c"
+#line 1731 "translate.tab.c"
     break;
 
   case 11:
-#line 171 "translate.y"
-                                        { 
+#line 173 "translate.y"
+      {blockOpen();}
+#line 1737 "translate.tab.c"
+    break;
+
+  case 12:
+#line 173 "translate.y"
+                                                       { 
+                                            blockClose();
                                             int block_open = nextLabel++;
                                             (yyval.data).node_id = nextLabel++;
                                             int block_close = nextLabel++;
@@ -1734,11 +1755,11 @@ yyreduce:
                                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, block_close);
 
                                         }
-#line 1738 "translate.tab.c"
+#line 1759 "translate.tab.c"
     break;
 
-  case 12:
-#line 188 "translate.y"
+  case 13:
+#line 191 "translate.y"
                                                                {
                                                                     handleIfAfterStmt(); 
                                                                     handleIfAfterElse();
@@ -1761,19 +1782,19 @@ yyreduce:
                                                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_paren);
                                                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                                                 }
-#line 1765 "translate.tab.c"
-    break;
-
-  case 13:
-#line 210 "translate.y"
-                                                   { 
-                                                        handleIfAfterStmt();
-                                                   }
-#line 1773 "translate.tab.c"
+#line 1786 "translate.tab.c"
     break;
 
   case 14:
-#line 212 "translate.y"
+#line 213 "translate.y"
+                                                   { 
+                                                        handleIfAfterStmt();
+                                                   }
+#line 1794 "translate.tab.c"
+    break;
+
+  case 15:
+#line 215 "translate.y"
                                                           { 
                                                         handleIfAfterElse(); 
                                                         (yyval.data).node_id = nextLabel++;
@@ -1798,11 +1819,11 @@ yyreduce:
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, else_cond);
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                                    }
-#line 1802 "translate.tab.c"
+#line 1823 "translate.tab.c"
     break;
 
-  case 15:
-#line 239 "translate.y"
+  case 16:
+#line 242 "translate.y"
                                 { 
                                     handleIfAfterExpr((yyvsp[0].data).data.exprData); 
 
@@ -1811,27 +1832,27 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                                 }
-#line 1815 "translate.tab.c"
-    break;
-
-  case 16:
-#line 254 "translate.y"
-                    {
-                        handleRepEntry();
-                    }
-#line 1823 "translate.tab.c"
+#line 1836 "translate.tab.c"
     break;
 
   case 17:
 #line 257 "translate.y"
-                                                    {
-                        handleRepStmt();
+                    {
+                        handleRepEntry();
                     }
-#line 1831 "translate.tab.c"
+#line 1844 "translate.tab.c"
     break;
 
   case 18:
-#line 259 "translate.y"
+#line 260 "translate.y"
+                                                    {
+                        handleRepStmt();
+                    }
+#line 1852 "translate.tab.c"
+    break;
+
+  case 19:
+#line 262 "translate.y"
                            {
                         handleRepGotoEntry();
                         handleRepExit();
@@ -1854,36 +1875,36 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_paren);
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                     }
-#line 1858 "translate.tab.c"
-    break;
-
-  case 19:
-#line 282 "translate.y"
-                                {
-                                    handleRepEntry();
-                                }
-#line 1866 "translate.tab.c"
+#line 1879 "translate.tab.c"
     break;
 
   case 20:
-#line 286 "translate.y"
+#line 285 "translate.y"
                                 {
-                                    handleRepUpdate();
+                                    handleRepEntry();
                                 }
-#line 1874 "translate.tab.c"
+#line 1887 "translate.tab.c"
     break;
 
   case 21:
-#line 290 "translate.y"
+#line 289 "translate.y"
+                                {
+                                    handleRepUpdate();
+                                }
+#line 1895 "translate.tab.c"
+    break;
+
+  case 22:
+#line 293 "translate.y"
                                 {
                                     handleRepGotoEntry();
                                     handleRepStmt();
                                 }
-#line 1883 "translate.tab.c"
+#line 1904 "translate.tab.c"
     break;
 
-  case 22:
-#line 294 "translate.y"
+  case 23:
+#line 297 "translate.y"
                                      {
                                     handleRepGotoUpdate();
                                     handleRepExit();
@@ -1914,22 +1935,22 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_paren);
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 1918 "translate.tab.c"
+#line 1939 "translate.tab.c"
     break;
 
-  case 23:
-#line 328 "translate.y"
+  case 24:
+#line 331 "translate.y"
                 { 
                     handleRepAfterExpr((yyvsp[0].data).data.exprData);
                     (yyval.data).node_id = nextLabel++; 
                     fprintf(dot, "n%d [label=\"repexpr\"]\n", (yyval.data).node_id); 
                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                 }
-#line 1929 "translate.tab.c"
+#line 1950 "translate.tab.c"
     break;
 
-  case 24:
-#line 336 "translate.y"
+  case 25:
+#line 339 "translate.y"
                                         { 
                                             handleVarDeclaration((yyvsp[-2].data).data.string, (yyvsp[-1].data).data.string, (yyvsp[0].data).data.integer);
 
@@ -1947,11 +1968,11 @@ yyreduce:
                                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, identifier_2);
                                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                         }
-#line 1951 "translate.tab.c"
+#line 1972 "translate.tab.c"
     break;
 
-  case 25:
-#line 356 "translate.y"
+  case 26:
+#line 359 "translate.y"
                                         {
                                             (yyval.data).node_id = nextLabel++;
                                             int identifier_1 = nextLabel++;
@@ -1981,11 +2002,11 @@ yyreduce:
                                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, block_close);
 
                                         }
-#line 1985 "translate.tab.c"
+#line 2006 "translate.tab.c"
     break;
 
-  case 26:
-#line 387 "translate.y"
+  case 27:
+#line 390 "translate.y"
                              {
                                 (yyval.data).node_id = nextLabel++; 
                                 int comma = nextLabel++;
@@ -1998,21 +2019,21 @@ yyreduce:
                                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, comma);
                                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                              }
-#line 2002 "translate.tab.c"
+#line 2023 "translate.tab.c"
     break;
 
-  case 27:
-#line 399 "translate.y"
+  case 28:
+#line 402 "translate.y"
           {
             (yyval.data).node_id = nextLabel++; 
             fprintf(dot, "n%d [label=\"typelist\"]\n", (yyval.data).node_id); 
             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id); 
           }
-#line 2012 "translate.tab.c"
+#line 2033 "translate.tab.c"
     break;
 
-  case 28:
-#line 406 "translate.y"
+  case 29:
+#line 409 "translate.y"
                                 { 
                                     functAddParam(&(yyvsp[-2].data).data.paramList, (yyvsp[0].data).data.exprData.reg, (yyvsp[0].data).data.exprData.returnType);
                                     
@@ -2028,11 +2049,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, comma);
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 2032 "translate.tab.c"
+#line 2053 "translate.tab.c"
     break;
 
-  case 29:
-#line 421 "translate.y"
+  case 30:
+#line 424 "translate.y"
             { 
                 (yyval.data).data.paramList = NULL; 
                 functAddParam(&(yyval.data).data.paramList, (yyvsp[0].data).data.exprData.reg, (yyvsp[0].data).data.exprData.returnType); 
@@ -2042,21 +2063,21 @@ yyreduce:
                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                 
             }
-#line 2046 "translate.tab.c"
+#line 2067 "translate.tab.c"
     break;
 
-  case 30:
-#line 432 "translate.y"
+  case 31:
+#line 435 "translate.y"
                         { 
                             (yyval.data).node_id = nextLabel++;
                             fprintf(dot, "n%d [label=\"opttypelist\"]\n", (yyval.data).node_id);
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id); 
                         }
-#line 2056 "translate.tab.c"
+#line 2077 "translate.tab.c"
     break;
 
-  case 31:
-#line 437 "translate.y"
+  case 32:
+#line 440 "translate.y"
                         {
                             (yyval.data).node_id = nextLabel++; 
                             int eps = nextLabel++; 
@@ -2064,11 +2085,11 @@ yyreduce:
                             fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps);
                         }
-#line 2068 "translate.tab.c"
+#line 2089 "translate.tab.c"
     break;
 
-  case 32:
-#line 446 "translate.y"
+  case 33:
+#line 449 "translate.y"
                         { 
                             (yyval.data).data.paramList = (yyvsp[0].data).data.paramList; 
                             
@@ -2077,11 +2098,11 @@ yyreduce:
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                             
                         }
-#line 2081 "translate.tab.c"
+#line 2102 "translate.tab.c"
     break;
 
-  case 33:
-#line 454 "translate.y"
+  case 34:
+#line 457 "translate.y"
                         { 
                             (yyval.data).data.paramList = NULL; 
                             
@@ -2091,11 +2112,11 @@ yyreduce:
                             fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps); 
                         }
-#line 2095 "translate.tab.c"
+#line 2116 "translate.tab.c"
     break;
 
-  case 34:
-#line 466 "translate.y"
+  case 35:
+#line 469 "translate.y"
                               {
                                 int return_ = nextLabel++;
                                 (yyval.data).node_id = nextLabel++;
@@ -2111,11 +2132,11 @@ yyreduce:
                                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, semicolon);
                                 }
-#line 2115 "translate.tab.c"
+#line 2136 "translate.tab.c"
     break;
 
-  case 35:
-#line 481 "translate.y"
+  case 36:
+#line 484 "translate.y"
                        {
                                 int break_ = nextLabel++;
                                 int semicolon = nextLabel++;
@@ -2130,11 +2151,11 @@ yyreduce:
                                 fprintf(dot, "n%d -- {n%d n%d}\n", (yyval.data).node_id, break_, semicolon);
                                 
                         }
-#line 2134 "translate.tab.c"
+#line 2155 "translate.tab.c"
     break;
 
-  case 36:
-#line 495 "translate.y"
+  case 37:
+#line 498 "translate.y"
                           {
                                 int continue_ = nextLabel++;
                                 int semicolon = nextLabel++;
@@ -2148,11 +2169,11 @@ yyreduce:
                                 
                                 fprintf(dot, "n%d -- {n%d n%d}\n", (yyval.data).node_id, continue_, semicolon);
                           }
-#line 2152 "translate.tab.c"
+#line 2173 "translate.tab.c"
     break;
 
-  case 37:
-#line 508 "translate.y"
+  case 38:
+#line 511 "translate.y"
                                                {
                                                     int typedef_ = nextLabel++;
                                                     int identifier_1 = nextLabel++;
@@ -2168,11 +2189,11 @@ yyreduce:
 
                                                     fprintf(dot, "n%d -- {n%d n%d n%d n%d}\n", (yyval.data).node_id, typedef_, identifier_1, identifier_2, semicolon);
                                                }
-#line 2172 "translate.tab.c"
+#line 2193 "translate.tab.c"
     break;
 
-  case 38:
-#line 523 "translate.y"
+  case 39:
+#line 526 "translate.y"
                                 {
                                     int include_ = nextLabel++;
                                     int string_ = nextLabel++;
@@ -2185,11 +2206,11 @@ yyreduce:
                                     fprintf(dot, "n%d [label=\"commands\"]\n", (yyval.data).node_id);
                                     fprintf(dot, "n%d -- {n%d n%d n%d}\n", (yyval.data).node_id, include_, string_, semicolon);
                                 }
-#line 2189 "translate.tab.c"
+#line 2210 "translate.tab.c"
     break;
 
-  case 39:
-#line 535 "translate.y"
+  case 40:
+#line 538 "translate.y"
                                                        { 
                                                         (yyval.data).node_id = nextLabel++;
                                                         int struct_ = nextLabel++;
@@ -2211,11 +2232,11 @@ yyreduce:
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, block_close);
                                                        }
-#line 2215 "translate.tab.c"
+#line 2236 "translate.tab.c"
     break;
 
-  case 40:
-#line 556 "translate.y"
+  case 41:
+#line 559 "translate.y"
                                                     { 
                                                         int enum_ = nextLabel++;
                                                         int identifier = nextLabel++;
@@ -2237,11 +2258,11 @@ yyreduce:
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, block_close);
                                                     }
-#line 2241 "translate.tab.c"
+#line 2262 "translate.tab.c"
     break;
 
-  case 41:
-#line 579 "translate.y"
+  case 42:
+#line 582 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++;
                                         int semicolon = nextLabel++;
@@ -2249,11 +2270,11 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\";\"]\n", semicolon);
                                         fprintf(dot, "n%d -- {n%d n%d n%d}\n", (yyval.data).node_id, (yyvsp[-2].data).node_id, (yyvsp[-1].data).node_id, semicolon);
                                     }
-#line 2253 "translate.tab.c"
+#line 2274 "translate.tab.c"
     break;
 
-  case 42:
-#line 586 "translate.y"
+  case 43:
+#line 589 "translate.y"
                                     {
                                         (yyval.data).node_id = nextLabel++; 
                                         int eps = nextLabel++; 
@@ -2261,11 +2282,11 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps); 
                                     }
-#line 2265 "translate.tab.c"
+#line 2286 "translate.tab.c"
     break;
 
-  case 43:
-#line 595 "translate.y"
+  case 44:
+#line 598 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++;
                                         int identifier = nextLabel++;
@@ -2276,11 +2297,11 @@ yyreduce:
 
                                         fprintf(dot, "n%d -- {n%d n%d n%d}\n", (yyval.data).node_id, identifier, comma, (yyvsp[0].data).node_id);
                                     }
-#line 2280 "translate.tab.c"
+#line 2301 "translate.tab.c"
     break;
 
-  case 44:
-#line 605 "translate.y"
+  case 45:
+#line 608 "translate.y"
                                     { 
                                         int identifier = nextLabel++;
                                         (yyval.data).node_id = nextLabel++;
@@ -2288,21 +2309,21 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"%s\"]\n", identifier, (yyvsp[0].data).data.string);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, identifier);
                                     }
-#line 2292 "translate.tab.c"
+#line 2313 "translate.tab.c"
     break;
 
-  case 45:
-#line 614 "translate.y"
+  case 46:
+#line 617 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++;
                                         fprintf(dot, "n%d [label=\"optexpr\"]\n", (yyval.data).node_id);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                     }
-#line 2302 "translate.tab.c"
+#line 2323 "translate.tab.c"
     break;
 
-  case 46:
-#line 619 "translate.y"
+  case 47:
+#line 622 "translate.y"
                                     { 
                                         (yyval.data).node_id = nextLabel++; 
                                         int eps = nextLabel++; 
@@ -2310,11 +2331,11 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps);
                                     }
-#line 2314 "translate.tab.c"
+#line 2335 "translate.tab.c"
     break;
 
-  case 47:
-#line 628 "translate.y"
+  case 48:
+#line 631 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(ADD, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData);
 
@@ -2330,11 +2351,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, add);
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                     }
-#line 2334 "translate.tab.c"
+#line 2355 "translate.tab.c"
     break;
 
-  case 48:
-#line 643 "translate.y"
+  case 49:
+#line 646 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(SUB, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2351,11 +2372,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                     }
-#line 2355 "translate.tab.c"
+#line 2376 "translate.tab.c"
     break;
 
-  case 49:
-#line 659 "translate.y"
+  case 50:
+#line 662 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(MUL, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2372,11 +2393,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                     }
-#line 2376 "translate.tab.c"
+#line 2397 "translate.tab.c"
     break;
 
-  case 50:
-#line 675 "translate.y"
+  case 51:
+#line 678 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(DIV, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData);
                         
@@ -2393,11 +2414,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                         
                     }
-#line 2397 "translate.tab.c"
+#line 2418 "translate.tab.c"
     break;
 
-  case 51:
-#line 691 "translate.y"
+  case 52:
+#line 694 "translate.y"
                     { /* geraTemp1, geraTemp2, chama codeGen(t1, op, t2) */ 
                         (yyval.data).node_id = nextLabel++;
                         int mod = nextLabel++;
@@ -2411,11 +2432,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, mod);
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                     }
-#line 2415 "translate.tab.c"
+#line 2436 "translate.tab.c"
     break;
 
-  case 52:
-#line 704 "translate.y"
+  case 53:
+#line 707 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(BITWISE_AND, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2432,11 +2453,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                                 }
-#line 2436 "translate.tab.c"
+#line 2457 "translate.tab.c"
     break;
 
-  case 53:
-#line 720 "translate.y"
+  case 54:
+#line 723 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(BITWISE_OR, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2453,11 +2474,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                                 }
-#line 2457 "translate.tab.c"
+#line 2478 "translate.tab.c"
     break;
 
-  case 54:
-#line 736 "translate.y"
+  case 55:
+#line 739 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(BITWISE_NOT, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2474,11 +2495,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                     
                                 }
-#line 2478 "translate.tab.c"
+#line 2499 "translate.tab.c"
     break;
 
-  case 55:
-#line 752 "translate.y"
+  case 56:
+#line 755 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(BITWISE_XOR, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
                                     
@@ -2494,11 +2515,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, xor_);
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 2498 "translate.tab.c"
+#line 2519 "translate.tab.c"
     break;
 
-  case 56:
-#line 767 "translate.y"
+  case 57:
+#line 770 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(LEFT_SHIFT, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2515,11 +2536,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                                 }
-#line 2519 "translate.tab.c"
+#line 2540 "translate.tab.c"
     break;
 
-  case 57:
-#line 783 "translate.y"
+  case 58:
+#line 786 "translate.y"
                                 { 
                                     (yyval.data).data.exprData = handleBinaryExpr(RIGHT_SHIFT, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2536,11 +2557,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                                 }
-#line 2540 "translate.tab.c"
+#line 2561 "translate.tab.c"
     break;
 
-  case 58:
-#line 799 "translate.y"
+  case 59:
+#line 802 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(EQ, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2557,11 +2578,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                     }
-#line 2561 "translate.tab.c"
+#line 2582 "translate.tab.c"
     break;
 
-  case 59:
-#line 815 "translate.y"
+  case 60:
+#line 818 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(NE, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2578,11 +2599,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                         
                     }
-#line 2582 "translate.tab.c"
+#line 2603 "translate.tab.c"
     break;
 
-  case 60:
-#line 831 "translate.y"
+  case 61:
+#line 834 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(LT, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2600,11 +2621,11 @@ yyreduce:
         
 
                     }
-#line 2604 "translate.tab.c"
+#line 2625 "translate.tab.c"
     break;
 
-  case 61:
-#line 848 "translate.y"
+  case 62:
+#line 851 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(GT, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2621,11 +2642,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                     }
-#line 2625 "translate.tab.c"
+#line 2646 "translate.tab.c"
     break;
 
-  case 62:
-#line 864 "translate.y"
+  case 63:
+#line 867 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(LE, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
                         
@@ -2642,11 +2663,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                         
                     }
-#line 2646 "translate.tab.c"
+#line 2667 "translate.tab.c"
     break;
 
-  case 63:
-#line 880 "translate.y"
+  case 64:
+#line 883 "translate.y"
                     { 
                         (yyval.data).data.exprData = handleBinaryExpr(GE, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
                         
@@ -2663,11 +2684,11 @@ yyreduce:
                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
                     }
-#line 2667 "translate.tab.c"
+#line 2688 "translate.tab.c"
     break;
 
-  case 64:
-#line 896 "translate.y"
+  case 65:
+#line 899 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = handleBinaryExpr(LOGICAL_AND, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2683,11 +2704,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, and_);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                     }
-#line 2687 "translate.tab.c"
+#line 2708 "translate.tab.c"
     break;
 
-  case 65:
-#line 911 "translate.y"
+  case 66:
+#line 914 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = handleBinaryExpr(LOGICAL_OR, (yyvsp[-2].data).data.exprData, (yyvsp[0].data).data.exprData); 
 
@@ -2704,11 +2725,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                         
                                     }
-#line 2708 "translate.tab.c"
+#line 2729 "translate.tab.c"
     break;
 
-  case 66:
-#line 927 "translate.y"
+  case 67:
+#line 930 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = (yyvsp[-1].data).data.exprData; 
 
@@ -2726,11 +2747,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_paren);
                                     }
-#line 2730 "translate.tab.c"
+#line 2751 "translate.tab.c"
     break;
 
-  case 67:
-#line 945 "translate.y"
+  case 68:
+#line 948 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = handleUnaryExpr(LOGICAL_NOT, (yyvsp[0].data).data.exprData); 
 
@@ -2746,11 +2767,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                         
                                     }
-#line 2750 "translate.tab.c"
+#line 2771 "translate.tab.c"
     break;
 
-  case 68:
-#line 960 "translate.y"
+  case 69:
+#line 963 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = handleUnaryExpr(SUB, (yyvsp[0].data).data.exprData); 
                                         
@@ -2766,11 +2787,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                         
                                     }
-#line 2770 "translate.tab.c"
+#line 2791 "translate.tab.c"
     break;
 
-  case 69:
-#line 975 "translate.y"
+  case 70:
+#line 978 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = (yyvsp[0].data).data.exprData; 
 
@@ -2780,11 +2801,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                         
                                     }
-#line 2784 "translate.tab.c"
+#line 2805 "translate.tab.c"
     break;
 
-  case 70:
-#line 984 "translate.y"
+  case 71:
+#line 987 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = handleAssignExpr((yyvsp[-2].data).data.string, (yyvsp[0].data).data.exprData); 
 
@@ -2800,17 +2821,17 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, assign_);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                     }
-#line 2804 "translate.tab.c"
-    break;
-
-  case 71:
-#line 999 "translate.y"
-                                    { /* return symbol table size of identifier */ }
-#line 2810 "translate.tab.c"
+#line 2825 "translate.tab.c"
     break;
 
   case 72:
-#line 1003 "translate.y"
+#line 1002 "translate.y"
+                                    { /* return symbol table size of identifier */ }
+#line 2831 "translate.tab.c"
+    break;
+
+  case 73:
+#line 1006 "translate.y"
             { 
                 (yyval.data).data.exprData = (yyvsp[0].data).data.exprData; 
 
@@ -2820,11 +2841,11 @@ yyreduce:
                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                 
             }
-#line 2824 "translate.tab.c"
+#line 2845 "translate.tab.c"
     break;
 
-  case 73:
-#line 1012 "translate.y"
+  case 74:
+#line 1015 "translate.y"
                                                     { 
                     (yyval.data).data.exprData = handleFunctionCall((yyvsp[-3].data).data.string, (yyvsp[-1].data).data.paramList); 
 
@@ -2845,11 +2866,11 @@ yyreduce:
                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_paren);
                 }
-#line 2849 "translate.tab.c"
+#line 2870 "translate.tab.c"
     break;
 
-  case 74:
-#line 1032 "translate.y"
+  case 75:
+#line 1035 "translate.y"
             { 
                 (yyval.data).data.exprData = handleAttr((yyvsp[0].data).data.string); 
                 
@@ -2859,11 +2880,11 @@ yyreduce:
                 fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
 
             }
-#line 2863 "translate.tab.c"
+#line 2884 "translate.tab.c"
     break;
 
-  case 75:
-#line 1043 "translate.y"
+  case 76:
+#line 1046 "translate.y"
                                 { 
                                     (yyval.data).data.string = (yyvsp[-1].data).data.string; 
 
@@ -2878,11 +2899,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, id);
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 2882 "translate.tab.c"
+#line 2903 "translate.tab.c"
     break;
 
-  case 76:
-#line 1057 "translate.y"
+  case 77:
+#line 1060 "translate.y"
                                 { 
                                     (yyval.data).data.string = mergeStrPointers((yyvsp[-2].data).data.string, (yyvsp[0].data).data.string); 
 
@@ -2898,11 +2919,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, pointer);
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                                 }
-#line 2902 "translate.tab.c"
+#line 2923 "translate.tab.c"
     break;
 
-  case 77:
-#line 1074 "translate.y"
+  case 78:
+#line 1077 "translate.y"
                         { 
                             (yyval.data).data.exprData = handleInteger((yyvsp[0].data).data.integer); 
 
@@ -2913,11 +2934,11 @@ yyreduce:
                             fprintf(dot, "n%d [label=\"const\"]\n", (yyval.data).node_id);
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, integer);
                         }
-#line 2917 "translate.tab.c"
+#line 2938 "translate.tab.c"
     break;
 
-  case 78:
-#line 1084 "translate.y"
+  case 79:
+#line 1087 "translate.y"
                         { 
                             (yyval.data).data.exprData.returnType = strdup("ship"); 
                             (yyval.data).data.exprData.reg = 0;  
@@ -2929,11 +2950,11 @@ yyreduce:
                             fprintf(dot, "n%d [label=\"const\"]\n", (yyval.data).node_id);
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, decimal);   
                         }
-#line 2933 "translate.tab.c"
+#line 2954 "translate.tab.c"
     break;
 
-  case 79:
-#line 1095 "translate.y"
+  case 80:
+#line 1098 "translate.y"
                         { 
                             /* chama codeGen() e retorna o Temporary */
                             int string = nextLabel++;
@@ -2943,11 +2964,11 @@ yyreduce:
                             fprintf(dot, "n%d [label=\"const\"]\n", (yyval.data).node_id);
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, string);
                         }
-#line 2947 "translate.tab.c"
+#line 2968 "translate.tab.c"
     break;
 
-  case 80:
-#line 1104 "translate.y"
+  case 81:
+#line 1107 "translate.y"
                         {
                             /* chama codeGen() e retorna o Temporary */
                             (yyval.data).node_id = nextLabel++;
@@ -2956,11 +2977,11 @@ yyreduce:
                             fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[0].data).node_id);
                             
                         }
-#line 2960 "translate.tab.c"
+#line 2981 "translate.tab.c"
     break;
 
-  case 81:
-#line 1113 "translate.y"
+  case 82:
+#line 1116 "translate.y"
                                 { 
                                     (yyval.data).data.boolean = (yyvsp[0].data).data.boolean; 
 
@@ -2972,11 +2993,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, true);
 
                                 }
-#line 2976 "translate.tab.c"
+#line 2997 "translate.tab.c"
     break;
 
-  case 82:
-#line 1124 "translate.y"
+  case 83:
+#line 1127 "translate.y"
                                 { 
                                     (yyval.data).data.boolean = (yyvsp[0].data).data.boolean; 
 
@@ -2988,11 +3009,11 @@ yyreduce:
                                     fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, false);
 
                                 }
-#line 2992 "translate.tab.c"
+#line 3013 "translate.tab.c"
     break;
 
-  case 83:
-#line 1138 "translate.y"
+  case 84:
+#line 1141 "translate.y"
                                     { 
                                         (yyval.data).data.exprData = (yyvsp[-1].data).data.exprData;
 
@@ -3010,11 +3031,11 @@ yyreduce:
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, (yyvsp[-1].data).node_id);
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, close_bracket);
                                     }
-#line 3014 "translate.tab.c"
+#line 3035 "translate.tab.c"
     break;
 
-  case 84:
-#line 1155 "translate.y"
+  case 85:
+#line 1158 "translate.y"
                                     {  
 
                                         (yyval.data).node_id = nextLabel++; 
@@ -3023,11 +3044,11 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps); 
                                     }
-#line 3027 "translate.tab.c"
+#line 3048 "translate.tab.c"
     break;
 
-  case 85:
-#line 1166 "translate.y"
+  case 86:
+#line 1169 "translate.y"
                                         { 
                                             (yyval.data).data.integer = (yyvsp[-1].data).data.integer; 
 
@@ -3042,11 +3063,11 @@ yyreduce:
                                             fprintf(dot, "n%d -- {n%d n%d n%d}\n", (yyval.data).node_id, open_bracket, integer, close_bracket);
                                             
                                         }
-#line 3046 "translate.tab.c"
+#line 3067 "translate.tab.c"
     break;
 
-  case 86:
-#line 1180 "translate.y"
+  case 87:
+#line 1183 "translate.y"
                                     { 
                                         (yyval.data).data.integer = 1;
                                         
@@ -3056,11 +3077,11 @@ yyreduce:
                                         fprintf(dot, "n%d [label=\"&#x03B5;\"]\n",eps); 
                                         fprintf(dot, "n%d -- n%d\n", (yyval.data).node_id, eps); 
                                     }
-#line 3060 "translate.tab.c"
+#line 3081 "translate.tab.c"
     break;
 
 
-#line 3064 "translate.tab.c"
+#line 3085 "translate.tab.c"
 
       default: break;
     }
@@ -3292,7 +3313,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1191 "translate.y"
+#line 1194 "translate.y"
 
 
 /**
@@ -3477,6 +3498,15 @@ ExprData handleInteger(int integer){
     return ret;
 }
 
+void blockOpen() {
+    symbolTableCreateBlock(st);
+}
+
+void blockClose() {
+    symbolTableShow(st, stdout);
+    symbolTableDeleteBlock(st);
+}
+
 void reportAndExit(const char *s, ...) {
     char msg[100];
     va_list args;
@@ -3498,6 +3528,7 @@ void onExit() {
     fclose(prod);
     fclose(friscv);
     fclose(dot);
+
     symbolTableDelete(st);
 }
 
@@ -3526,7 +3557,7 @@ void onStart() {
     fprintf(dot, "strict graph {\n");
     fprintf(dot, "node [ordering=out]\n");
 
-    symbolTableCreateBlock(st);
+    blockOpen();
     
     symbolTableInsert(st, symbolTypeNew("jib", 4));
     symbolTableInsert(st, symbolTypeNew("void", 4));
@@ -3534,12 +3565,9 @@ void onStart() {
     symbolTableInsert(st, symbolTypeNew("ship", 4));
     symbolTableInsert(st, symbolTypeNew("addled", 4));
     symbolTableInsert(st, symbolTypeNew("sailor", 4));
-    symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
-}
 
-void executeProgram() {
-    symbolTableShow(st, stdout);
-    printf("Programa sintaticamente correto\n");
+    symbolTableInsert(st, symbolFunctionNew("parrot", "void"));
+    symbolTableInsert(st, symbolFunctionNew("plunder", "void"));
 }
 
 void yyerror(const char *s) {

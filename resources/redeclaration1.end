@@ -1,10 +1,10 @@
 jib a;
 
 spyglass (a > 0) ⚓️
-    boat a;
+    ship a;
 
-    squall(a < 15) ⚓️
-        a = 1;
+    squall(a < 15.0) ⚓️
+        a = 1.0;
 
         boat a;
     ⚓️;
