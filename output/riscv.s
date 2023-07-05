@@ -37,38 +37,8 @@ ecall
 
 # main code here
 main:
-addi x5, x0, 14
+addi x5, x0, 10
 add x8, x5, x0
 addi x6, x0, 0
-add x8, x6, x0
-label_1:
-addi x7, x0, 10
-# handle operation 304
-slt x28, x8, x7
-beq x0, x28, label_2
-j label_3
-label_4:
-addi x29, x0, 1
-# handle operation 294
-add x30, x8, x29
-add x8, x30, x0
-j label_1
-label_3:
-addi x31, x0, 15
-# handle operation 305
-slt x5, x31, x8
-beq x0, x5, label_5
-addi x6, x0, 1
-mv a1, x6
-jal x1, printf
-beq x0, x0, label_6
-label_5:
-addi x7, x0, 0
-mv a1, x7
-jal x1, printf
-label_6:
-j label_4
-label_2:
-addi x28, x0, 0
-sw x8, 0(x28)
+sw x8, 0(x6)
 j programExit

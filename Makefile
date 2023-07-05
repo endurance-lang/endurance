@@ -8,39 +8,28 @@ $(TARGET): $(OBJFILES)
 	cd ./src/lib && \
 	flex -o lex.yy.c lex.l && \
 	bison -d -v -o translate.tab.c translate.y && \
-	gcc *.c ../utils/print-source-code.c ../symbol-table/*.c ../risc-v/*.c ../pseudo/*.c -o ../../build/a.out
-
-llvm:
-	clang ./src/lib/translate.tab.c -emit-llvm -S -c -o ./build/endurance.ll
-	llvm-as ./build/endurance.ll -o ./build/endurance.bc
-	llc ./build/endurance.bc -o ./build/endurance.s
-	clang ./build/endurance.s -o ./build/endurance.native
-	
-llvm-test:
-	clang ./src/lib/translate.tab.c -emit-llvm -S -c -o ./build/endurance.ll
-	clang -fPIE ./build/endurance.ll -o ./build/endurance.native
-
+	gcc *.c ../utils/print-source-code.c ../symbol-table/*.c ../risc-v/*.c ../pseudo/*.c -o ../../build/endurance
 
 test-first:
-	./build/a.out < resources/first.end
+	./build/endurance < resources/first.end
 
 test-second:
-	./build/a.out < resources/second.end
+	./build/endurance < resources/second.end
 
 test-third:
-	./build/a.out < resources/third.end
+	./build/endurance < resources/third.end
 
 test-input:
-	./build/a.out < resources/input.end
+	./build/endurance < resources/input.end
 
 test-error:
-	./build/a.out < resources/error.end
+	./build/endurance < resources/error.end
 
 run:
-	./build/a.out < $(FILE)
+	./build/endurance < $(FILE)
 
 test-graphviz:
-	./build/a.out < resources/array.end
+	./build/endurance < resources/graphviz.end
 
 graphviz-image:
 	dot -Tpng ./output/tree.dot -o ./output/tree.png

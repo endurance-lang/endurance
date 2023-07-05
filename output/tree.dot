@@ -3,298 +3,47 @@ node [ordering=out]
 n1 [label="stmts"]
 n2 [label="&#x03B5;"]
 n1 -- n2
-n3 [label="stmts"]
+n3 [label="constvector"]
 n4 [label="&#x03B5;"]
 n3 -- n4
-n5 [label="constvector"]
-n6 [label="&#x03B5;"]
+n5 [label="var"]
+n6 [label="jib"]
+n7 [label="a"]
+{ rank=same; n6 n7 n3; }
 n5 -- n6
-n7 [label="var"]
-n8 [label="jib"]
-n9 [label="a"]
-{ rank=same; n8 n9 n5; }
-n7 -- n8
-n7 -- n9
-n7 -- n5
-n10 [label="stmt"]
-n11 [label=";"]
-n10 -- {n7 n11}
-n12 [label="stmts"]
-n12 -- {n3 n10}
-n13 [label="exprvector"]
-n14 [label="&#x03B5;"]
+n5 -- n7
+n5 -- n3
+n8 [label="stmt"]
+n9 [label=";"]
+n8 -- {n5 n9}
+n10 [label="stmts"]
+n10 -- {n1 n8}
+n11 [label="exprvector"]
+n12 [label="&#x03B5;"]
+n11 -- n12
+n13 [label="attr"]
+n14 [label="a"]
+{rank=same; n14 n11;}
 n13 -- n14
-n15 [label="attr"]
-n16 [label="a"]
-{rank=same; n16 n13;}
-n15 -- n16
-n15 -- n13
-n17 [label="14"]
-n18 [label="const"]
+n13 -- n11
+n15 [label="10"]
+n16 [label="const"]
+n16 -- n15
+n17 [label="term"]
+n17 -- n16
+n18 [label="expr"]
 n18 -- n17
-n19 [label="term"]
+n20 [label="="]
+n19 [label="attr"]
+{rank=same; n13 n20 n18;}
+n19 -- n13
+n19 -- n20
 n19 -- n18
-n20 [label="expr"]
-n20 -- n19
-n22 [label="="]
-n21 [label="attr"]
-{rank=same; n15 n22 n20;}
-n21 -- n15
-n21 -- n22
-n21 -- n20
-n23 [label="stmt"]
-n24 [label=";"]
-n23 -- {n21 n24}
-n25 [label="stmts"]
-n25 -- {n12 n23}
-n26 [label="exprvector"]
-n27 [label="&#x03B5;"]
-n26 -- n27
-n28 [label="attr"]
-n29 [label="a"]
-{rank=same; n29 n26;}
-n28 -- n29
-n28 -- n26
-n30 [label="0"]
-n31 [label="const"]
-n31 -- n30
-n32 [label="term"]
-n32 -- n31
-n33 [label="expr"]
-n33 -- n32
-n35 [label="="]
-n34 [label="attr"]
-{rank=same; n28 n35 n33;}
-n34 -- n28
-n34 -- n35
-n34 -- n33
-n36 [label="optexpr"]
-n36 -- n34
-n37 [label="exprvector"]
-n38 [label="&#x03B5;"]
-n37 -- n38
-n39 [label="attr"]
-n40 [label="a"]
-{rank=same; n40 n37;}
-n39 -- n40
-n39 -- n37
-n41 [label="attr"]
-n41 -- n39
-n42 [label="expr"]
-n42 -- n41
-n43 [label="10"]
-n44 [label="const"]
-n44 -- n43
-n45 [label="term"]
-n45 -- n44
-n46 [label="expr"]
-n46 -- n45
-n47 [label="expr"]
-n48 [label="<"]
-{rank=same; n42 n48 n46;}
-n47 -- n42
-n47 -- n48
-n47 -- n46
-n49 [label="repexpr"]
-n49 -- n47
-n50 [label="exprvector"]
-n51 [label="&#x03B5;"]
-n50 -- n51
-n52 [label="attr"]
-n53 [label="a"]
-{rank=same; n53 n50;}
-n52 -- n53
-n52 -- n50
-n54 [label="exprvector"]
-n55 [label="&#x03B5;"]
-n54 -- n55
-n56 [label="attr"]
-n57 [label="a"]
-{rank=same; n57 n54;}
-n56 -- n57
-n56 -- n54
-n58 [label="attr"]
-n58 -- n56
-n59 [label="expr"]
-n59 -- n58
-n60 [label="1"]
-n61 [label="const"]
-n61 -- n60
-n62 [label="term"]
-n62 -- n61
-n63 [label="expr"]
-n63 -- n62
-n64 [label="expr"]
-n65 [label="+"]
-{rank=same; n59 n65 n63;}
-n64 -- n59
-n64 -- n65
-n64 -- n63
-n67 [label="="]
-n66 [label="attr"]
-{rank=same; n52 n67 n64;}
-n66 -- n52
-n66 -- n67
-n66 -- n64
-n68 [label="optexpr"]
-n68 -- n66
-n69 [label="stmts"]
-n70 [label="&#x03B5;"]
-n69 -- n70
-n71 [label="exprvector"]
-n72 [label="&#x03B5;"]
-n71 -- n72
-n73 [label="attr"]
-n74 [label="a"]
-{rank=same; n74 n71;}
-n73 -- n74
-n73 -- n71
-n75 [label="attr"]
-n75 -- n73
-n76 [label="expr"]
-n76 -- n75
-n77 [label="15"]
-n78 [label="const"]
-n78 -- n77
-n79 [label="term"]
-n79 -- n78
-n80 [label="expr"]
-n80 -- n79
-n81 [label="expr"]
-n82 [label=">"]
-{rank=same; n76 n82 n80;}
-n81 -- n76
-n81 -- n82
-n81 -- n80
-n83 [label="condexpr"]
-n83 -- n81
-n84 [label="stmts"]
-n85 [label="&#x03B5;"]
-n84 -- n85
-n86 [label="1"]
-n87 [label="const"]
-n87 -- n86
-n88 [label="term"]
-n88 -- n87
-n89 [label="expr"]
-n89 -- n88
-n90 [label="exprlist"]
-n90 -- n89
-n91 [label="optexprlist"]
-n91 -- n90
-n93 [label="parrot"]
-n94 [label="("]
-n92 [label="const"]
-n95 [label=")"]
-{rank=same; n93 n94 n91 n95;}
-n92 -- n93
-n92 -- n94
-n92 -- n91
-n92 -- n95
-n96 [label="expr"]
-n96 -- n92
-n97 [label="stmt"]
-n98 [label=";"]
-n97 -- {n96 n98}
-n99 [label="stmts"]
-n99 -- {n84 n97}
-n100 [label="&#9875;"]
-n101 [label="stmt"]
-n102 [label="&#9875;;"]
-{ rank=same; n100 n99 n102; }
-n101 -- n100
-n101 -- n99
-n101 -- n102
-n103 [label="stmts"]
-n104 [label="&#x03B5;"]
-n103 -- n104
-n105 [label="0"]
-n106 [label="const"]
-n106 -- n105
-n107 [label="term"]
-n107 -- n106
-n108 [label="expr"]
-n108 -- n107
-n109 [label="exprlist"]
-n109 -- n108
-n110 [label="optexprlist"]
-n110 -- n109
-n112 [label="parrot"]
-n113 [label="("]
-n111 [label="const"]
-n114 [label=")"]
-{rank=same; n112 n113 n110 n114;}
-n111 -- n112
-n111 -- n113
-n111 -- n110
-n111 -- n114
-n115 [label="expr"]
-n115 -- n111
-n116 [label="stmt"]
-n117 [label=";"]
-n116 -- {n115 n117}
-n118 [label="stmts"]
-n118 -- {n103 n116}
-n119 [label="&#9875;"]
-n120 [label="stmt"]
-n121 [label="&#9875;;"]
-{ rank=same; n119 n118 n121; }
-n120 -- n119
-n120 -- n118
-n120 -- n121
-n122 [label="conditional"]
-n123 [label="IF"]
-n124 [label="("]
-n125 [label=")"]
-n126 [label="ELSE"]
-{ rank=same; n123 n124 n83 n125 n101 n126 n120; }
-n122 -- n123
-n122 -- n124
-n122 -- n83
-n122 -- n125
-n122 -- n101
-n122 -- n126
-n122 -- n120
-n127 [label="stmt"]
-n127 -- n122
-n128 [label="stmts"]
-n128 -- {n69 n127}
-n129 [label="&#9875;"]
-n130 [label="stmt"]
-n131 [label="&#9875;;"]
-{ rank=same; n129 n128 n131; }
-n130 -- n129
-n130 -- n128
-n130 -- n131
-n132 [label="repetition"]
-n133 [label="FOR"]
-n134 [label="("]
-n135 [label=";"]
-n136 [label=";"]
-n137 [label=")"]
-{ rank=same; n133 n134 n36 n135 n49 n136 n68 n137 n130; }
-n132 -- n133
-n132 -- n134
-n132 -- n36
-n132 -- n135
-n132 -- n49
-n132 -- n136
-n132 -- n68
-n132 -- n137
-n132 -- n130
-n138 [label="stmt"]
-n138 -- n132
-n139 [label="stmts"]
-n139 -- {n25 n138}
-n140 [label="&#9875;"]
-n141 [label="stmt"]
-n142 [label="&#9875;;"]
-{ rank=same; n140 n139 n142; }
-n141 -- n140
-n141 -- n139
-n141 -- n142
-n143 [label="stmts"]
-n143 -- {n1 n141}
-n144 [label="program"]
-n144 -- n143
+n21 [label="stmt"]
+n22 [label=";"]
+n21 -- {n19 n22}
+n23 [label="stmts"]
+n23 -- {n10 n21}
+n24 [label="program"]
+n24 -- n23
 }

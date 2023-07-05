@@ -1,6 +1,7 @@
-#include "types.h"
 #include <stdlib.h>
 #include <string.h>
+
+#include "types.h"
 
 void functAddParam(FuncParamList **paramList, int reg, char *type) {
     FuncParamList *new = (FuncParamList *) malloc(sizeof(FuncParamList));
