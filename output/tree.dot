@@ -26,7 +26,11 @@ n14 [label="a"]
 {rank=same; n14 n11;}
 n13 -- n14
 n13 -- n11
+<<<<<<< HEAD
 n15 [label="8"]
+=======
+n15 [label="10"]
+>>>>>>> ac39d6660788dc8411e49a58a53b0dc41d16d31e
 n16 [label="const"]
 n16 -- n15
 n17 [label="term"]
@@ -44,6 +48,7 @@ n22 [label=";"]
 n21 -- {n19 n22}
 n23 [label="stmts"]
 n23 -- {n10 n21}
+<<<<<<< HEAD
 n24 [label="exprvector"]
 n25 [label="&#x03B5;"]
 n24 -- n25
@@ -141,4 +146,8 @@ n68 [label="stmts"]
 n68 -- {n23 n67}
 n69 [label="program"]
 n69 -- n68
+=======
+n24 [label="program"]
+n24 -- n23
+>>>>>>> ac39d6660788dc8411e49a58a53b0dc41d16d31e
 }

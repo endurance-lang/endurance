@@ -6,7 +6,7 @@ ENV LANG=C.UTF-8
 
 # Instalando pacotes necessários
 RUN apt-get update \
-    && apt-get install -y flex gcc make bash bison \
+    && apt-get install -y flex gcc make bash bison graphviz \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiando arquivos fonte

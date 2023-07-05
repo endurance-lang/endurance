@@ -37,6 +37,7 @@ ecall
 
 # main code here
 main:
+<<<<<<< HEAD
 addi x5, x0, 8
 add x8, x5, x0
 label_1:
@@ -54,4 +55,10 @@ j label_1
 label_2:
 addi x30, x0, 0
 sw x8, 0(x30)
+=======
+addi x5, x0, 10
+add x8, x5, x0
+addi x6, x0, 0
+sw x8, 0(x6)
+>>>>>>> ac39d6660788dc8411e49a58a53b0dc41d16d31e
 j programExit
